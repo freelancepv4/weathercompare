@@ -1,0 +1,174 @@
+{
+  "nav": {
+    "weather": "Weather",
+    "compare": "Compare",
+    "maps": "Maps",
+    "alerts": "Alerts",
+    "favorites": "Favorites",
+    "menu": "Menu",
+    "close": "Close"
+  },
+  "hero": {
+    "headline": "Weather forecasts. Compared in one place.",
+    "subheadline": "Compare forecasts from trusted weather sources for cities across Italy and Europe.",
+    "searchPlaceholder": "Search city, town or location...",
+    "useMyLocation": "Use my location",
+    "popularLocations": "Popular locations",
+    "locating": "Locating you…",
+    "locationDenied": "We couldn't access your location. You can search for a city instead."
+  },
+  "home": {
+    "italySection": "Weather across Italy",
+    "europeSection": "Weather across Europe",
+    "whyCompareTitle": "Why compare weather forecasts?",
+    "whyCompareBody": "Different forecast providers use different weather models, data sources and update schedules — so their predictions can vary, especially several days out. Comparing them side by side gives you more context before you make a decision, without claiming any single source is guaranteed to be right.",
+    "viewForecast": "View forecast"
+  },
+  "search": {
+    "noResults": "No locations found. Try another search.",
+    "recentSearches": "Recent searches",
+    "clearHistory": "Clear history",
+    "resultsFor": "Results for"
+  },
+  "dashboard": {
+    "feelsLike": "Feels like",
+    "humidity": "Humidity",
+    "wind": "Wind",
+    "pressure": "Pressure",
+    "visibility": "Visibility",
+    "uvIndex": "UV Index",
+    "precipitation": "Precipitation",
+    "sunrise": "Sunrise",
+    "sunset": "Sunset",
+    "updated": "Updated",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites"
+  },
+  "comparison": {
+    "title": "Forecast Comparison",
+    "subtitle": "See how independent weather sources forecast the same location right now.",
+    "agreement": "Forecast agreement",
+    "temperatureRange": "Temperature range",
+    "rainRange": "Rain probability",
+    "windRange": "Wind speed",
+    "agreementHigh": "Sources are closely aligned",
+    "agreementModerate": "Sources show some variation",
+    "agreementLow": "Sources show notable variation",
+    "source": "Source",
+    "poweredBy": "Powered by",
+    "chartTitle": "Temperature by provider",
+    "viewHourly": "Hourly",
+    "viewDaily": "Daily",
+    "unavailable": "This source is temporarily unavailable."
+  },
+  "hourly": {
+    "title": "Hourly forecast"
+  },
+  "daily": {
+    "title": "10-day forecast",
+    "rain": "rain",
+    "today": "Today"
+  },
+  "rain": {
+    "title": "Rain forecast",
+    "probability": "Precipitation probability",
+    "timeline": "Hourly precipitation timeline"
+  },
+  "wind": {
+    "title": "Wind",
+    "current": "Current wind",
+    "gusts": "Gusts",
+    "direction": "Direction",
+    "hourly": "Hourly wind",
+    "daily": "Daily wind"
+  },
+  "alerts": {
+    "title": "Weather alerts",
+    "none": "No active weather alerts.",
+    "severity": "Severity",
+    "area": "Affected area",
+    "starts": "Starts",
+    "ends": "Ends",
+    "officialSource": "Official source"
+  },
+  "map": {
+    "title": "Weather map",
+    "placeholderTitle": "Live weather map coming soon",
+    "placeholderBody": "This section is reserved for an interactive temperature, precipitation, wind and cloud-cover map. Connect a weather-map tile provider to enable it — see /data-sources for details.",
+    "temperature": "Temperature",
+    "precipitation": "Precipitation",
+    "wind": "Wind",
+    "clouds": "Cloud cover",
+    "satellite": "Satellite"
+  },
+  "units": {
+    "title": "Units",
+    "temperature": "Temperature",
+    "windSpeed": "Wind speed",
+    "precipitation": "Precipitation"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "favorites": {
+    "title": "Favorites",
+    "empty": "You haven't saved any favorite locations yet.",
+    "emptyHint": "Search for a city and tap the heart icon to save it here."
+  },
+  "loading": {
+    "generic": "Loading forecast…"
+  },
+  "empty": {
+    "searchPrompt": "Search for a city to see the forecast."
+  },
+  "error": {
+    "generic": "We couldn't retrieve the latest forecast. Please try again.",
+    "unavailable": "Weather data is temporarily unavailable.",
+    "retry": "Retry",
+    "invalidLocation": "We couldn't find that location."
+  },
+  "footer": {
+    "tagline": "Weather information, compared in one place.",
+    "navigation": "Navigation",
+    "company": "Company",
+    "languages": "Languages",
+    "about": "About",
+    "contact": "Contact",
+    "dataSources": "Data Sources",
+    "api": "API",
+    "privacy": "Privacy Policy",
+    "cookies": "Cookie Policy",
+    "terms": "Terms of Service",
+    "cities": "Cities",
+    "rights": "All rights reserved.",
+    "notMeteorologicalAuthority": "WeatherCompare aggregates and compares data from third-party weather providers and is not a meteorological authority. For official warnings, always check your national weather service."
+  },
+  "cookieConsent": {
+    "title": "We value your privacy",
+    "body": "We use cookies to run this site and, with your permission, to understand how it's used. You can change your preferences at any time.",
+    "acceptAll": "Accept All",
+    "rejectNonEssential": "Reject Non-Essential",
+    "managePreferences": "Manage Preferences",
+    "necessary": "Necessary",
+    "necessaryDesc": "Required for the site to function. Always on.",
+    "analytics": "Analytics",
+    "analyticsDesc": "Helps us understand how the site is used, in aggregate.",
+    "advertising": "Advertising",
+    "advertisingDesc": "Used to show relevant ads once monetization is enabled.",
+    "preferences": "Preferences",
+    "preferencesDesc": "Remembers choices like language, units and theme.",
+    "save": "Save preferences"
+  },
+  "ad": {
+    "label": "Advertisement"
+  },
+  "city": {
+    "currentWeather": "Current weather",
+    "about": "About {city} weather",
+    "nearby": "Nearby cities",
+    "faq": "Frequently asked questions",
+    "breadcrumbHome": "Home"
+  }
+}

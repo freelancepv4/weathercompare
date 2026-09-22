@@ -1,0 +1,174 @@
+{
+  "nav": {
+    "weather": "Météo",
+    "compare": "Comparer",
+    "maps": "Cartes",
+    "alerts": "Alertes",
+    "favorites": "Favoris",
+    "menu": "Menu",
+    "close": "Fermer"
+  },
+  "hero": {
+    "headline": "Prévisions météo. Comparées en un seul endroit.",
+    "subheadline": "Comparez les prévisions de sources météo fiables pour les villes d'Italie et d'Europe.",
+    "searchPlaceholder": "Rechercher une ville, un village ou un lieu...",
+    "useMyLocation": "Utiliser ma position",
+    "popularLocations": "Lieux populaires",
+    "locating": "Localisation en cours…",
+    "locationDenied": "Nous n'avons pas pu accéder à votre position. Vous pouvez rechercher une ville à la place."
+  },
+  "home": {
+    "italySection": "Météo en Italie",
+    "europeSection": "Météo en Europe",
+    "whyCompareTitle": "Pourquoi comparer les prévisions météo ?",
+    "whyCompareBody": "Les différentes sources météo utilisent des modèles, des données et des fréquences de mise à jour différents : leurs prévisions peuvent donc varier, surtout à plusieurs jours d'échéance. Les comparer offre plus de contexte, sans garantir qu'une seule source soit toujours exacte.",
+    "viewForecast": "Voir les prévisions"
+  },
+  "search": {
+    "noResults": "Aucun lieu trouvé. Essayez une autre recherche.",
+    "recentSearches": "Recherches récentes",
+    "clearHistory": "Effacer l'historique",
+    "resultsFor": "Résultats pour"
+  },
+  "dashboard": {
+    "feelsLike": "Ressenti",
+    "humidity": "Humidité",
+    "wind": "Vent",
+    "pressure": "Pression",
+    "visibility": "Visibilité",
+    "uvIndex": "Indice UV",
+    "precipitation": "Précipitations",
+    "sunrise": "Lever du soleil",
+    "sunset": "Coucher du soleil",
+    "updated": "Mis à jour",
+    "addFavorite": "Ajouter aux favoris",
+    "removeFavorite": "Retirer des favoris"
+  },
+  "comparison": {
+    "title": "Comparaison des prévisions",
+    "subtitle": "Découvrez comment des sources météo indépendantes prévoient ce lieu en ce moment.",
+    "agreement": "Concordance des prévisions",
+    "temperatureRange": "Plage de température",
+    "rainRange": "Probabilité de pluie",
+    "windRange": "Vitesse du vent",
+    "agreementHigh": "Les sources sont très concordantes",
+    "agreementModerate": "Les sources montrent quelques variations",
+    "agreementLow": "Les sources montrent des variations notables",
+    "source": "Source",
+    "poweredBy": "Powered by",
+    "chartTitle": "Température par source",
+    "viewHourly": "Horaire",
+    "viewDaily": "Quotidien",
+    "unavailable": "Cette source est temporairement indisponible."
+  },
+  "hourly": {
+    "title": "Prévisions horaires"
+  },
+  "daily": {
+    "title": "Prévisions sur 10 jours",
+    "rain": "pluie",
+    "today": "Aujourd'hui"
+  },
+  "rain": {
+    "title": "Prévisions de pluie",
+    "probability": "Probabilité de précipitations",
+    "timeline": "Chronologie horaire des précipitations"
+  },
+  "wind": {
+    "title": "Vent",
+    "current": "Vent actuel",
+    "gusts": "Rafales",
+    "direction": "Direction",
+    "hourly": "Vent horaire",
+    "daily": "Vent quotidien"
+  },
+  "alerts": {
+    "title": "Alertes météo",
+    "none": "Aucune alerte météo active.",
+    "severity": "Gravité",
+    "area": "Zone concernée",
+    "starts": "Début",
+    "ends": "Fin",
+    "officialSource": "Source officielle"
+  },
+  "map": {
+    "title": "Carte météo",
+    "placeholderTitle": "Carte météo en direct à venir",
+    "placeholderBody": "Cette section est réservée à une carte interactive de température, précipitations, vent et couverture nuageuse. Connectez un fournisseur de cartes météo pour l'activer — voir /data-sources pour les détails.",
+    "temperature": "Température",
+    "precipitation": "Précipitations",
+    "wind": "Vent",
+    "clouds": "Couverture nuageuse",
+    "satellite": "Satellite"
+  },
+  "units": {
+    "title": "Unités",
+    "temperature": "Température",
+    "windSpeed": "Vitesse du vent",
+    "precipitation": "Précipitations"
+  },
+  "theme": {
+    "light": "Clair",
+    "dark": "Sombre",
+    "system": "Système"
+  },
+  "favorites": {
+    "title": "Favoris",
+    "empty": "Vous n'avez pas encore enregistré de lieux favoris.",
+    "emptyHint": "Recherchez une ville et appuyez sur l'icône cœur pour l'enregistrer ici."
+  },
+  "loading": {
+    "generic": "Chargement des prévisions…"
+  },
+  "empty": {
+    "searchPrompt": "Recherchez une ville pour voir les prévisions."
+  },
+  "error": {
+    "generic": "Nous n'avons pas pu récupérer les dernières prévisions. Veuillez réessayer.",
+    "unavailable": "Les données météo sont temporairement indisponibles.",
+    "retry": "Réessayer",
+    "invalidLocation": "Nous n'avons pas trouvé ce lieu."
+  },
+  "footer": {
+    "tagline": "Informations météo, comparées en un seul endroit.",
+    "navigation": "Navigation",
+    "company": "Entreprise",
+    "languages": "Langues",
+    "about": "À propos",
+    "contact": "Contact",
+    "dataSources": "Sources des données",
+    "api": "API",
+    "privacy": "Politique de confidentialité",
+    "cookies": "Politique de cookies",
+    "terms": "Conditions d'utilisation",
+    "cities": "Villes",
+    "rights": "Tous droits réservés.",
+    "notMeteorologicalAuthority": "WeatherCompare agrège et compare les données de fournisseurs météo tiers et n'est pas une autorité météorologique. Pour les avis officiels, consultez toujours votre service météorologique national."
+  },
+  "cookieConsent": {
+    "title": "Votre vie privée compte pour nous",
+    "body": "Nous utilisons des cookies pour faire fonctionner ce site et, avec votre accord, pour comprendre son utilisation. Vous pouvez modifier vos préférences à tout moment.",
+    "acceptAll": "Tout accepter",
+    "rejectNonEssential": "Refuser le non essentiel",
+    "managePreferences": "Gérer les préférences",
+    "necessary": "Nécessaires",
+    "necessaryDesc": "Indispensables au fonctionnement du site. Toujours actifs.",
+    "analytics": "Analytiques",
+    "analyticsDesc": "Nous aident à comprendre l'usage du site, de façon agrégée.",
+    "advertising": "Publicitaires",
+    "advertisingDesc": "Utilisés pour afficher des annonces pertinentes une fois la monétisation activée.",
+    "preferences": "Préférences",
+    "preferencesDesc": "Mémorisent des choix comme la langue, les unités et le thème.",
+    "save": "Enregistrer les préférences"
+  },
+  "ad": {
+    "label": "Publicité"
+  },
+  "city": {
+    "currentWeather": "Météo actuelle",
+    "about": "À propos de la météo à {city}",
+    "nearby": "Villes voisines",
+    "faq": "Questions fréquentes",
+    "breadcrumbHome": "Accueil"
+  }
+}
