@@ -36,6 +36,18 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  // Search-engine ownership verification codes, read from env vars so they
+  // can be added/changed in Vercel without a code change. Only included
+  // when actually set, so this is a no-op until you add one.
+  verification: {
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
+      : {}),
+  },
+};
 };
 
 export const viewport: Viewport = {
