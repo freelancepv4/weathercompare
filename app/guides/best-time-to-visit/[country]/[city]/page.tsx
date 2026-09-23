@@ -33,7 +33,10 @@ export function generateMetadata({ params }: PageProps): Metadata {
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { title, description, url, images: [defaultOgImage] },
+    // No `images` here on purpose — the sibling opengraph-image.tsx (a
+    // portrait image, sized for Pinterest's Save-from-URL requirement)
+    // auto-attaches as og:image whenever a route doesn't set one explicitly.
+    openGraph: { title, description, url },
     twitter: { title, description, images: [defaultOgImage] },
   };
 }
