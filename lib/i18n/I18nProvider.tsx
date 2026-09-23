@@ -55,7 +55,17 @@ function resolveByPath(dict: Dictionary, path: string): unknown {
 }
 
 export function I18nProvider({ initialLocale, children }: { initialLocale: Locale; children: ReactNode }) {
-  const [locale, setLocaleState] = useState<Locale>(() => readStoredLocale() ?? initialLocale);
+  // Always start from initialLocale (the same value the server rendered),
+  // never from localStorage here — a useState initializer runs during the
+  // client's first hydration pass too, not just in the browser afterwards,
+  // so reading a saved locale straight into it made the client's first
+  // render disagree with the server-rendered HTML whenever a returning
+  // visitor had a non-default locale saved. That's a real hydration
+  // mismatch (React errors #418/#423/#425 in the console on every page),
+  // which makes React throw away the server-rendered markup and re-render
+  // the whole tree from scratch on load. The saved/detected locale is
+  // applied after mount instead, in the effect below, which is safe.
+  const [locale, setLocaleState] = useState<Locale>(initialLocale);
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
@@ -67,15 +77,17 @@ export function I18nProvider({ initialLocale, children }: { initialLocale: Local
     }
   }, []);
 
-  // First-ever visit (no saved preference yet): switch to the visitor's
-  // browser language once, client-side, after the default-locale HTML has
-  // already hydrated — so there's no server/client mismatch, just one
-  // instant swap before the visitor has had time to read anything. Any
-  // explicit choice made after this (via the language switcher, which also
-  // calls setLocale) is saved the same way and always takes precedence on
-  // every later visit, since readStoredLocale() above already finds it.
+  // After hydration: apply a previously-saved locale, or — for a first-ever
+  // visit with nothing saved yet — the visitor's browser language. Runs
+  // once, post-mount, so it can never disagree with the server-rendered
+  // markup; it just swaps in before the visitor has had time to read
+  // anything.
   useEffect(() => {
-    if (readStoredLocale()) return;
+    const stored = readStoredLocale();
+    if (stored) {
+      if (stored !== locale) setLocaleState(stored);
+      return;
+    }
     const detected = detectBrowserLocale();
     if (detected && detected !== locale) setLocale(detected);
     // eslint-disable-next-line react-hooks/exhaustive-deps

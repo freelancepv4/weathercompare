@@ -35,9 +35,11 @@ export function Footer() {
 
         <FooterColumn title={t("footer.navigation")}>
           <FooterLink href="/">{t("nav.weather")}</FooterLink>
-          <FooterLink href="/#compare">{t("nav.compare")}</FooterLink>
-          <FooterLink href="/#map">{t("nav.maps")}</FooterLink>
-          <FooterLink href="/#alerts">{t("nav.alerts")}</FooterLink>
+          {/* compare/map/alerts are sections on a city page, not the homepage
+              — see the matching comment in components/Header.tsx */}
+          <FooterLink href="/weather/italy/rome#compare">{t("nav.compare")}</FooterLink>
+          <FooterLink href="/weather/italy/rome#map">{t("nav.maps")}</FooterLink>
+          <FooterLink href="/weather/italy/rome#alerts">{t("nav.alerts")}</FooterLink>
           <FooterLink href="/news">{t("nav.news")}</FooterLink>
           <FooterLink href="/favorites">{t("nav.favorites")}</FooterLink>
         </FooterColumn>
