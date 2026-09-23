@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { searchLocations } from "@/lib/providers/geocoding";
 import { countries } from "@/config/countries";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 /**
  * GET /api/geocode?q=rome&locale=en
@@ -10,6 +11,17 @@ import { countries } from "@/config/countries";
  * for how to swap in a real geocoding API.
  */
 export async function GET(request: NextRequest) {
+  // 60 requests/minute/IP is generous for autocomplete-as-you-type, and
+  // protects the upstream Open-Meteo geocoding API from being hammered by a
+  // script (it has its own rate limits we don't control).
+  const limit = rateLimit(`geocode:${clientIp(request)}`, 60, 60_000);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please slow down." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q");
   const lat = searchParams.get("lat");

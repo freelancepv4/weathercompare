@@ -10,7 +10,7 @@ import { countries, allCityPaths } from "@/config/countries";
  * see the project brief's "SITEMAP" section.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
-  const staticPages = ["", "/about", "/contact", "/data-sources", "/api-docs", "/privacy", "/cookies", "/terms", "/favorites"].map(
+  const staticPages = ["", "/about", "/contact", "/data-sources", "/api-docs", "/privacy", "/cookies", "/terms", "/favorites", "/news"].map(
     (path) => ({
       url: `${siteConfig.url}${path}`,
       lastModified: new Date(),

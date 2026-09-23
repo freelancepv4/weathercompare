@@ -1,6 +1,7 @@
 import type { CurrentConditions, DailyPoint, GeoLocation, HourlyPoint, WeatherAlert, WeatherProvider } from "@/types/weather";
 import { mapOpenMeteoCondition } from "./conditionMap";
 import { CONDITION_LABELS } from "./mockData";
+import { siteConfig } from "@/config/site";
 
 /**
  * LIVE ADAPTER — Open-Meteo (open-meteo.com)
@@ -76,7 +77,7 @@ async function fetchOpenMeteo(location: GeoLocation): Promise<OpenMeteoResponse>
   // For the paid commercial tier, uncomment and set WEATHER_API_KEY:
   // if (process.env.WEATHER_API_KEY) params.set("apikey", process.env.WEATHER_API_KEY);
 
-  const res = await fetch(`${API_BASE}?${params.toString()}`, { next: { revalidate: 600 } });
+  const res = await fetch(`${API_BASE}?${params.toString()}`, { next: { revalidate: siteConfig.weatherCacheSeconds } });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(`Open-Meteo request failed (${res.status}): ${body.slice(0, 200)}`);

@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 /**
  * POST /api/contact
@@ -16,6 +17,16 @@ import { NextRequest, NextResponse } from "next/server";
  *      on the client form as `company` — and/or rate limiting/CAPTCHA).
  */
 export async function POST(request: NextRequest) {
+  // 5 submissions/10 minutes/IP — plenty for a real visitor, tight enough to
+  // blunt scripted spam even before an email backend is connected.
+  const limit = rateLimit(`contact:${clientIp(request)}`, 5, 10 * 60_000);
+  if (!limit.allowed) {
+    return NextResponse.json(
+      { error: "Too many submissions. Please try again later." },
+      { status: 429, headers: { "Retry-After": String(Math.ceil((limit.resetAt - Date.now()) / 1000)) } }
+    );
+  }
+
   let body: { name?: string; email?: string; subject?: string; message?: string; company?: string };
   try {
     body = await request.json();

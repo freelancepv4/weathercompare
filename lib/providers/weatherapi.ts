@@ -1,6 +1,7 @@
 import type { CurrentConditions, DailyPoint, GeoLocation, HourlyPoint, WeatherAlert, WeatherProvider } from "@/types/weather";
 import { mapWeatherApiCondition } from "./conditionMap";
 import { CONDITION_LABELS } from "./mockData";
+import { siteConfig } from "@/config/site";
 
 /**
  * LIVE ADAPTER — WeatherAPI.com
@@ -80,7 +81,7 @@ function requireApiKey(): string {
 async function fetchWeatherApi(location: GeoLocation): Promise<WeatherApiResponse> {
   const key = requireApiKey();
   const url = `${API_BASE}?key=${key}&q=${location.lat},${location.lon}&days=10&aqi=no&alerts=yes`;
-  const res = await fetch(url, { next: { revalidate: 600 } });
+  const res = await fetch(url, { next: { revalidate: siteConfig.weatherCacheSeconds } });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(`WeatherAPI.com request failed (${res.status}): ${body.slice(0, 200)}`);

@@ -1,6 +1,7 @@
 import type { CurrentConditions, DailyPoint, GeoLocation, HourlyPoint, WeatherAlert, WeatherProvider } from "@/types/weather";
 import { mapOwmCondition } from "./conditionMap";
 import { CONDITION_LABELS } from "./mockData";
+import { siteConfig } from "@/config/site";
 
 /**
  * LIVE ADAPTER — OpenWeatherMap (openweathermap.org/api)
@@ -73,7 +74,7 @@ function requireApiKey(): string {
 }
 
 async function fetchJson<T>(url: string): Promise<T> {
-  const res = await fetch(url, { next: { revalidate: 600 } });
+  const res = await fetch(url, { next: { revalidate: siteConfig.weatherCacheSeconds } });
   if (!res.ok) {
     const body = await res.text().catch(() => "");
     throw new Error(`OpenWeatherMap request failed (${res.status}): ${body.slice(0, 200)}`);

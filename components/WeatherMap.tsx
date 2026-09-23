@@ -1,8 +1,11 @@
 "use client";
 
-import { Thermometer, CloudRain, Wind, Cloud, Satellite, MapPinned } from "lucide-react";
+import { Thermometer, CloudRain, Wind, Cloud, Satellite } from "lucide-react";
 import { useState } from "react";
+import dynamic from "next/dynamic";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
+import type { GeoLocation } from "@/types/weather";
+import type { MapLayerKey } from "./WeatherMapLeaflet";
 
 const LAYERS = [
   { key: "temperature", icon: Thermometer },
@@ -12,22 +15,24 @@ const LAYERS = [
   { key: "satellite", icon: Satellite },
 ] as const;
 
-/**
- * Visually polished placeholder for the future interactive weather map.
- *
- * TO CONNECT A REAL MAP PROVIDER:
- *   - Set WEATHER_MAP_API_KEY in your environment.
- *   - Replace the placeholder <div> below with your map library of choice
- *     (e.g. MapLibre GL / Leaflet) and add tile layers from a provider such
- *     as RainViewer (precipitation radar), Windy API, or OpenWeatherMap Maps.
- *   - Keep the layer switcher UI below — just wire each button's onClick to
- *     toggle the corresponding tile layer instead of local state.
- *   - Respect each map provider's attribution requirements (see
- *     /data-sources) by rendering their required attribution control.
- */
-export function WeatherMap() {
+// Leaflet touches `window` on import, so it must never run during SSR/static
+// generation — dynamic-import it client-only, same as the rest of this app's
+// static/ISR city pages, so nothing here breaks pre-rendering.
+const LeafletMap = dynamic(() => import("./WeatherMapLeaflet").then((m) => m.WeatherMapLeaflet), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full w-full items-center justify-center bg-slate-100 text-sm text-slate-400 dark:bg-white/5">
+      Loading map…
+    </div>
+  ),
+});
+
+const OWM_MAP_KEY = process.env.NEXT_PUBLIC_OWM_MAP_KEY;
+
+export function WeatherMap({ location }: { location: GeoLocation }) {
   const t = useTranslations();
-  const [layer, setLayer] = useState<(typeof LAYERS)[number]["key"]>("temperature");
+  const [layer, setLayer] = useState<MapLayerKey>("temperature");
+  const overlayAvailable = Boolean(OWM_MAP_KEY);
 
   return (
     <section id="map" aria-labelledby="map-heading" className="scroll-mt-24">
@@ -36,36 +41,46 @@ export function WeatherMap() {
           {t("map.title")}
         </h2>
         <div className="flex flex-wrap gap-1.5">
-          {LAYERS.map((l) => (
-            <button
-              key={l.key}
-              type="button"
-              onClick={() => setLayer(l.key)}
-              aria-pressed={layer === l.key}
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
-                layer === l.key
-                  ? "bg-brand-600 text-white"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
-              }`}
-            >
-              <l.icon size={13} aria-hidden="true" />
-              {t(`map.${l.key}`)}
-            </button>
-          ))}
+          {LAYERS.map((l) => {
+            const disabled = l.key !== "satellite" && !overlayAvailable;
+            return (
+              <button
+                key={l.key}
+                type="button"
+                onClick={() => setLayer(l.key)}
+                disabled={disabled}
+                aria-pressed={layer === l.key}
+                title={disabled ? "Live overlay not configured for this deployment" : undefined}
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium transition-colors ${
+                  layer === l.key
+                    ? "bg-brand-600 text-white"
+                    : disabled
+                      ? "cursor-not-allowed bg-slate-50 text-slate-300 dark:bg-white/5 dark:text-slate-600"
+                      : "bg-slate-100 text-slate-600 hover:bg-slate-200 dark:bg-white/5 dark:text-slate-300 dark:hover:bg-white/10"
+                }`}
+              >
+                <l.icon size={13} aria-hidden="true" />
+                {t(`map.${l.key}`)}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="relative flex h-80 items-center justify-center overflow-hidden rounded-xl3 border border-slate-200 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-600 dark:border-white/10 sm:h-96">
-        <div className="absolute inset-0 opacity-30" aria-hidden="true">
-          <div className="absolute -left-1/4 top-0 h-full w-1/2 animate-drift-slow bg-white/10 blur-3xl" />
-          <div className="absolute -right-1/4 bottom-0 h-full w-1/2 animate-drift-slower bg-sky-glow/20 blur-3xl" />
-        </div>
-        <div className="relative flex flex-col items-center gap-3 px-6 text-center text-white">
-          <MapPinned size={32} aria-hidden="true" />
-          <h3 className="text-lg font-semibold">{t("map.placeholderTitle")}</h3>
-          <p className="max-w-md text-sm text-white/70">{t("map.placeholderBody")}</p>
-        </div>
+      <div className="relative h-80 overflow-hidden rounded-xl3 border border-slate-200 dark:border-white/10 sm:h-96">
+        <LeafletMap location={location} layer={layer} mapKey={OWM_MAP_KEY} />
       </div>
+
+      {!overlayAvailable && (
+        <p className="mt-2 text-xs text-slate-400">
+          Showing location only. Live temperature/precipitation/wind/cloud overlays require{" "}
+          <code className="rounded bg-slate-100 px-1 py-0.5 dark:bg-white/10">NEXT_PUBLIC_OWM_MAP_KEY</code> — see{" "}
+          <a href="/data-sources" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+            Data Sources
+          </a>
+          .
+        </p>
+      )}
     </section>
   );
 }

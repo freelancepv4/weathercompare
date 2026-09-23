@@ -104,7 +104,7 @@ export default async function SearchResultWeatherPage({ searchParams }: SearchPa
           </div>
 
           <WeatherAlerts alerts={primary.alerts} />
-          <WeatherMap />
+          <WeatherMap location={location} />
         </div>
       )}
 

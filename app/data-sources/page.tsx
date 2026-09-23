@@ -29,9 +29,9 @@ export default function DataSourcesPage() {
       <p>The architecture is built around three interchangeable comparison sources. As implemented today, they are:</p>
       <ul className="list-disc space-y-2 pl-5">
         <li>
-          <strong>Provider A</strong> — OpenWeatherMap (openweathermap.org), One Call API 3.0. Adapter:{" "}
+          <strong>Provider A</strong> — OpenWeatherMap (openweathermap.org), classic free "Current Weather" and "5 Day / 3 Hour Forecast" endpoints (not the paid One Call 3.0 plan, which needs a card on file). Adapter:{" "}
           <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-white/10">lib/providers/openweather.ts</code>. Requires a free API key set as{" "}
-          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-white/10">SECOND_WEATHER_API_KEY</code>.
+          <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-white/10">SECOND_WEATHER_API_KEY</code>. Covers 5 days (in 3-hour steps) rather than 10, and doesn't provide alerts or UV index — WeatherAPI.com and Open-Meteo still do.
         </li>
         <li>
           <strong>Provider B</strong> — WeatherAPI.com (weatherapi.com), forecast.json. Adapter:{" "}
@@ -72,8 +72,10 @@ export default function DataSourcesPage() {
 
       <LegalHeading>Maps</LegalHeading>
       <p>
-        The Weather Map section is a placeholder pending integration with a licensed weather-map tile provider (for example RainViewer,
-        Windy API, or OpenWeatherMap Maps). It does not currently render live data.
+        The Weather Map section on each city page is a real, interactive map (pan/zoom, OpenStreetMap base layer) with a marker for that
+        city. Live temperature, precipitation, wind and cloud-cover tile overlays are powered by OpenWeatherMap's map tile service, and
+        activate automatically once <code className="rounded bg-slate-100 px-1.5 py-0.5 text-xs dark:bg-white/10">NEXT_PUBLIC_OWM_MAP_KEY</code> is set (the satellite layer, from Esri's public World Imagery service, needs no key
+        and is always available). Without that key, the map still shows the real location — just without the live weather overlays.
       </p>
     </LegalLayout>
   );

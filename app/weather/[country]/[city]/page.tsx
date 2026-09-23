@@ -4,6 +4,7 @@ import Link from "next/link";
 import { findCity, allCityPaths, countries } from "@/config/countries";
 import { locationFromSeed } from "@/lib/providers/geocoding";
 import { getForecastBundles } from "@/lib/services/weatherService";
+import { getCityGuide } from "@/lib/data/cityGuides";
 import { siteConfig } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { WeatherDashboard } from "@/components/WeatherDashboard";
@@ -14,6 +15,7 @@ import { RainSection } from "@/components/RainSection";
 import { WindSection } from "@/components/WindSection";
 import { WeatherAlerts } from "@/components/WeatherAlerts";
 import { WeatherMap } from "@/components/WeatherMap";
+import { CityGuide } from "@/components/CityGuide";
 import { CityFaq } from "@/components/CityFaq";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
@@ -23,7 +25,9 @@ import { ErrorState } from "@/components/ErrorState";
 // cities in config/countries.ts keep their fast, SEO-friendly pages. Cities
 // outside that seed list are handled by /weather/search instead — see
 // components/SearchBar.tsx for how the two are chosen between.
-export const revalidate = 600; // ISR: refresh city pages every 10 minutes
+// Kept in lockstep with each live provider's own fetch cache window — see
+// the comment on siteConfig.weatherCacheSeconds for the rate-limit math.
+export const revalidate = siteConfig.weatherCacheSeconds;
 
 interface PageProps {
   params: { country: string; city: string };
@@ -37,8 +41,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
-  const title = `${city.name} Weather Forecast — 10 Day Forecast & Weather Comparison`;
-  const description = `Check the latest ${city.name} weather forecast, hourly conditions, temperature, rain probability, wind and forecasts from multiple weather sources.`;
+  const title = `${city.name} Weather Forecast — 10 Day Forecast & Things to Do`;
+  const description = `Check the latest ${city.name} weather forecast, hourly conditions, temperature, rain probability and wind from multiple weather sources — plus top landmarks and the best time to visit.`;
   const url = `${siteConfig.url}/weather/${country.slug}/${city.slug}`;
 
   return {
@@ -60,6 +64,7 @@ export default async function CityPage({ params }: PageProps) {
 
   const { bundles, errors } = await getForecastBundles(location);
   const primary = bundles[0];
+  const guide = getCityGuide(country.slug, city.slug);
 
   const nearby = country.cities
     .filter((c) => c.slug !== city.slug)
@@ -118,6 +123,23 @@ export default async function CityPage({ params }: PageProps) {
           })),
         }
       : null,
+    guide
+      ? {
+          "@context": "https://schema.org",
+          "@type": "ItemList",
+          name: `Landmarks in ${city.name}`,
+          itemListElement: guide.landmarks.map((landmark, i) => ({
+            "@type": "ListItem",
+            position: i + 1,
+            item: {
+              "@type": "TouristAttraction",
+              name: landmark.name,
+              description: landmark.description,
+              containedInPlace: { "@type": "City", name: city.name },
+            },
+          })),
+        }
+      : null,
   ].filter(Boolean);
 
   return (
@@ -164,7 +186,9 @@ export default async function CityPage({ params }: PageProps) {
           </div>
 
           <WeatherAlerts alerts={primary.alerts} />
-          <WeatherMap />
+          <WeatherMap location={location} />
+
+          {guide && <CityGuide cityName={city.name} guide={guide} />}
 
           <section aria-labelledby="about-heading" className="rounded-xl3 border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">
             <h2 id="about-heading" className="mb-3 text-xl font-semibold text-slate-900 dark:text-white">

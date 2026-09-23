@@ -6,6 +6,7 @@ import { Logo } from "./Logo";
 import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
 import { siteConfig, localeNames, type Locale } from "@/config/site";
 import { popularCities } from "@/config/countries";
+import { openCookiePreferences } from "./CookieConsent";
 
 export function Footer() {
   const t = useTranslations();
@@ -37,6 +38,7 @@ export function Footer() {
           <FooterLink href="/#compare">{t("nav.compare")}</FooterLink>
           <FooterLink href="/#map">{t("nav.maps")}</FooterLink>
           <FooterLink href="/#alerts">{t("nav.alerts")}</FooterLink>
+          <FooterLink href="/news">{t("nav.news")}</FooterLink>
           <FooterLink href="/favorites">{t("nav.favorites")}</FooterLink>
         </FooterColumn>
 
@@ -44,10 +46,20 @@ export function Footer() {
           <FooterLink href="/about">{t("footer.about")}</FooterLink>
           <FooterLink href="/contact">{t("footer.contact")}</FooterLink>
           <FooterLink href="/data-sources">{t("footer.dataSources")}</FooterLink>
+          <FooterLink href="/status">{t("footer.status")}</FooterLink>
           <FooterLink href="/api-docs">{t("footer.api")}</FooterLink>
           <FooterLink href="/privacy">{t("footer.privacy")}</FooterLink>
           <FooterLink href="/cookies">{t("footer.cookies")}</FooterLink>
           <FooterLink href="/terms">{t("footer.terms")}</FooterLink>
+          <li>
+            <button
+              type="button"
+              onClick={openCookiePreferences}
+              className="text-sm text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400"
+            >
+              {t("footer.cookieSettings")}
+            </button>
+          </li>
         </FooterColumn>
 
         <FooterColumn title={t("footer.cities")}>

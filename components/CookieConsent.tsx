@@ -40,6 +40,15 @@ function saveConsent(state: ConsentState) {
   }
 }
 
+const REOPEN_EVENT = "wc-open-consent";
+
+/** Reopens the cookie banner in "manage preferences" mode — used by the
+ * footer's "Cookie settings" link so consent can be changed at any time,
+ * not just on first visit (required for genuine GDPR-style consent). */
+export function openCookiePreferences() {
+  window.dispatchEvent(new Event(REOPEN_EVENT));
+}
+
 export function CookieConsent() {
   const t = useTranslations();
   const [visible, setVisible] = useState(false);
@@ -53,6 +62,15 @@ export function CookieConsent() {
 
   useEffect(() => {
     if (!readConsent()) setVisible(true);
+
+    function handleReopen() {
+      const existing = readConsent();
+      if (existing) setDraft(existing);
+      setManageOpen(true);
+      setVisible(true);
+    }
+    window.addEventListener(REOPEN_EVENT, handleReopen);
+    return () => window.removeEventListener(REOPEN_EVENT, handleReopen);
   }, []);
 
   if (!visible) return null;
