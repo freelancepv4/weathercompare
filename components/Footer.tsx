@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { Logo } from "./Logo";
 import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
@@ -12,6 +13,11 @@ export function Footer() {
   const t = useTranslations();
   const { locale, setLocale } = useI18n();
   const cities = popularCities(6);
+  const pathname = usePathname();
+
+  // See the matching check in Header.tsx — /embed/* pages are a bare
+  // widget meant to sit inside someone else's page, not the full site chrome.
+  if (pathname?.startsWith("/embed")) return null;
 
   return (
     <footer className="border-t border-slate-200 bg-white dark:border-white/10 dark:bg-surface-dark">

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, X, Search as SearchIcon, Heart } from "lucide-react";
 import { Logo } from "./Logo";
@@ -28,8 +29,14 @@ const NAV_ITEMS = [
 
 export function Header() {
   const t = useTranslations();
+  const pathname = usePathname();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
+
+  // /embed/* pages are meant to be pasted into OTHER sites as a small
+  // widget (see app/embed/[country]/[city]/page.tsx) — the full site nav
+  // has no place inside someone else's page.
+  if (pathname?.startsWith("/embed")) return null;
 
   return (
     <header className="sticky top-0 z-50 glass-surface">

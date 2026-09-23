@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
 
 /**
@@ -51,6 +52,7 @@ export function openCookiePreferences() {
 
 export function CookieConsent() {
   const t = useTranslations();
+  const pathname = usePathname();
   const [visible, setVisible] = useState(false);
   const [manageOpen, setManageOpen] = useState(false);
   const [draft, setDraft] = useState<ConsentState>({
@@ -73,6 +75,9 @@ export function CookieConsent() {
     return () => window.removeEventListener(REOPEN_EVENT, handleReopen);
   }, []);
 
+  // See the matching check in Header.tsx — a widget embedded in someone
+  // else's page has no business popping its own cookie banner there.
+  if (pathname?.startsWith("/embed")) return null;
   if (!visible) return null;
 
   function acceptAll() {

@@ -20,6 +20,16 @@ const nextConfig = {
           { key: "Permissions-Policy", value: "geolocation=(self), camera=(), microphone=()" },
         ],
       },
+      {
+        // /embed/* pages exist specifically to be framed by OTHER sites
+        // (see app/embed/[country]/[city]/page.tsx) — the SAMEORIGIN rule
+        // above would block exactly that. Every modern browser prefers a
+        // CSP frame-ancestors directive over X-Frame-Options when both are
+        // present, so this permits framing here without loosening it
+        // anywhere else on the site.
+        source: "/embed/:path*",
+        headers: [{ key: "Content-Security-Policy", value: "frame-ancestors *" }],
+      },
     ];
   },
 };
