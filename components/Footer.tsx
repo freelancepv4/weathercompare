@@ -47,6 +47,7 @@ export function Footer() {
           <FooterLink href="/weather/italy/rome#map">{t("nav.maps")}</FooterLink>
           <FooterLink href="/weather/italy/rome#alerts">{t("nav.alerts")}</FooterLink>
           <FooterLink href="/news">{t("nav.news")}</FooterLink>
+          <FooterLink href="/guides">{t("nav.guides")}</FooterLink>
           <FooterLink href="/favorites">{t("nav.favorites")}</FooterLink>
         </FooterColumn>
 

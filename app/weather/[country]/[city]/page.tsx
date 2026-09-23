@@ -213,7 +213,19 @@ export default async function CityPage({ params }: PageProps) {
           <WeatherAlerts alerts={primary.alerts} />
           <WeatherMap location={location} current={primary.current} />
 
-          {guide && <CityGuide cityName={city.name} guide={guide} />}
+          {guide && (
+            <>
+              <CityGuide cityName={city.name} guide={guide} />
+              <p className="-mt-6 text-sm">
+                <Link
+                  href={`/guides/best-time-to-visit/${country.slug}/${city.slug}`}
+                  className="font-medium text-brand-600 hover:underline"
+                >
+                  Read the full {city.name} best-time-to-visit guide →
+                </Link>
+              </p>
+            </>
+          )}
 
           <section aria-labelledby="about-heading" className="rounded-xl3 border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">
             <h2 id="about-heading" className="mb-3 text-xl font-semibold text-slate-900 dark:text-white">

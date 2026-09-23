@@ -24,6 +24,7 @@ const NAV_ITEMS = [
   { key: "maps", href: `${FLAGSHIP_CITY_PATH}#map` },
   { key: "alerts", href: `${FLAGSHIP_CITY_PATH}#alerts` },
   { key: "news", href: "/news" },
+  { key: "guides", href: "/guides" },
   { key: "favorites", href: "/favorites" },
 ] as const;
 

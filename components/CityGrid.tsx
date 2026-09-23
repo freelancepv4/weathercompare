@@ -2,7 +2,16 @@ import Link from "next/link";
 import { MapPin, ArrowRight } from "lucide-react";
 import type { CountrySeed, CitySeed } from "@/config/countries";
 
-export function CityGrid({ title, items }: { title: string; items: Array<{ country: CountrySeed; city: CitySeed }> }) {
+interface CityGridProps {
+  title: string;
+  items: Array<{ country: CountrySeed; city: CitySeed }>;
+  /** Where each card links — defaults to the live weather page. Pass e.g.
+   * (country, city) => `/guides/best-time-to-visit/${country.slug}/${city.slug}`
+   * to point the grid at a different per-city route instead. */
+  hrefFor?: (country: CountrySeed, city: CitySeed) => string;
+}
+
+export function CityGrid({ title, items, hrefFor }: CityGridProps) {
   return (
     <section aria-labelledby={`${title.replace(/\s+/g, "-").toLowerCase()}-heading`}>
       <h2 id={`${title.replace(/\s+/g, "-").toLowerCase()}-heading`} className="mb-5 text-xl font-semibold text-slate-900 dark:text-white sm:text-2xl">
@@ -12,7 +21,7 @@ export function CityGrid({ title, items }: { title: string; items: Array<{ count
         {items.map(({ country, city }) => (
           <Link
             key={`${country.slug}-${city.slug}`}
-            href={`/weather/${country.slug}/${city.slug}`}
+            href={hrefFor ? hrefFor(country, city) : `/weather/${country.slug}/${city.slug}`}
             className="group flex items-center justify-between rounded-xl2 border border-slate-200 bg-white px-4 py-3.5 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-soft-lg dark:border-white/10 dark:bg-surface-dark-subtle"
           >
             <span className="flex items-center gap-2">
