@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { HomeSections } from "@/components/HomeSections";
-import { siteConfig } from "@/config/site";
+import { siteConfig, defaultOgImage } from "@/config/site";
 
 export const metadata: Metadata = {
   title: `${siteConfig.name} — Weather forecasts, compared in one place`,
@@ -11,6 +11,12 @@ export const metadata: Metadata = {
     title: `${siteConfig.name} — Weather forecasts, compared in one place`,
     description: siteConfig.description,
     url: siteConfig.url,
+    images: [defaultOgImage],
+  },
+  twitter: {
+    title: `${siteConfig.name} — Weather forecasts, compared in one place`,
+    description: siteConfig.description,
+    images: [defaultOgImage],
   },
 };
 

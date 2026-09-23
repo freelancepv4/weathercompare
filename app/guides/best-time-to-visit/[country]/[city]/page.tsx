@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CalendarDays, MapPin, Lightbulb, CloudSun } from "lucide-react";
 import { findCity, allCityPaths } from "@/config/countries";
 import { getCityGuide } from "@/lib/data/cityGuides";
-import { siteConfig } from "@/config/site";
+import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
@@ -33,8 +33,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { title, description, url },
-    twitter: { title, description },
+    openGraph: { title, description, url, images: [defaultOgImage] },
+    twitter: { title, description, images: [defaultOgImage] },
   };
 }
 

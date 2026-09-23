@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CalendarDays, Backpack, Users } from "lucide-react";
 import { allGuides, CATEGORY_LABELS, type GuideCategory } from "@/lib/data/guides";
-import { siteConfig } from "@/config/site";
+import { siteConfig, defaultOgImage } from "@/config/site";
 import { countries } from "@/config/countries";
 import { Breadcrumb } from "@/components/Breadcrumb";
 
@@ -17,8 +17,8 @@ export function generateMetadata(): Metadata {
     title,
     description,
     alternates: { canonical: url },
-    openGraph: { title, description, url },
-    twitter: { title, description },
+    openGraph: { title, description, url, images: [defaultOgImage] },
+    twitter: { title, description, images: [defaultOgImage] },
   };
 }
 

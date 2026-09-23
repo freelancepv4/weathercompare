@@ -4,7 +4,7 @@ import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { allGuideSlugs, getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
 import { findCity, type CountrySeed, type CitySeed } from "@/config/countries";
-import { siteConfig } from "@/config/site";
+import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
@@ -29,8 +29,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
     title: guide.title,
     description: guide.description,
     alternates: { canonical: url },
-    openGraph: { title: guide.title, description: guide.description, url },
-    twitter: { title: guide.title, description: guide.description },
+    openGraph: { title: guide.title, description: guide.description, url, images: [defaultOgImage] },
+    twitter: { title: guide.title, description: guide.description, images: [defaultOgImage] },
   };
 }
 

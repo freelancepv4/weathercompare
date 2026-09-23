@@ -45,6 +45,22 @@ export const siteConfig = {
   weatherCacheSeconds: Number(process.env.WEATHER_CACHE_SECONDS) || 14400,
 } as const;
 
+/**
+ * The site-wide branded image from app/opengraph-image.tsx (generated at
+ * build time via Next's file convention). That convention only
+ * auto-attaches to a route when the route's own generateMetadata() does
+ * NOT define its own `openGraph` object — any page that sets a custom
+ * openGraph (every guide/weather page does, for its own title/description)
+ * silently loses the image unless it's referenced explicitly. Spread this
+ * into `openGraph.images` (and `twitter.images`) on every such page.
+ */
+export const defaultOgImage = {
+  url: `${siteConfig.url}/opengraph-image`,
+  width: 1200,
+  height: 630,
+  alt: `${siteConfig.name} — Weather forecasts, compared in one place`,
+};
+
 export type Locale = (typeof siteConfig.locales)[number];
 
 export const localeNames: Record<Locale, string> = {

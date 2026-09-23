@@ -5,7 +5,7 @@ import { findCity, allCityPaths, countries } from "@/config/countries";
 import { locationFromSeed } from "@/lib/providers/geocoding";
 import { getForecastBundles } from "@/lib/services/weatherService";
 import { getCityGuide } from "@/lib/data/cityGuides";
-import { siteConfig } from "@/config/site";
+import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { WeatherDashboard } from "@/components/WeatherDashboard";
 import { ForecastComparison } from "@/components/ForecastComparison";
@@ -89,8 +89,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description,
     keywords,
     alternates: { canonical: url },
-    openGraph: { title, description, url },
-    twitter: { title, description },
+    openGraph: { title, description, url, images: [defaultOgImage] },
+    twitter: { title, description, images: [defaultOgImage] },
   };
 }
 
