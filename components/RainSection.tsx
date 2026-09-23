@@ -17,7 +17,7 @@ export function RainSection({ hourly }: { hourly: HourlyPoint[] }) {
   const maxProb = Math.max(...data.map((d) => d.probability), 0);
 
   return (
-    <section id="rain" aria-labelledby="rain-heading" className="scroll-mt-24 rounded-xl3 border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-6">
+    <section id="rain" aria-labelledby="rain-heading" className="min-w-0 scroll-mt-24 rounded-xl3 border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-6">
       <div className="mb-4 flex items-center justify-between">
         <h2 id="rain-heading" className="text-xl font-semibold text-slate-900 dark:text-white">
           {t("rain.title")}

@@ -9,6 +9,7 @@ export const revalidate = 1800; // ISR: refresh every 30 minutes, matching the f
 export const metadata: Metadata = {
   title: "Weather & Climate News",
   description: `The latest weather, climate and environment headlines, aggregated from public sources and linked back to the original publisher — curated by ${siteConfig.name}.`,
+  keywords: ["weather news", "climate news", "meteo notizie", "wetter nachrichten", "météo actualités", "noticias del tiempo"],
   alternates: { canonical: "/news" },
 };
 

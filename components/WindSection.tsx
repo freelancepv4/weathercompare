@@ -12,7 +12,7 @@ export function WindSection({ current, hourly, daily }: { current: CurrentCondit
   const { windUnit } = usePreferences();
 
   return (
-    <section id="wind" aria-labelledby="wind-heading" className="scroll-mt-24 rounded-xl3 border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-6">
+    <section id="wind" aria-labelledby="wind-heading" className="min-w-0 scroll-mt-24 rounded-xl3 border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-6">
       <h2 id="wind-heading" className="mb-5 text-xl font-semibold text-slate-900 dark:text-white">
         {t("wind.title")}
       </h2>

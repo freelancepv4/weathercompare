@@ -15,6 +15,26 @@ export const metadata: Metadata = {
     template: `%s — ${siteConfig.name}`,
   },
   description: siteConfig.description,
+  // Deprecated as a Google ranking signal, but still read by Bing and a few
+  // smaller engines, and costs nothing to include. Mixes English with the
+  // native terms used across the countries this site covers, since a
+  // visitor searching in their own language types "meteo" or "wetter," not
+  // "weather" — matching what the site's own translated UI already says
+  // once they land (see locales/*.json), not new/unrelated terms.
+  keywords: [
+    "weather forecast",
+    "weather comparison",
+    "10 day forecast",
+    "meteo",
+    "previsioni meteo",
+    "wetter",
+    "wettervorhersage",
+    "météo",
+    "prévisions météo",
+    "tiempo",
+    "pronóstico del tiempo",
+    "clima",
+  ],
   applicationName: siteConfig.name,
   manifest: "/manifest.webmanifest",
   icons: {

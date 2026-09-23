@@ -37,6 +37,20 @@ export async function generateStaticParams() {
   return allCityPaths();
 }
 
+// Native-language weather terms, by country, used only in the `keywords`
+// meta field below — not shown in the (English) title/description, since
+// this site's URLs and server-rendered metadata are always English-only
+// today (see siteConfig.defaultLocale). These are the terms a visitor
+// searching from that country would actually type — matching what they'd
+// see once the page loads and its i18n layer switches to their language
+// (see lib/i18n/I18nProvider.tsx), not unrelated terms added for ranking.
+const COUNTRY_WEATHER_TERMS: Record<string, string[]> = {
+  IT: ["meteo", "previsioni meteo", "previsioni del tempo"],
+  DE: ["wetter", "wettervorhersage"],
+  FR: ["météo", "prévisions météo"],
+  ES: ["tiempo", "pronóstico del tiempo", "clima"],
+};
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const found = findCity(params.country, params.city);
   if (!found) return {};
@@ -45,9 +59,20 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const description = `Check the latest ${city.name} weather forecast, hourly conditions, temperature, rain probability and wind from multiple weather sources — plus top landmarks and the best time to visit.`;
   const url = `${siteConfig.url}/weather/${country.slug}/${city.slug}`;
 
+  const nativeCityName = city.i18nName ? Object.values(city.i18nName).find((n) => n && n !== city.name) : undefined;
+  const nativeTerms = COUNTRY_WEATHER_TERMS[country.isoCode] ?? [];
+  const keywords = [
+    `${city.name} weather`,
+    `${city.name} forecast`,
+    ...(nativeCityName ? [`${nativeCityName} meteo`] : []),
+    ...nativeTerms.map((term) => `${term} ${nativeCityName ?? city.name}`),
+    `${country.name} weather`,
+  ];
+
   return {
     title,
     description,
+    keywords,
     alternates: { canonical: url },
     openGraph: { title, description, url },
     twitter: { title, description },
