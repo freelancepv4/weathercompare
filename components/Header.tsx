@@ -10,11 +10,18 @@ import { ThemeToggle } from "./ThemeToggle";
 import { SearchBar } from "./SearchBar";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
 
+// "compare", "maps" and "alerts" are sections that live on a city page
+// (see app/weather/[country]/[city]/page.tsx), not on the homepage — the
+// homepage has no #compare/#map/#alerts anchors of its own. Point these at
+// a real flagship city page (Rome) so they land somewhere meaningful
+// instead of silently resolving to "/" like every other nav item.
+const FLAGSHIP_CITY_PATH = "/weather/italy/rome";
+
 const NAV_ITEMS = [
   { key: "weather", href: "/" },
-  { key: "compare", href: "/#compare" },
-  { key: "maps", href: "/#map" },
-  { key: "alerts", href: "/#alerts" },
+  { key: "compare", href: `${FLAGSHIP_CITY_PATH}#compare` },
+  { key: "maps", href: `${FLAGSHIP_CITY_PATH}#map` },
+  { key: "alerts", href: `${FLAGSHIP_CITY_PATH}#alerts` },
   { key: "news", href: "/news" },
   { key: "favorites", href: "/favorites" },
 ] as const;

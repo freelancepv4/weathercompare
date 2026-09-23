@@ -4,7 +4,8 @@ import { Thermometer, CloudRain, Wind, Cloud, Satellite } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
-import type { GeoLocation } from "@/types/weather";
+import { usePreferences } from "@/lib/hooks/usePreferences";
+import type { GeoLocation, CurrentConditions } from "@/types/weather";
 import type { MapLayerKey } from "./WeatherMapLeaflet";
 
 const LAYERS = [
@@ -29,8 +30,9 @@ const LeafletMap = dynamic(() => import("./WeatherMapLeaflet").then((m) => m.Wea
 
 const OWM_MAP_KEY = process.env.NEXT_PUBLIC_OWM_MAP_KEY;
 
-export function WeatherMap({ location }: { location: GeoLocation }) {
+export function WeatherMap({ location, current }: { location: GeoLocation; current?: CurrentConditions }) {
   const t = useTranslations();
+  const { temperatureUnit } = usePreferences();
   const [layer, setLayer] = useState<MapLayerKey>("temperature");
   const overlayAvailable = Boolean(OWM_MAP_KEY);
 
@@ -68,7 +70,7 @@ export function WeatherMap({ location }: { location: GeoLocation }) {
       </div>
 
       <div className="relative h-80 overflow-hidden rounded-xl3 border border-slate-200 dark:border-white/10 sm:h-96">
-        <LeafletMap location={location} layer={layer} mapKey={OWM_MAP_KEY} />
+        <LeafletMap location={location} layer={layer} mapKey={OWM_MAP_KEY} current={current} temperatureUnit={temperatureUnit} />
       </div>
 
       {!overlayAvailable && (

@@ -211,7 +211,7 @@ export default async function CityPage({ params }: PageProps) {
           </div>
 
           <WeatherAlerts alerts={primary.alerts} />
-          <WeatherMap location={location} />
+          <WeatherMap location={location} current={primary.current} />
 
           {guide && <CityGuide cityName={city.name} guide={guide} />}
 

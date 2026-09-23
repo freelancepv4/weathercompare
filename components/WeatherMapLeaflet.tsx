@@ -1,10 +1,12 @@
 "use client";
 
 import "leaflet/dist/leaflet.css";
-import { useMemo } from "react";
+import { useMemo, useRef, useEffect } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
-import type { GeoLocation } from "@/types/weather";
+import type { GeoLocation, CurrentConditions } from "@/types/weather";
+import { formatTemperature } from "@/lib/utils/units";
+import type { TemperatureUnit } from "@/lib/hooks/usePreferences";
 
 export type MapLayerKey = "temperature" | "precipitation" | "wind" | "clouds" | "satellite";
 
@@ -41,14 +43,28 @@ export function WeatherMapLeaflet({
   location,
   layer,
   mapKey,
+  current,
+  temperatureUnit,
 }: {
   location: GeoLocation;
   layer: MapLayerKey;
   mapKey?: string;
+  current?: CurrentConditions;
+  temperatureUnit: TemperatureUnit;
 }) {
   const center = useMemo<[number, number]>(() => [location.lat, location.lon], [location.lat, location.lon]);
   const owmLayerCode = layer !== "satellite" ? OWM_TILE_LAYERS[layer] : undefined;
   const overlayEnabled = Boolean(owmLayerCode && mapKey);
+  const markerRef = useRef<L.Marker>(null);
+
+  // Open the popup on load so the actual reading is visible immediately —
+  // the coloured OWM tile overlay is a coarse, low-resolution gradient that
+  // isn't precise enough to read a real number off, so the exact current
+  // temperature for this city needs to be shown explicitly rather than left
+  // for the visitor to infer from the map's colour.
+  useEffect(() => {
+    markerRef.current?.openPopup();
+  }, [current]);
 
   return (
     <MapContainer center={center} zoom={9} scrollWheelZoom={false} className="h-full w-full">
@@ -67,8 +83,23 @@ export function WeatherMapLeaflet({
           opacity={0.6}
         />
       )}
-      <Marker position={center} icon={pinIcon}>
-        <Popup>{location.name}</Popup>
+      <Marker position={center} icon={pinIcon} ref={markerRef}>
+        <Popup autoClose={false} closeOnClick={false}>
+          <strong>{location.name}</strong>
+          {current ? (
+            <>
+              <br />
+              {formatTemperature(current.temperature, temperatureUnit)} &middot; {current.conditionLabel}
+              <br />
+              Feels like {formatTemperature(current.feelsLike, temperatureUnit)}
+            </>
+          ) : (
+            <>
+              <br />
+              Temperature unavailable
+            </>
+          )}
+        </Popup>
       </Marker>
     </MapContainer>
   );
