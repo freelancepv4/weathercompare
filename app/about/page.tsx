@@ -4,7 +4,7 @@ import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
 
 export const metadata: Metadata = {
   title: "About",
-  description: `Learn about ${siteConfig.name}, a weather comparison platform for Italy and Europe.`,
+  description: `Learn about ${siteConfig.name}, a weather comparison platform covering cities worldwide.`,
   alternates: { canonical: "/about" },
 };
 
@@ -34,9 +34,9 @@ export default function AboutPage() {
 
       <LegalHeading>Where we're headed</LegalHeading>
       <p>
-        We launched focused on Italy, and we're building for Germany, France, Spain, the UK and the rest of Europe from day one — with
-        worldwide coverage as a longer-term goal. Over time we plan to add accounts, notifications, historical weather data and
-        business-oriented dashboards, while keeping the core comparison experience free and fast.
+        We launched focused on Italy, and have since expanded to cities across Europe, North and South America, Asia, the Middle East,
+        Africa and Australia. Over time we plan to add accounts, notifications, historical weather data and business-oriented
+        dashboards, while keeping the core comparison experience free and fast.
       </p>
     </LegalLayout>
   );

@@ -11,7 +11,7 @@ export const dynamic = "force-static";
 export function generateMetadata(): Metadata {
   const title = "Travel Guides — Best Time to Visit, Comparisons & Packing Lists";
   const description =
-    "City guides beyond the forecast: when to visit, how cities compare, what to pack, and seasonal picks across Italy, Germany, France, Spain and the UK.";
+    "City guides beyond the forecast: when to visit, how cities compare, what to pack, and seasonal picks for destinations worldwide.";
   const url = `${siteConfig.url}/guides`;
   return {
     title,

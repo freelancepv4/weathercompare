@@ -4,18 +4,18 @@ import { Layers, ShieldCheck, Gauge } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
 import { CityGrid } from "./CityGrid";
 import { AdSlot } from "./AdSlot";
-import { popularCities, europeanHighlights } from "@/config/countries";
+import { popularCities, worldHighlights } from "@/config/countries";
 
 export function HomeSections() {
   const t = useTranslations();
   const italy = popularCities(8);
-  const europe = europeanHighlights(8);
+  const world = worldHighlights(12);
 
   return (
     <div className="container-page space-y-16 py-16">
       <CityGrid title={t("home.italySection")} items={italy} />
       <AdSlot variant="banner" />
-      <CityGrid title={t("home.europeSection")} items={europe} />
+      <CityGrid title={t("home.worldSection")} items={world} />
 
       <section className="rounded-xl3 border border-slate-200 bg-white p-8 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-10">
         <div className="mx-auto max-w-3xl text-center">

@@ -21,7 +21,7 @@
   },
   "home": {
     "italySection": "Meteo in Italia",
-    "europeSection": "Meteo in Europa",
+    "worldSection": "Meteo nel mondo",
     "whyCompareTitle": "Perché confrontare le previsioni meteo?",
     "whyCompareBody": "Fonti meteo diverse usano modelli, dati e aggiornamenti differenti: le previsioni possono quindi variare, soprattutto a distanza di più giorni. Confrontarle offre maggiore contesto per le tue decisioni, senza garantire che una singola fonte sia sempre corretta.",
     "viewForecast": "Vedi previsioni"

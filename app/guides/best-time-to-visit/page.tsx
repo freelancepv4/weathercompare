@@ -9,7 +9,7 @@ export const dynamic = "force-static";
 export function generateMetadata(): Metadata {
   const title = "Best Time to Visit — City Guides";
   const description =
-    "When to visit every city on WeatherCompare: mild-weather windows, crowd-avoiding shoulder seasons, and what to expect each season.";
+    "When to visit every city on WeatherCompare, worldwide: mild-weather windows, crowd-avoiding shoulder seasons, and what to expect each season.";
   const url = `${siteConfig.url}/guides/best-time-to-visit`;
   return {
     title,

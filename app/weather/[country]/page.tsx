@@ -26,6 +26,21 @@ const COUNTRY_WEATHER_TERMS: Record<string, string[]> = {
   DE: ["Wetter Deutschland", "Wettervorhersage Deutschland"],
   FR: ["météo France", "prévisions météo France"],
   ES: ["tiempo España", "pronóstico del tiempo España"],
+  AT: ["Wetter Österreich", "Wettervorhersage Österreich"],
+  CH: ["Wetter Schweiz", "météo Suisse"],
+  NL: ["weer Nederland", "weersverwachting Nederland"],
+  PT: ["tempo Portugal", "previsão do tempo Portugal"],
+  BR: ["tempo Brasil", "previsão do tempo Brasil"],
+  MX: ["tiempo México", "pronóstico del tiempo México"],
+  GR: ["καιρός Ελλάδα", "πρόγνωση καιρού"],
+  TR: ["hava durumu Türkiye"],
+  JP: ["天気 日本", "天気予報"],
+  KR: ["날씨 한국", "일기예보"],
+  TH: ["สภาพอากาศ ประเทศไทย"],
+  IN: ["मौसम भारत"],
+  AE: ["طقس الإمارات", "توقعات الطقس"],
+  EG: ["طقس مصر", "توقعات الطقس"],
+  MA: ["طقس المغرب"],
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {

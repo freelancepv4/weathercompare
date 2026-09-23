@@ -21,7 +21,7 @@
   },
   "home": {
     "italySection": "Weather across Italy",
-    "europeSection": "Weather across Europe",
+    "worldSection": "Weather around the world",
     "whyCompareTitle": "Why compare weather forecasts?",
     "whyCompareBody": "Different forecast providers use different weather models, data sources and update schedules — so their predictions can vary, especially several days out. Comparing them side by side gives you more context before you make a decision, without claiming any single source is guaranteed to be right.",
     "viewForecast": "View forecast"

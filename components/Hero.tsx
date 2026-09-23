@@ -19,7 +19,7 @@ export function Hero() {
       <div className="container-page relative py-16 sm:py-24">
         <div className="mx-auto max-w-2xl text-center">
           <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3.5 py-1.5 text-xs font-semibold uppercase tracking-wide text-white/80 backdrop-blur-sm">
-            Italy · Germany · France · Spain · UK · Europe
+            Europe · Americas · Asia · Middle East · Africa · Oceania
           </span>
           <h1 className="mt-5 text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl animate-fade-up">
             {t("hero.headline")}

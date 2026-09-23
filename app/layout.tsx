@@ -65,9 +65,16 @@ export const metadata: Metadata = {
     ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
       ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
       : {}),
-    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
-      ? { other: { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION } }
-      : {}),
+    other: {
+      ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+        ? { "msvalidate.01": process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION }
+        : {}),
+      // Pinterest domain claim (Settings → Link to Pinterest → Claim your
+      // website → "Add HTML tag"). Hardcoded rather than env-gated like the
+      // others above — it needs to be live in <head> before Pinterest's
+      // "Claim your website" button will find and verify it.
+      "p:domain_verify": "eef2b4125671cb9026780d9f6f0bbdc1",
+    },
   },
 };
 

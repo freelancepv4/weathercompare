@@ -21,7 +21,7 @@
   },
   "home": {
     "italySection": "Wetter in Italien",
-    "europeSection": "Wetter in Europa",
+    "worldSection": "Wetter weltweit",
     "whyCompareTitle": "Warum Wettervorhersagen vergleichen?",
     "whyCompareBody": "Verschiedene Anbieter nutzen unterschiedliche Wettermodelle, Datenquellen und Aktualisierungszyklen – ihre Vorhersagen können daher abweichen, besonders mehrere Tage im Voraus. Ein Vergleich liefert zusätzlichen Kontext, ohne zu behaupten, dass eine einzelne Quelle garantiert korrekt ist.",
     "viewForecast": "Vorhersage ansehen"

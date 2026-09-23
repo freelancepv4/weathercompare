@@ -21,7 +21,7 @@
   },
   "home": {
     "italySection": "Météo en Italie",
-    "europeSection": "Météo en Europe",
+    "worldSection": "Météo dans le monde",
     "whyCompareTitle": "Pourquoi comparer les prévisions météo ?",
     "whyCompareBody": "Les différentes sources météo utilisent des modèles, des données et des fréquences de mise à jour différents : leurs prévisions peuvent donc varier, surtout à plusieurs jours d'échéance. Les comparer offre plus de contexte, sans garantir qu'une seule source soit toujours exacte.",
     "viewForecast": "Voir les prévisions"

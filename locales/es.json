@@ -21,7 +21,7 @@
   },
   "home": {
     "italySection": "Tiempo en Italia",
-    "europeSection": "Tiempo en Europa",
+    "worldSection": "Tiempo en el mundo",
     "whyCompareTitle": "¿Por qué comparar previsiones meteorológicas?",
     "whyCompareBody": "Las distintas fuentes meteorológicas usan modelos, datos y frecuencias de actualización diferentes, por lo que sus previsiones pueden variar, especialmente con varios días de antelación. Compararlas aporta más contexto, sin afirmar que una sola fuente sea siempre exacta.",
     "viewForecast": "Ver previsión"
