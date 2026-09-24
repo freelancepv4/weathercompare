@@ -83,3 +83,37 @@ export async function getPortraitPhoto(query: string): Promise<CityPhoto | null>
   const { rawUrl, ...rest } = result;
   return { ...rest, url: portraitVariant(rawUrl) };
 }
+
+/**
+ * Same portrait photo, but pre-fetched and inlined as a base64 data URI —
+ * for use inside next/og's ImageResponse (the Pinterest card generator),
+ * NOT for normal <img src> usage in a page.
+ *
+ * Reason this exists: ImageResponse (Satori) fetches a remote <img src>
+ * itself during rendering, and that fetch isn't reliable in production —
+ * it can throw and take the whole route down with a 500 instead of
+ * degrading gracefully. Fetching the bytes ourselves keeps the same
+ * try/catch-and-fall-back-to-null contract as every other helper here, so
+ * a failure just means the flat gradient card renders instead, exactly
+ * like a missing API key does.
+ */
+export async function getPortraitPhotoDataUri(
+  query: string
+): Promise<{ dataUri: string; photographer: string; photographerUrl: string } | null> {
+  const photo = await getPortraitPhoto(query);
+  if (!photo) return null;
+  try {
+    const res = await fetch(photo.url);
+    if (!res.ok) return null;
+    const buf = await res.arrayBuffer();
+    const base64 = Buffer.from(buf).toString("base64");
+    const contentType = res.headers.get("content-type") || "image/jpeg";
+    return {
+      dataUri: `data:${contentType};base64,${base64}`,
+      photographer: photo.photographer,
+      photographerUrl: photo.photographerUrl,
+    };
+  } catch {
+    return null;
+  }
+}

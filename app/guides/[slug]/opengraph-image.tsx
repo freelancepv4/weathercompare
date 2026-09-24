@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
-import { getPortraitPhoto } from "@/lib/providers/photos";
+import { getPortraitPhotoDataUri } from "@/lib/providers/photos";
 import { PinImageCard } from "@/lib/pinImageCard";
 
 // Portrait (2:3) so this satisfies Pinterest's "Save from URL" image ratio
@@ -9,19 +9,25 @@ import { PinImageCard } from "@/lib/pinImageCard";
 // openGraph without an images field — see page.tsx), Next.js auto-attaches
 // this as that route's og:image; the twitter card keeps the landscape
 // default from config/site.ts instead, since Twitter/Slack prefer that shape.
+//
+// Runs on the Node.js runtime (not the default Edge) so the Pexels photo
+// fetch in getPortraitPhotoDataUri (Buffer, standard fetch semantics)
+// behaves predictably — see that function's comment for why we fetch the
+// image ourselves rather than letting ImageResponse's renderer do it.
+export const runtime = "nodejs";
 export const alt = "Guide";
 export const size = { width: 1000, height: 1500 };
 export const contentType = "image/png";
 
 export default async function Image({ params }: { params: { slug: string } }) {
   const guide = getGuide(params.slug);
-  const photo = guide ? await getPortraitPhoto(guide.photoQuery) : null;
+  const photo = guide ? await getPortraitPhotoDataUri(guide.photoQuery) : null;
   return new ImageResponse(
     (
       <PinImageCard
         eyebrow={guide ? CATEGORY_LABELS[guide.category] : "Guide"}
         title={guide?.title ?? "Travel Guide"}
-        photoUrl={photo?.url}
+        photoUrl={photo?.dataUri}
       />
     ),
     { ...size }
