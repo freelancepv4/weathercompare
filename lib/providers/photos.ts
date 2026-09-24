@@ -73,9 +73,27 @@ async function searchPexels(query: string): Promise<Omit<CityPhoto, "url"> & { r
   }
 }
 
+/**
+ * Tries `query` first, and if Pexels has nothing for it (this does happen —
+ * a specific enough query like "Florence Italy skyline duomo" can come back
+ * empty even though Pexels has plenty of Florence photos under a broader
+ * term), falls back to just the first two words, which is almost always
+ * "<City> <Country>" for how callers here build their queries. Cheap
+ * insurance against a single narrow query silently costing a guide its
+ * photo — searchPexels already caches successes, so this only costs an
+ * extra request on the rare query that needs it.
+ */
+async function searchPexelsWithFallback(query: string) {
+  const result = await searchPexels(query);
+  if (result) return result;
+  const broader = query.split(" ").slice(0, 2).join(" ");
+  if (broader && broader !== query) return searchPexels(broader);
+  return null;
+}
+
 /** A wide (16:9) photo for hero banners on weather/guide pages. */
 export async function getLandscapePhoto(query: string): Promise<CityPhoto | null> {
-  const result = await searchPexels(query);
+  const result = await searchPexelsWithFallback(query);
   if (!result) return null;
   const { rawUrl, ...rest } = result;
   return { ...rest, url: landscapeVariant(rawUrl) };
@@ -83,7 +101,7 @@ export async function getLandscapePhoto(query: string): Promise<CityPhoto | null
 
 /** A tall (2:3) photo sized for the Pinterest pin card background. */
 export async function getPortraitPhoto(query: string): Promise<CityPhoto | null> {
-  const result = await searchPexels(query);
+  const result = await searchPexelsWithFallback(query);
   if (!result) return null;
   const { rawUrl, ...rest } = result;
   return { ...rest, url: portraitVariant(rawUrl) };

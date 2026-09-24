@@ -166,7 +166,7 @@ export const guides: Guide[] = [
       { country: "italy", city: "rome" },
       { country: "italy", city: "florence" },
     ],
-    photoQuery: "Florence Italy skyline duomo",
+    photoQuery: "Florence Italy",
   },
   {
     slug: "best-european-cities-to-visit-this-autumn",
