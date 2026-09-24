@@ -10,7 +10,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { ClimateChart } from "@/components/ClimateChart";
-import { getCityClimate } from "@/lib/data/climate";
+import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { HeroPhoto } from "@/components/HeroPhoto";
 
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
@@ -97,12 +97,13 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
       />
 
       <article className="mx-auto max-w-3xl">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">
-          Best Time to Visit {city.name}
-        </h1>
+        <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-rose-600 dark:text-rose-300">
+          <CalendarDays size={14} aria-hidden="true" /> Best time to visit
+        </p>
+        <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">Best Time to Visit {city.name}</h1>
         <p className="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-300">{guide.intro}</p>
 
-        <div className="mt-6 flex items-start gap-2.5 rounded-lg bg-brand-50 px-4 py-3.5 text-sm text-brand-800 dark:bg-brand-500/10 dark:text-brand-200">
+        <div className="mt-6 flex items-start gap-2.5 rounded-xl2 border border-brand-100 bg-gradient-to-br from-brand-50 to-sky-50 px-5 py-4 shadow-soft dark:border-brand-500/20 text-sm text-brand-800 dark:bg-brand-500/10 dark:text-brand-200">
           <CalendarDays size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
           <p>
             <span className="font-semibold">Best time to visit: </span>
@@ -110,7 +111,7 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           </p>
         </div>
 
-        <div className="mt-3 flex items-start gap-2.5 rounded-lg bg-amber-50 px-4 py-3.5 text-sm text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
+        <div className="mt-3 flex items-start gap-2.5 rounded-xl2 border border-amber-100 bg-gradient-to-br from-amber-50 to-orange-50 px-5 py-4 shadow-soft dark:border-amber-500/20 text-sm text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
           <Lightbulb size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
           <p>
             <span className="font-semibold">Local tip: </span>
@@ -118,7 +119,7 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           </p>
         </div>
 
-        <div className="mt-3 flex items-start gap-2.5 rounded-lg bg-slate-50 px-4 py-3.5 text-sm text-slate-700 dark:bg-white/5 dark:text-slate-300">
+        <div className="mt-3 flex items-start gap-2.5 rounded-xl2 border border-slate-200 bg-white px-5 py-4 shadow-soft dark:border-white/10 text-sm text-slate-700 dark:bg-white/5 dark:text-slate-300">
           <Bus size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
           <p>
             <span className="font-semibold">Getting around: </span>
@@ -126,7 +127,7 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           </p>
         </div>
 
-        <div className="mt-3 flex items-start gap-2.5 rounded-lg bg-emerald-50 px-4 py-3.5 text-sm text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200">
+        <div className="mt-3 flex items-start gap-2.5 rounded-xl2 border border-emerald-100 bg-gradient-to-br from-emerald-50 to-teal-50 px-5 py-4 shadow-soft dark:border-emerald-500/20 text-sm text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200">
           <Info size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
           <p>
             <span className="font-semibold">Good to know: </span>
@@ -134,12 +135,13 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           </p>
         </div>
 
-        <h2 className="mb-3 mt-8 text-lg font-semibold text-slate-900 dark:text-white">
+        <h2 className="mb-4 mt-10 text-xl font-bold text-slate-900 dark:text-white">
           What to plan your trip around
         </h2>
-        <ul className="grid gap-4 sm:grid-cols-3">
+        <ul className="grid gap-4 sm:grid-cols-2">
           {guide.landmarks.map((landmark) => (
-            <li key={landmark.name} className="rounded-lg border border-slate-100 p-4 dark:border-white/10">
+            <li key={landmark.name} className="relative overflow-hidden rounded-xl2 border border-slate-200 bg-white p-4 pt-5 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-soft-lg dark:border-white/10 dark:bg-surface-dark-subtle">
+              <span className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-400 to-orange-400" aria-hidden="true" />
               <div className="mb-1.5 flex items-center gap-1.5 text-sm font-semibold text-slate-900 dark:text-white">
                 <MapPin size={15} className="shrink-0 text-brand-500" aria-hidden="true" />
                 {landmark.name}
@@ -176,6 +178,7 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           <CityGrid
             title={`More in ${country.name}`}
             items={nearby}
+            climate={climateHighsFor(nearby)}
             hrefFor={(c, ci) => `/guides/best-time-to-visit/${c.slug}/${ci.slug}`}
           />
         </div>

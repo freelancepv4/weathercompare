@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { getWeatherNews } from "@/lib/services/newsService";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { PageHeader } from "@/components/PageHeader";
+import { Newspaper } from "lucide-react";
 import { ExternalLink } from "lucide-react";
 
 export const revalidate = 1800; // ISR: refresh every 30 minutes, matching the feed cache
@@ -37,13 +39,18 @@ export default async function NewsPage() {
 
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "News" }]} />
 
-      <div className="mb-8 mt-4">
-        <h1 className="text-2xl font-semibold text-slate-900 dark:text-white sm:text-3xl">Weather &amp; Climate News</h1>
-        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-          Headlines aggregated from public news sources, shown here as a short excerpt with a link to the full story on the
-          publisher's own site. {siteConfig.name} does not write or edit this reporting — see the source credit on each item.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="News"
+        icon={Newspaper}
+        tone="violet"
+        title="Weather & Climate News"
+        description={
+          <p>
+            Headlines aggregated from public news sources, shown as a short excerpt with a link to the full story on the publisher&apos;s
+            own site. {siteConfig.name} does not write or edit this reporting — see the source credit on each item.
+          </p>
+        }
+      />
 
       {items.length === 0 ? (
         <p className="rounded-xl3 border border-slate-200 bg-white p-6 text-sm text-slate-500 dark:border-white/10 dark:bg-surface-dark-subtle dark:text-slate-400">

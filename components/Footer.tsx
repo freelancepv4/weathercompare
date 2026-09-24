@@ -45,7 +45,7 @@ export function Footer() {
               — see the matching comment in components/Header.tsx */}
           <FooterLink href="/weather/italy/rome#compare">{t("nav.compare")}</FooterLink>
           <FooterLink href="/weather/italy/rome#map">{t("nav.maps")}</FooterLink>
-          <FooterLink href="/weather/italy/rome#alerts">{t("nav.alerts")}</FooterLink>
+          <FooterLink href="/trip-finder">{t("nav.tripFinder")}</FooterLink>
           <FooterLink href="/news">{t("nav.news")}</FooterLink>
           <FooterLink href="/guides">{t("nav.guides")}</FooterLink>
           <FooterLink href="/favorites">{t("nav.favorites")}</FooterLink>

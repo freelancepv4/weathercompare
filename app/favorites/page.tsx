@@ -11,8 +11,11 @@ export default function FavoritesPage() {
   const { favorites, toggleFavorite, recentSearches, clearRecentSearches } = useFavorites();
 
   return (
-    <div className="container-page py-10">
-      <h1 className="text-2xl font-semibold text-slate-900 dark:text-white sm:text-3xl">{t("favorites.title")}</h1>
+    <div className="container-page py-8 sm:py-10">
+      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-rose-500 via-fuchsia-600 to-indigo-700 px-6 py-8 text-white sm:px-10">
+        <Heart size={120} className="pointer-events-none absolute -bottom-6 -right-4 text-white/10" aria-hidden="true" />
+        <h1 className="relative text-3xl font-bold sm:text-4xl">{t("favorites.title")}</h1>
+      </header>
 
       <div className="mt-6">
         {favorites.length === 0 ? (

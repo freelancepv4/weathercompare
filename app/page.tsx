@@ -2,6 +2,11 @@ import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { HomeSections } from "@/components/HomeSections";
 import { siteConfig, defaultOgImage } from "@/config/site";
+import { popularCities, worldHighlights } from "@/config/countries";
+import { climateHighsFor } from "@/lib/data/climate";
+import { allGuides } from "@/lib/data/guides";
+import { getLandscapePhoto } from "@/lib/providers/photos";
+import { GuideCard } from "@/components/GuideCard";
 
 export const metadata: Metadata = {
   title: { absolute: `Weather Forecasts Compared from Multiple Sources — ${siteConfig.name}` },
@@ -20,7 +25,11 @@ export const metadata: Metadata = {
   },
 };
 
-export default function HomePage() {
+export default async function HomePage() {
+  const climate = climateHighsFor([...popularCities(8), ...worldHighlights(12)]);
+  const latestGuides = [...allGuides()].reverse().slice(0, 3);
+  const guidePhotos = await Promise.all(latestGuides.map((g) => getLandscapePhoto(g.photoQuery)));
+
   const jsonLd = [
     {
       "@context": "https://schema.org",
@@ -49,7 +58,16 @@ export default function HomePage() {
       {/* eslint-disable-next-line react/no-danger */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Hero />
-      <HomeSections />
+      <HomeSections
+        climate={climate}
+        guides={
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {latestGuides.map((g, i) => (
+              <GuideCard key={g.slug} guide={g} photo={guidePhotos[i] ?? null} />
+            ))}
+          </div>
+        }
+      />
     </>
   );
 }

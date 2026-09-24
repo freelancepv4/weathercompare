@@ -11,6 +11,7 @@ import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { GuideCard } from "@/components/GuideCard";
+import { climateHighsFor } from "@/lib/data/climate";
 
 // Hand-written editorial content, so this can stay fully static rather than
 // ISR-revalidated like the weather pages — see lib/data/guides.ts.
@@ -148,7 +149,7 @@ export default async function GuideArticlePage({ params }: PageProps) {
 
       {relatedCities.length > 0 && (
         <div className="mx-auto mt-12 max-w-3xl">
-          <CityGrid title="Check the live forecast" items={relatedCities} />
+          <CityGrid title="Check the live forecast" items={relatedCities} climate={climateHighsFor(relatedCities)} />
         </div>
       )}
 

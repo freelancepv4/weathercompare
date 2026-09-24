@@ -21,7 +21,7 @@ import { CityGuide } from "@/components/CityGuide";
 import { CityFaq } from "@/components/CityFaq";
 import { CityGrid } from "@/components/CityGrid";
 import { MonthLinks } from "@/components/ClimateChart";
-import { getCityClimate } from "@/lib/data/climate";
+import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { AdSlot } from "@/components/AdSlot";
 import { ErrorState } from "@/components/ErrorState";
 
@@ -268,7 +268,7 @@ export default async function CityPage({ params }: PageProps) {
 
           {faqItems.length > 0 && <CityFaq title="Frequently asked questions" items={faqItems} />}
 
-          {nearby.length > 0 && <CityGrid title="Nearby cities" items={nearby} />}
+          {nearby.length > 0 && <CityGrid title="Nearby cities" items={nearby} climate={climateHighsFor(nearby)} />}
         </div>
       )}
 

@@ -3,6 +3,10 @@ import { countries } from "@/config/countries";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
+import { PageHeader } from "@/components/PageHeader";
+import { climateHighsFor } from "@/lib/data/climate";
+import { CalendarDays, Compass } from "lucide-react";
+import Link from "next/link";
 
 export const dynamic = "force-static";
 
@@ -31,21 +35,33 @@ export default function BestTimeToVisitIndexPage() {
         ]}
       />
 
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Best Time to Visit, City by City</h1>
-        <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-          Every city below has its own recommended window — usually a mild shoulder season that avoids both winter cold
-          and peak-summer crowds. Pick a city to see when locals and this site both recommend going, plus the
-          landmarks worth planning around.
-        </p>
-      </div>
+      <PageHeader
+        eyebrow="Best time to visit"
+        icon={CalendarDays}
+        tone="sunset"
+        title="Best Time to Visit, City by City"
+        description={
+          <p>
+            Every city has its own recommended window — usually a mild shoulder season that avoids both winter cold and peak-summer
+            crowds. The mini charts show each city&apos;s average daytime high through the year.
+          </p>
+        }
+      >
+        <Link
+          href="/trip-finder"
+          className="inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-rose-600 shadow-soft hover:bg-rose-50"
+        >
+          <Compass size={15} aria-hidden="true" /> Not sure where? Try the trip finder
+        </Link>
+      </PageHeader>
 
-      <div className="mt-10 space-y-10">
+      <div className="space-y-12">
         {countries.map((country) => (
           <CityGrid
             key={country.slug}
             title={country.name}
             items={country.cities.map((city) => ({ country, city }))}
+            climate={climateHighsFor(country.cities.map((city) => ({ country, city })))}
             hrefFor={(c, city) => `/guides/best-time-to-visit/${c.slug}/${city.slug}`}
           />
         ))}

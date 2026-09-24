@@ -83,3 +83,16 @@ export function describeMonth(c: CityClimate, i: number): { temp: string; rain: 
   const sky = cloud < 35 ? "mostly sunny" : cloud < 55 ? "a mix of sun and cloud" : "often cloudy";
   return { temp, rain: rainLabel, sky };
 }
+
+/**
+ * Monthly-highs map for CityGrid's mini charts, keyed "country/city".
+ * Call on the server and pass the result down as a prop.
+ */
+export function climateHighsFor(items: Array<{ country: { slug: string }; city: { slug: string } }>): Record<string, number[]> {
+  const out: Record<string, number[]> = {};
+  for (const { country, city } of items) {
+    const c = getCityClimate(country.slug, city.slug);
+    if (c) out[`${country.slug}/${city.slug}`] = c.tMax;
+  }
+  return out;
+}

@@ -10,12 +10,15 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="container-page max-w-2xl py-12 sm:py-16">
-      <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">Contact</h1>
-      <p className="mt-3 text-sm text-slate-500 dark:text-slate-400">
-        Questions, feedback, or partnership inquiries — send us a message below. We typically reply within a couple of days.
-      </p>
-      <div className="mt-8 rounded-xl3 border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">
+    <div className="container-page max-w-2xl py-8 sm:py-10">
+      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-600 px-6 py-8 text-white sm:px-10">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-sky-glow/20 blur-3xl" aria-hidden="true" />
+        <h1 className="relative text-3xl font-bold tracking-tight sm:text-4xl">Contact</h1>
+        <p className="relative mt-3 text-sm text-white/80">
+          Questions, feedback, or partnership inquiries — send us a message below. We typically reply within a couple of days.
+        </p>
+      </header>
+      <div className="mt-6 rounded-xl3 border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">
         <ContactForm />
       </div>
     </div>
