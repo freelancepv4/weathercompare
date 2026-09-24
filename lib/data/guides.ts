@@ -19,10 +19,21 @@
 
 export type GuideCategory = "packing" | "comparison" | "seasonal" | "ai-tools";
 
+export interface GuideLink {
+  label: string;
+  url: string;
+  /** Set true for affiliate/paid links — rendered with rel="sponsored"
+   * (Google's requirement) and should only appear on pages that carry an
+   * affiliate disclosure. */
+  sponsored?: boolean;
+}
+
 export interface GuideSection {
   heading: string;
   paragraphs?: string[];
   bullets?: string[];
+  /** Outbound links shown as buttons at the end of the section. */
+  links?: GuideLink[];
 }
 
 export interface Guide {
@@ -366,6 +377,15 @@ export const guides: Guide[] = [
           "KAYAK Ask AI: chat beside live flight and hotel results",
           "Layla and Wanderlog: full itineraries with maps and day plans",
         ],
+        links: [
+          { label: "Google AI Mode", url: "https://search.google/ways-to-search/ai-mode/" },
+          { label: "Mindtrip", url: "https://mindtrip.ai/" },
+          { label: "ChatGPT", url: "https://chatgpt.com/" },
+          { label: "Claude", url: "https://claude.ai/" },
+          { label: "KAYAK Ask AI", url: "https://www.kayak.co.uk/ask" },
+          { label: "Layla", url: "https://layla.ai/" },
+          { label: "Wanderlog", url: "https://wanderlog.com/" },
+        ],
       },
       {
         heading: "What makes something an \"AI agent\" rather than a chatbot?",
@@ -380,12 +400,19 @@ export const guides: Guide[] = [
           "Since late 2025, ChatGPT has supported third-party apps inside the conversation, with Booking.com and Expedia among the first. You can ask for hotels in Florence under a certain price, see live results, and refine them in the chat. ChatGPT remains strongest at the open-ended part of planning — \"where should I go in Europe in October for mild weather and good food?\" — and at turning vague ideas into a shortlist.",
           "In early 2026 OpenAI stepped back from completing purchases directly inside ChatGPT, focusing instead on search and discovery, so bookings are generally finished on the partner's own site or app. Independent hands-on testing in mid-2026 also found that ChatGPT didn't always use connected travel apps without being explicitly asked, so it's worth naming the app in your request.",
         ],
+        links: [
+          { label: "Open ChatGPT", url: "https://chatgpt.com/" },
+        ],
       },
       {
         heading: "Claude with Expedia, Booking.com and Viator",
         paragraphs: [
           "Anthropic's Claude supports \"connectors\" — plug-ins to outside services — and Expedia launched one in May 2026 covering flights and hotels in U.S. markets, with live pricing and room availability shown in the chat before you click through to Expedia to book. Booking.com and Viator (tours and activities) are also available as connectors.",
           "In Skift's July 2026 side-by-side test of travel apps in ChatGPT and connectors in Claude, Claude picked up and used the connected travel apps with less friction. As with any of these tools, availability depends on your country and plan, so check what's offered where you live.",
+        ],
+        links: [
+          { label: "Open Claude", url: "https://claude.ai/" },
+          { label: "Expedia connector for Claude", url: "https://claude.com/connectors/expedia" },
         ],
       },
       {
@@ -394,6 +421,9 @@ export const guides: Guide[] = [
           "In late August 2026 Google expanded AI Mode in Search into something much closer to a travel agent. You can ask it to \"track flight prices for me\" and get email alerts when fares change — covering 300+ airlines and travel sites, in more than 180 countries. You can also ask for quotes in airline miles or loyalty points.",
           "Hotel booking through AI Mode started in the U.S. in English: you describe what you want, AI Mode shows options with reviews, and you complete the booking via \"Continue on Google\" with partners including Booking.com, Expedia, Hotels.com, Marriott, Hilton, IHG, Trip.com and others. The reservation itself is still made with the hotel or booking site — Google handles the conversation and hand-off.",
         ],
+        links: [
+          { label: "Try Google AI Mode", url: "https://search.google/ways-to-search/ai-mode/" },
+        ],
       },
       {
         heading: "Mindtrip: booking flights inside the chat",
@@ -401,12 +431,19 @@ export const guides: Guide[] = [
           "Mindtrip is a dedicated AI trip planner, and in May 2026 it launched what it and its partners describe as travel's first all-in-one agentic flight booking: you search, compare and pay for flights inside the conversation, with Sabre supplying live airline inventory and PayPal handling payment — no redirect to another website.",
           "It's flights-only for now (hotels were described as a later phase), but it's the clearest example so far of an AI agent completing a travel purchase end-to-end rather than handing you off.",
         ],
+        links: [
+          { label: "Open Mindtrip", url: "https://mindtrip.ai/" },
+        ],
       },
       {
         heading: "KAYAK Ask AI and the booking sites' own assistants",
         paragraphs: [
           "KAYAK's Ask AI, launched in April 2026, splits the screen: you describe your trip in a chat while flight, hotel and car-rental results update live alongside it, pulling prices from hundreds of partners. It's a good middle ground if you like conversational planning but still want to see and compare real listings yourself.",
           "The big booking platforms are building AI into their own apps too. Booking.com offers AI trip support for questions and reservation changes in several European markets including Italy, Spain, France, Germany, the Netherlands and the UK, plus AI summaries that explain trade-offs between flight options. Booking Holdings' CEO noted in September 2026 that AI-referred traffic was still well under 1% of room nights — a reminder that most people are still experimenting with these tools rather than booking entire trips through them.",
+        ],
+        links: [
+          { label: "Try KAYAK Ask AI", url: "https://www.kayak.co.uk/ask" },
+          { label: "Booking.com", url: "https://www.booking.com/" },
         ],
       },
       {
@@ -416,6 +453,12 @@ export const guides: Guide[] = [
           "Wanderlog: best for organising a trip with others — shared itineraries, maps and route planning, with offline access on its paid tier",
           "Perplexity: better for researching with cited sources (visa rules, local transport, opening times) than for building a day-by-day plan",
           "Quick free generators (Wonderplan and similar): useful for a first-draft itinerary in a minute, but expect generic suggestions you'll need to refine",
+        ],
+        links: [
+          { label: "Layla", url: "https://layla.ai/" },
+          { label: "Wanderlog", url: "https://wanderlog.com/" },
+          { label: "Perplexity", url: "https://www.perplexity.ai/" },
+          { label: "Wonderplan", url: "https://wonderplan.ai/" },
         ],
       },
       {
@@ -433,6 +476,10 @@ export const guides: Guide[] = [
         paragraphs: [
           "AI isn't only reshaping how trips get booked — it's reshaping weather forecasting itself. The European Centre for Medium-Range Weather Forecasts (ECMWF) runs an operational AI forecasting system, AIFS, alongside its traditional physics-based model; its May 2026 upgrade added ECMWF's first data-driven wave and snow-cover forecasts. Google DeepMind released WeatherNext 3 in August 2026, a global AI model producing forecasts up to 15 days ahead at resolutions down to roughly 5 km.",
           "More models means more forecasts — and they don't always agree, especially several days out. That's exactly why comparing providers side by side is useful: when several independent forecasts line up, you can plan with more confidence; when they diverge, it's a signal to keep the day flexible or pack for both outcomes.",
+        ],
+        links: [
+          { label: "ECMWF AIFS forecasts", url: "https://www.ecmwf.int/en/forecasts/datasets/set-ix" },
+          { label: "Google WeatherNext", url: "https://developers.google.com/weathernext" },
         ],
       },
       {
