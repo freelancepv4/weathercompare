@@ -4,12 +4,21 @@ import { getPortraitPhotoDataUri } from "@/lib/providers/photos";
 import { PinImageCard } from "@/lib/pinImageCard";
 
 // Portrait (2:3) — same reasoning as app/guides/[slug]/opengraph-image.tsx.
-// Left on the default Edge runtime (see that file's comment for why the
-// Node.js override was dropped) with a try/catch around the render as a
-// second fallback layer, on top of getPortraitPhotoDataUri's own.
+// Left on the default Edge runtime. See that file's `render` helper
+// comment for why we await the bytes ourselves before returning — a plain
+// try/catch around `new ImageResponse(...)` doesn't catch a lazy Satori
+// render failure, since that only happens once the body is read.
 export const alt = "Best time to visit";
 export const size = { width: 1000, height: 1500 };
 export const contentType = "image/png";
+
+async function render(title: string, photoUrl?: string) {
+  const res = new ImageResponse(<PinImageCard eyebrow="Best time to visit" title={title} photoUrl={photoUrl} />, {
+    ...size,
+  });
+  const buf = await res.arrayBuffer();
+  return new Response(buf, { headers: res.headers });
+}
 
 export default async function Image({ params }: { params: { country: string; city: string } }) {
   const found = findCity(params.country, params.city);
@@ -17,11 +26,8 @@ export default async function Image({ params }: { params: { country: string; cit
   const photo = found ? await getPortraitPhotoDataUri(`${found.city.name} ${found.country.name} landmark`) : null;
 
   try {
-    return new ImageResponse(
-      <PinImageCard eyebrow="Best time to visit" title={title} photoUrl={photo?.dataUri} />,
-      { ...size }
-    );
+    return await render(title, photo?.dataUri);
   } catch {
-    return new ImageResponse(<PinImageCard eyebrow="Best time to visit" title={title} />, { ...size });
+    return render(title);
   }
 }
