@@ -26,6 +26,19 @@ export function PinImageCard({
   title: string;
   photoUrl?: string | null;
 }) {
+  // Satori (next/og's renderer) errors on a style object whose value is
+  // literally `undefined` (as opposed to the key being absent) — it was
+  // the actual cause of every "Cannot read properties of undefined
+  // (reading 'toString')" 500 on this route, unrelated to photo fetching
+  // itself. So: always give backgroundImage/background a real string,
+  // never `undefined`, for both the photo and no-photo branches.
+  const outerBackgroundImage = photoUrl
+    ? "none"
+    : "radial-gradient(circle at 20% 15%, rgba(56,120,255,0.35), transparent 45%), radial-gradient(circle at 85% 90%, rgba(56,189,248,0.28), transparent 55%)";
+  const scrimBackground = photoUrl
+    ? "linear-gradient(180deg, rgba(11,31,73,0.05) 0%, rgba(11,31,73,0.15) 38%, rgba(11,31,73,0.94) 76%, rgba(11,31,73,0.99) 100%)"
+    : "none";
+
   return (
     <div
       style={{
@@ -34,9 +47,7 @@ export function PinImageCard({
         display: "flex",
         position: "relative",
         backgroundColor: "#0b1f49",
-        backgroundImage: photoUrl
-          ? undefined
-          : "radial-gradient(circle at 20% 15%, rgba(56,120,255,0.35), transparent 45%), radial-gradient(circle at 85% 90%, rgba(56,189,248,0.28), transparent 55%)",
+        backgroundImage: outerBackgroundImage,
         fontFamily: "sans-serif",
       }}
     >
@@ -61,9 +72,7 @@ export function PinImageCard({
           width: "100%",
           height: "100%",
           display: "flex",
-          background: photoUrl
-            ? "linear-gradient(180deg, rgba(11,31,73,0.05) 0%, rgba(11,31,73,0.15) 38%, rgba(11,31,73,0.94) 76%, rgba(11,31,73,0.99) 100%)"
-            : undefined,
+          background: scrimBackground,
         }}
       />
 
