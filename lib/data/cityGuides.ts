@@ -1120,6 +1120,54 @@ export const cityGuides: Record<string, CityGuide> = {
     goodToKnow:
       "The Grand Egyptian Museum near Giza has been opening in phases and is intended to eventually replace much of the downtown Egyptian Museum's collection — check current status before planning which one to visit.",
   },
+  "pakistan:karachi": {
+    intro:
+      "Pakistan's largest city and its economic engine, a sprawling port metropolis on the Arabian Sea with a mix of colonial-era architecture, busy bazaars, and one of South Asia's liveliest food scenes. It's less about single must-see monuments and more about the energy of the city itself.",
+    bestTimeToVisit: "November to February — the cooler, drier winter months, avoiding the intense heat and humidity of summer.",
+    landmarks: [
+      { name: "Mazar-e-Quaid", description: "The marble mausoleum of Muhammad Ali Jinnah, Pakistan's founder, and the city's most recognisable landmark." },
+      { name: "Frere Hall", description: "A grand 19th-century colonial-era hall set in landscaped gardens, now used as a gallery and public library." },
+      { name: "Clifton Beach", description: "Karachi's main city beach along the Arabian Sea, popular for camel rides and evening walks." },
+      { name: "Empress Market", description: "A bustling Victorian-era covered market dating to the 1880s, still a working hub for produce, spices, and textiles." },
+    ],
+    localTip: "Karachi's food scene runs late — many of the best-known barbecue and biryani spots hit their stride after sunset, so plan dinner accordingly.",
+    gettingAround:
+      "Karachi is large and spread out, so taxis or ride-hailing apps are the practical way to get between neighbourhoods rather than walking.",
+    goodToKnow:
+      "Karachi's humidity and heat build sharply from April onward, so a winter visit makes for a far more comfortable trip than a summer one.",
+  },
+  "pakistan:lahore": {
+    intro:
+      "Pakistan's cultural capital, layered with Mughal-era monuments, gardens, and a walled old city that has been continuously inhabited for centuries. It's widely considered the country's culinary and artistic heart, with a slower, more historic feel than Karachi.",
+    bestTimeToVisit: "October to March — mild, comfortable weather that suits walking through the old city and gardens.",
+    landmarks: [
+      { name: "Badshahi Mosque", description: "A monumental 17th-century Mughal mosque and one of the largest in the world by area." },
+      { name: "Lahore Fort", description: "A UNESCO World Heritage citadel with palaces, gardens, and audience halls built up over Mughal and Sikh rule." },
+      { name: "Shalimar Gardens", description: "A terraced Mughal garden complex from the 1640s, laid out with fountains and marble pavilions." },
+      { name: "Walled City (Androon Lahore)", description: "The historic old city's dense lanes, markets, and havelis, entered through monumental gates." },
+    ],
+    localTip: "Food Street in the old city, facing the Badshahi Mosque, is the easiest way to sample Lahori food in one evening — go hungry and share dishes.",
+    gettingAround:
+      "The old city is best explored on foot, while newer parts of Lahore are more spread out and better covered by taxi, rickshaw, or ride-hailing apps.",
+    goodToKnow:
+      "Lahore hosts Basant, a kite-flying spring tradition, and Mughal-era sites can get busy around public holidays — check the calendar if you want quieter visits.",
+  },
+  "pakistan:islamabad": {
+    intro:
+      "Pakistan's purpose-built capital, laid out in the 1960s at the foot of the Margalla Hills — greener, quieter, and far more orderly than the country's older cities. It makes an easy base for hiking and day trips as well as seeing national institutions.",
+    bestTimeToVisit: "March to April or September to November — spring and autumn bring mild temperatures and clearer views of the hills.",
+    landmarks: [
+      { name: "Faisal Mosque", description: "One of the largest mosques in the world, with a striking modernist tent-like design at the base of the Margalla Hills." },
+      { name: "Margalla Hills National Park", description: "Forested hills on the city's edge with popular hiking trails and viewpoints over Islamabad." },
+      { name: "Pakistan Monument", description: "A flower-shaped national monument and museum commemorating the country's founding provinces and territories." },
+      { name: "Lok Virsa Museum", description: "A folk heritage museum showcasing crafts, textiles, and traditions from across Pakistan's regions." },
+    ],
+    localTip: "The Margalla Hills trails (Trail 3 and Trail 5 are the most popular) are best started early in the morning before the heat and crowds build up.",
+    gettingAround:
+      "Islamabad is spread out and zoned into sectors, so taxis or ride-hailing apps are the most practical way to get around, though central sectors are walkable.",
+    goodToKnow:
+      "Islamabad sits right next to Rawalpindi, its older twin city, which has a denser bazaar atmosphere worth a short trip if time allows.",
+  },
 };
 
 export function getCityGuide(countrySlug: string, citySlug: string): CityGuide | null {

@@ -66,6 +66,7 @@ const COUNTRY_WEATHER_TERMS: Record<string, string[]> = {
   AE: ["الطقس", "توقعات الطقس"],
   EG: ["الطقس", "توقعات الطقس"],
   MA: ["الطقس"],
+  PK: ["موسم", "موسم کی پیشن گوئی"],
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
@@ -107,7 +108,7 @@ export default async function CityPage({ params }: PageProps) {
   const { bundles, errors } = await getForecastBundles(location);
   const primary = bundles[0];
   const guide = getCityGuide(country.slug, city.slug);
-  const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} skyline`);
+  const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} landmark`);
 
   const nearby = country.cities
     .filter((c) => c.slug !== city.slug)

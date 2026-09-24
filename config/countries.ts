@@ -304,6 +304,17 @@ export const countries: CountrySeed[] = [
       { slug: "cairo", name: "Cairo", region: "Cairo", lat: 30.0444, lon: 31.2357, population: 9540000, timezone: "Africa/Cairo" },
     ],
   },
+  {
+    slug: "pakistan",
+    name: "Pakistan",
+    isoCode: "PK",
+    i18nName: { it: "Pakistan", de: "Pakistan", fr: "Pakistan", es: "Pakistán", en: "Pakistan" },
+    cities: [
+      { slug: "karachi", name: "Karachi", region: "Sindh", lat: 24.8607, lon: 67.0011, population: 16000000, timezone: "Asia/Karachi" },
+      { slug: "lahore", name: "Lahore", region: "Punjab", lat: 31.5497, lon: 74.3436, population: 13000000, timezone: "Asia/Karachi" },
+      { slug: "islamabad", name: "Islamabad", region: "Islamabad Capital Territory", lat: 33.6844, lon: 73.0479, population: 1200000, timezone: "Asia/Karachi" },
+    ],
+  },
 ];
 
 export function findCity(countrySlug: string, citySlug: string) {
