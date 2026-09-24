@@ -1,5 +1,5 @@
 import type { CityGuide as CityGuideData } from "@/lib/data/cityGuides";
-import { MapPin, CalendarDays, Lightbulb } from "lucide-react";
+import { MapPin, CalendarDays, Lightbulb, Bus, Info } from "lucide-react";
 
 interface CityGuideProps {
   cityName: string;
@@ -51,6 +51,22 @@ export function CityGuide({ cityName, guide }: CityGuideProps) {
         <p>
           <span className="font-semibold">Local tip: </span>
           {guide.localTip}
+        </p>
+      </div>
+
+      <div className="mt-3 flex items-start gap-2.5 rounded-lg bg-slate-50 px-4 py-3 text-sm text-slate-700 dark:bg-white/5 dark:text-slate-300">
+        <Bus size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
+        <p>
+          <span className="font-semibold">Getting around: </span>
+          {guide.gettingAround}
+        </p>
+      </div>
+
+      <div className="mt-3 flex items-start gap-2.5 rounded-lg bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:bg-emerald-950/30 dark:text-emerald-200">
+        <Info size={18} className="mt-0.5 shrink-0" aria-hidden="true" />
+        <p>
+          <span className="font-semibold">Good to know: </span>
+          {guide.goodToKnow}
         </p>
       </div>
     </section>
