@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Backpack, Users } from "lucide-react";
+import { ArrowRight, CalendarDays, Backpack, Users, Sparkles } from "lucide-react";
 import { allGuides, CATEGORY_LABELS, type GuideCategory } from "@/lib/data/guides";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { countries } from "@/config/countries";
@@ -26,11 +26,12 @@ const CATEGORY_ICONS: Record<GuideCategory, typeof CalendarDays> = {
   packing: Backpack,
   comparison: Users,
   seasonal: CalendarDays,
+  "ai-tools": Sparkles,
 };
 
 export default function GuidesIndexPage() {
   const cityCount = countries.reduce((sum, c) => sum + c.cities.length, 0);
-  const categories: GuideCategory[] = ["comparison", "packing", "seasonal"];
+  const categories: GuideCategory[] = ["comparison", "packing", "seasonal", "ai-tools"];
 
   return (
     <div className="container-page py-8 sm:py-10">

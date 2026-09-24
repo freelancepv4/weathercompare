@@ -40,7 +40,7 @@ const WEATHER_QUICK_LINKS = worldHighlights(6);
 // still surface the full list.
 const WEATHER_COUNTRIES = countries.slice(0, 10);
 
-const GUIDE_CATEGORIES: Array<keyof typeof CATEGORY_LABELS> = ["comparison", "packing", "seasonal"];
+const GUIDE_CATEGORIES: Array<keyof typeof CATEGORY_LABELS> = ["comparison", "packing", "seasonal", "ai-tools"];
 
 export function Header() {
   const t = useTranslations();
