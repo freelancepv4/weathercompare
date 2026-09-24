@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { CalendarDays } from "lucide-react";
+import { CalendarDays, ExternalLink } from "lucide-react";
 import { allGuideSlugs, getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
 import { findCity, type CountrySeed, type CitySeed } from "@/config/countries";
 import { getLandscapePhoto } from "@/lib/providers/photos";
@@ -114,6 +114,23 @@ export default async function GuideArticlePage({ params }: PageProps) {
                     </li>
                   ))}
                 </ul>
+              )}
+              {section.links && section.links.length > 0 && (
+                <div className="mt-3.5 flex flex-wrap gap-2">
+                  {section.links.map((link) => (
+                    <a
+                      key={link.url + link.label}
+                      href={link.url}
+                      target="_blank"
+                      rel={link.sponsored ? "sponsored noopener noreferrer" : "noopener noreferrer"}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-brand-200 bg-brand-50 px-3.5 py-1.5 text-xs font-semibold text-brand-700 transition-colors hover:border-brand-300 hover:bg-brand-100 dark:border-brand-500/30 dark:bg-brand-500/10 dark:text-brand-200 dark:hover:bg-brand-500/20"
+                    >
+                      {link.label}
+                      <ExternalLink size={12} aria-hidden="true" />
+                      <span className="sr-only">(opens in a new tab)</span>
+                    </a>
+                  ))}
+                </div>
               )}
             </section>
           ))}
