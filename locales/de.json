@@ -8,7 +8,12 @@
     "guides": "Reiseführer",
     "favorites": "Favoriten",
     "menu": "Menü",
-    "close": "Schließen"
+    "close": "Schließen",
+    "popularCities": "Beliebte Städte",
+    "browseByCountry": "Nach Land durchsuchen",
+    "allDestinations": "Alle Reiseziele",
+    "bestTimeToVisit": "Beste Reisezeit",
+    "browseAllGuides": "Alle Reiseführer ansehen"
   },
   "hero": {
     "headline": "Wettervorhersagen. An einem Ort verglichen.",

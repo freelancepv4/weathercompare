@@ -8,7 +8,12 @@
     "guides": "Guides",
     "favorites": "Favorites",
     "menu": "Menu",
-    "close": "Close"
+    "close": "Close",
+    "popularCities": "Popular cities",
+    "browseByCountry": "Browse by country",
+    "allDestinations": "All destinations",
+    "bestTimeToVisit": "Best time to visit",
+    "browseAllGuides": "Browse all guides"
   },
   "hero": {
     "headline": "Weather forecasts. Compared in one place.",

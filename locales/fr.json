@@ -8,7 +8,12 @@
     "guides": "Guides",
     "favorites": "Favoris",
     "menu": "Menu",
-    "close": "Fermer"
+    "close": "Fermer",
+    "popularCities": "Villes populaires",
+    "browseByCountry": "Parcourir par pays",
+    "allDestinations": "Toutes les destinations",
+    "bestTimeToVisit": "Meilleure période pour visiter",
+    "browseAllGuides": "Voir tous les guides"
   },
   "hero": {
     "headline": "Prévisions météo. Comparées en un seul endroit.",
