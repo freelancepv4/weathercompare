@@ -4,7 +4,7 @@ import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
 
 export const metadata: Metadata = {
   title: "Terms of Service",
-  description: `Terms of Service for using ${siteConfig.name}.`,
+  description: `The terms that apply when you use ${siteConfig.name}, including how forecast data is provided, acceptable use and limits of liability.`,
   alternates: { canonical: "/terms" },
 };
 

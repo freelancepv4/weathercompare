@@ -24,9 +24,9 @@ const FLAGSHIP_CITY_PATH = "/weather/italy/rome";
 // Plain-link nav items. "weather" and "guides" are handled separately below
 // as dropdowns (desktop) / expandable sections (mobile) — see NAV_DROPDOWNS.
 const NAV_ITEMS = [
+  { key: "tripFinder", href: "/trip-finder" },
   { key: "compare", href: `${FLAGSHIP_CITY_PATH}#compare` },
   { key: "maps", href: `${FLAGSHIP_CITY_PATH}#map` },
-  { key: "alerts", href: `${FLAGSHIP_CITY_PATH}#alerts` },
   { key: "news", href: "/news" },
   { key: "favorites", href: "/favorites" },
 ] as const;
@@ -150,7 +150,7 @@ export function Header() {
             <Link
               key={item.key}
               href={item.href}
-              className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
             >
               {t(`nav.${item.key}`)}
             </Link>

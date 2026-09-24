@@ -9,6 +9,8 @@ import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
+import { ClimateChart } from "@/components/ClimateChart";
+import { getCityClimate } from "@/lib/data/climate";
 import { HeroPhoto } from "@/components/HeroPhoto";
 
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
@@ -154,6 +156,15 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           <CloudSun size={18} className="shrink-0 text-brand-500" aria-hidden="true" />
           Check {city.name}&apos;s live forecast before you book
         </Link>
+
+        {(() => {
+          const climate = getCityClimate(country.slug, city.slug);
+          return climate ? (
+            <div className="mt-8">
+              <ClimateChart climate={climate} countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
+            </div>
+          ) : null;
+        })()}
 
         <div className="mt-8">
           <AdSlot variant="inline" />

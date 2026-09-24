@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CalendarDays, ExternalLink } from "lucide-react";
-import { allGuideSlugs, getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
+import { allGuideSlugs, allGuides, getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
 import { findCity, type CountrySeed, type CitySeed } from "@/config/countries";
 import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
@@ -10,6 +10,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { HeroPhoto } from "@/components/HeroPhoto";
+import { GuideCard } from "@/components/GuideCard";
 
 // Hand-written editorial content, so this can stay fully static rather than
 // ISR-revalidated like the weather pages — see lib/data/guides.ts.
@@ -43,6 +44,10 @@ export default async function GuideArticlePage({ params }: PageProps) {
   const guide = getGuide(params.slug);
   if (!guide) notFound();
   const heroPhoto = await getLandscapePhoto(guide.photoQuery);
+  const moreGuides = allGuides()
+    .filter((g) => g.slug !== guide.slug)
+    .slice(0, 3);
+  const morePhotos = await Promise.all(moreGuides.map((g) => getLandscapePhoto(g.photoQuery)));
 
   const relatedCities = guide.relatedCityPaths
     .map((p) => findCity(p.country, p.city))
@@ -145,6 +150,19 @@ export default async function GuideArticlePage({ params }: PageProps) {
         <div className="mx-auto mt-12 max-w-3xl">
           <CityGrid title="Check the live forecast" items={relatedCities} />
         </div>
+      )}
+
+      {moreGuides.length > 0 && (
+        <section className="mx-auto mt-14 max-w-5xl" aria-labelledby="more-guides-heading">
+          <h2 id="more-guides-heading" className="mb-5 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">
+            More travel guides
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {moreGuides.map((g, i) => (
+              <GuideCard key={g.slug} guide={g} photo={morePhotos[i] ?? null} />
+            ))}
+          </div>
+        </section>
       )}
 
       <p className="mt-10 text-center text-xs text-slate-400">

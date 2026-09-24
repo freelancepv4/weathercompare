@@ -20,6 +20,8 @@ import { WeatherMap } from "@/components/WeatherMap";
 import { CityGuide } from "@/components/CityGuide";
 import { CityFaq } from "@/components/CityFaq";
 import { CityGrid } from "@/components/CityGrid";
+import { MonthLinks } from "@/components/ClimateChart";
+import { getCityClimate } from "@/lib/data/climate";
 import { AdSlot } from "@/components/AdSlot";
 import { ErrorState } from "@/components/ErrorState";
 
@@ -73,8 +75,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
-  const title = `${city.name} Weather Forecast — 10 Day Forecast & Things to Do`;
-  const description = `Check the latest ${city.name} weather forecast, hourly conditions, temperature, rain probability and wind from multiple weather sources — plus top landmarks and the best time to visit.`;
+  const title = `${city.name} Weather: 10-Day Forecast Compared`;
+  const description = `${city.name} weather forecast compared across multiple sources: hourly temperature, rain and wind for the next 10 days, plus landmarks and the best time to visit.`;
   const url = `${siteConfig.url}/weather/${country.slug}/${city.slug}`;
 
   const nativeCityName = city.i18nName ? Object.values(city.i18nName).find((n) => n && n !== city.name) : undefined;
@@ -246,6 +248,10 @@ export default async function CityPage({ params }: PageProps) {
                 </Link>
               </p>
             </>
+          )}
+
+          {getCityClimate(country.slug, city.slug) && (
+            <MonthLinks countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
           )}
 
           <section aria-labelledby="about-heading" className="rounded-xl3 border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">

@@ -4,7 +4,7 @@ import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
 
 export const metadata: Metadata = {
   title: "Privacy Policy",
-  description: `How ${siteConfig.name} handles personal data, in line with GDPR.`,
+  description: `How ${siteConfig.name} collects, uses and protects personal data, your rights under GDPR, and how to contact us about your privacy.`,
   alternates: { canonical: "/privacy" },
 };
 
@@ -103,6 +103,11 @@ export default function PrivacyPage() {
         <li>
           <strong>Map tiles</strong> — OpenStreetMap, Esri, and OpenWeatherMap's map tile service are contacted directly by your browser
           when you view the interactive map, as described above.
+        </li>
+        <li>
+          <strong>Trip assistant (optional)</strong> — if you use the chat assistant, the questions you type and the page you are on
+          are sent from our server to Google&apos;s Gemini API to generate an answer. We don&apos;t attach your name, email or IP address,
+          and we don&apos;t store the conversation. Please don&apos;t type personal information into the chat.
         </li>
         <li>
           <strong>Hosting</strong> — Vercel Inc. (USA) hosts the site and processes the server logs and analytics data described above.

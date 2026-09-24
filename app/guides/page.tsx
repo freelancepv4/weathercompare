@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, CalendarDays, Backpack, Users, Sparkles } from "lucide-react";
+import { ArrowRight, CalendarDays, Compass, BookOpen, MapPin } from "lucide-react";
 import { allGuides, CATEGORY_LABELS, type GuideCategory } from "@/lib/data/guides";
+import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { countries } from "@/config/countries";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { GuideCard, CATEGORY_STYLES } from "@/components/GuideCard";
 
 export const dynamic = "force-static";
 
 export function generateMetadata(): Metadata {
-  const title = "Travel Guides — Best Time to Visit, Comparisons & Packing Lists";
+  const title = "Travel Guides: Best Time to Visit, Packing & Comparisons";
   const description =
-    "City guides beyond the forecast: when to visit, how cities compare, what to pack, and seasonal picks for destinations worldwide.";
+    "City guides beyond the forecast: when to visit, how cities compare, what to pack, seasonal picks and AI travel tools for destinations worldwide.";
   const url = `${siteConfig.url}/guides`;
   return {
     title,
@@ -22,79 +24,126 @@ export function generateMetadata(): Metadata {
   };
 }
 
-const CATEGORY_ICONS: Record<GuideCategory, typeof CalendarDays> = {
-  packing: Backpack,
-  comparison: Users,
-  seasonal: CalendarDays,
-  "ai-tools": Sparkles,
-};
+const CATEGORY_ORDER: GuideCategory[] = ["comparison", "packing", "seasonal", "ai-tools"];
 
-export default function GuidesIndexPage() {
+export default async function GuidesIndexPage() {
   const cityCount = countries.reduce((sum, c) => sum + c.cities.length, 0);
-  const categories: GuideCategory[] = ["comparison", "packing", "seasonal", "ai-tools"];
+  const guides = allGuides();
+  // Newest entry in lib/data/guides.ts leads the page.
+  const [featured, ...rest] = [...guides].reverse();
+  const photos = await Promise.all(guides.map((g) => getLandscapePhoto(g.photoQuery)));
+  const photoFor = (slug: string) => photos[guides.findIndex((g) => g.slug === slug)] ?? null;
+  const usedCategories = CATEGORY_ORDER.filter((c) => guides.some((g) => g.category === c));
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    name: "Travel Guides",
+    url: `${siteConfig.url}/guides`,
+    mainEntity: {
+      "@type": "ItemList",
+      itemListElement: guides.map((g, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        url: `${siteConfig.url}/guides/${g.slug}`,
+        name: g.title,
+      })),
+    },
+  };
 
   return (
     <div className="container-page py-8 sm:py-10">
+      {/* eslint-disable-next-line react/no-danger */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Guides" }]} />
 
-      <div className="mx-auto max-w-3xl">
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white sm:text-3xl">Travel Guides</h1>
-        <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-          Beyond the live forecast: when to go, how cities compare, what to pack, and seasonal picks — drawn from the
-          same city data as the rest of the site.
-        </p>
-      </div>
+      {/* Header band */}
+      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-600 px-6 py-10 text-white sm:px-10 sm:py-14">
+        <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-sky-glow/20 blur-3xl" aria-hidden="true" />
+        <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-brand-400/30 blur-3xl" aria-hidden="true" />
+        <div className="relative max-w-2xl">
+          <p className="flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-brand-200">
+            <BookOpen size={14} aria-hidden="true" /> Travel guides
+          </p>
+          <h1 className="mt-3 text-3xl font-bold leading-tight sm:text-4xl">Plan the trip, not just the forecast</h1>
+          <p className="mt-4 text-sm leading-relaxed text-brand-100 sm:text-base">
+            When to go, how cities compare, what to pack and the tools worth using — built on the same city data as our
+            live forecast comparisons.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-2">
+            {usedCategories.map((c) => (
+              <span key={c} className={`rounded-full px-3 py-1 text-xs font-semibold ${CATEGORY_STYLES[c].pill}`}>
+                {CATEGORY_LABELS[c]}
+              </span>
+            ))}
+          </div>
+        </div>
+      </header>
 
-      <div className="mx-auto mt-10 max-w-3xl">
+      {/* Feature tiles */}
+      <div className="mt-8 grid gap-4 md:grid-cols-2">
         <Link
           href="/guides/best-time-to-visit"
-          className="group flex items-center justify-between gap-4 rounded-xl3 border border-slate-200 bg-white p-6 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-soft-lg dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8"
+          className="group relative overflow-hidden rounded-xl3 bg-gradient-to-br from-sky-400 via-brand-500 to-indigo-600 p-6 text-white shadow-soft transition-all hover:-translate-y-1 hover:shadow-soft-lg sm:p-8"
         >
-          <div className="flex items-start gap-4">
-            <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-brand-50 text-brand-600 dark:bg-brand-500/10 dark:text-brand-300">
-              <CalendarDays size={20} aria-hidden="true" />
-            </span>
-            <div>
-              <h2 className="text-lg font-semibold text-slate-900 dark:text-white">Best time to visit</h2>
-              <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-                Every one of our {cityCount} cities, with its recommended shoulder season and what to plan around.
-              </p>
-            </div>
-          </div>
-          <ArrowRight size={18} className="hidden shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-500 sm:block" aria-hidden="true" />
+          <CalendarDays size={96} className="absolute -bottom-4 -right-4 text-white/15" aria-hidden="true" />
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+            <CalendarDays size={20} aria-hidden="true" />
+          </span>
+          <h2 className="mt-4 text-xl font-bold">Best time to visit</h2>
+          <p className="mt-1.5 max-w-sm text-sm text-white/85">
+            All {cityCount} cities, each with its recommended season and what to plan around.
+          </p>
+          <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold">
+            Browse cities <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
+          </span>
+        </Link>
+        <Link
+          href="/trip-finder"
+          className="group relative overflow-hidden rounded-xl3 bg-gradient-to-br from-emerald-400 via-teal-500 to-cyan-600 p-6 text-white shadow-soft transition-all hover:-translate-y-1 hover:shadow-soft-lg sm:p-8"
+        >
+          <Compass size={96} className="absolute -bottom-4 -right-4 text-white/15" aria-hidden="true" />
+          <span className="flex h-11 w-11 items-center justify-center rounded-full bg-white/20 backdrop-blur">
+            <Compass size={20} aria-hidden="true" />
+          </span>
+          <h2 className="mt-4 text-xl font-bold">Trip weather finder</h2>
+          <p className="mt-1.5 max-w-sm text-sm text-white/85">
+            Pick a month and the weather you want — we&apos;ll rank every city for you.
+          </p>
+          <span className="mt-5 inline-flex items-center gap-1.5 text-sm font-semibold">
+            Find my destination <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
+          </span>
         </Link>
       </div>
 
-      <div className="mx-auto mt-10 max-w-3xl space-y-10">
-        {categories.map((category) => {
-          const items = allGuides().filter((g) => g.category === category);
-          if (items.length === 0) return null;
-          const Icon = CATEGORY_ICONS[category];
-          return (
-            <section key={category}>
-              <h2 className="mb-4 flex items-center gap-2 text-lg font-semibold text-slate-900 dark:text-white">
-                <Icon size={18} className="text-brand-500" aria-hidden="true" />
-                {CATEGORY_LABELS[category]}
-              </h2>
-              <div className="space-y-3">
-                {items.map((guide) => (
-                  <Link
-                    key={guide.slug}
-                    href={`/guides/${guide.slug}`}
-                    className="group flex items-center justify-between gap-4 rounded-xl2 border border-slate-200 bg-white px-5 py-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-soft-lg dark:border-white/10 dark:bg-surface-dark-subtle"
-                  >
-                    <div>
-                      <h3 className="text-sm font-semibold text-slate-900 dark:text-white">{guide.title}</h3>
-                      <p className="mt-1 text-xs leading-relaxed text-slate-500 dark:text-slate-400">{guide.description}</p>
-                    </div>
-                    <ArrowRight size={16} className="hidden shrink-0 text-slate-300 transition-transform group-hover:translate-x-0.5 group-hover:text-brand-500 sm:block" aria-hidden="true" />
-                  </Link>
-                ))}
-              </div>
-            </section>
-          );
-        })}
-      </div>
+      {/* Lead guide */}
+      {featured && (
+        <section className="mt-12" aria-labelledby="latest-heading">
+          <h2 id="latest-heading" className="mb-4 text-xs font-semibold uppercase tracking-widest text-slate-400">
+            Latest guide
+          </h2>
+          <GuideCard guide={featured} photo={photoFor(featured.slug)} featured />
+        </section>
+      )}
+
+      {/* Everything else */}
+      {rest.length > 0 && (
+        <section className="mt-12" aria-labelledby="all-guides-heading">
+          <h2 id="all-guides-heading" className="mb-5 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">
+            More guides
+          </h2>
+          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {rest.map((guide) => (
+              <GuideCard key={guide.slug} guide={guide} photo={photoFor(guide.slug)} />
+            ))}
+          </div>
+        </section>
+      )}
+
+      <p className="mt-12 flex items-center justify-center gap-1.5 text-center text-xs text-slate-400">
+        <MapPin size={13} aria-hidden="true" />
+        Every guide links back to live, multi-source forecasts for the cities it covers.
+      </p>
     </div>
   );
 }

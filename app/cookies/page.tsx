@@ -4,7 +4,7 @@ import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
 
 export const metadata: Metadata = {
   title: "Cookie Policy",
-  description: `How ${siteConfig.name} uses cookies and similar technologies.`,
+  description: `Which cookies and similar technologies ${siteConfig.name} uses, what each is for, and how to change your consent at any time.`,
   alternates: { canonical: "/cookies" },
 };
 

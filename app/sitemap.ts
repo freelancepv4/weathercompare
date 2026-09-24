@@ -1,7 +1,8 @@
 import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { countries, allCityPaths } from "@/config/countries";
-import { allGuideSlugs } from "@/lib/data/guides";
+import { allGuides } from "@/lib/data/guides";
+import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
 
 /**
  * Dynamic sitemap: homepage, static pages, country pages, and every seed
@@ -20,10 +21,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/privacy",
     "/cookies",
     "/terms",
-    "/favorites",
     "/news",
     "/guides",
     "/guides/best-time-to-visit",
+    "/trip-finder",
   ].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
@@ -31,9 +32,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: path === "" ? 1 : 0.5,
   }));
 
-  const guidePages = allGuideSlugs().map((slug) => ({
-    url: `${siteConfig.url}/guides/${slug}`,
-    lastModified: new Date(),
+  const guidePages = allGuides().map((guide) => ({
+    url: `${siteConfig.url}/guides/${guide.slug}`,
+    lastModified: new Date(guide.updated),
     changeFrequency: "monthly" as const,
     priority: 0.6,
   }));
@@ -59,5 +60,32 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeToVisitPages];
+  // Month-by-month climate pages and "where to go in {month}" roundups —
+  // only for cities that have climate data (see scripts/fetch-climate.mjs).
+  const climateCities = citiesWithClimate();
+  const monthPages = climateCities.flatMap(({ country, city }) =>
+    MONTHS.map((m) => ({
+      url: `${siteConfig.url}/weather/${country.slug}/${city.slug}/${m.slug}`,
+      changeFrequency: "yearly" as const,
+      priority: 0.6,
+    }))
+  );
+  const whereToGoPages =
+    climateCities.length > 0
+      ? MONTHS.map((m) => ({
+          url: `${siteConfig.url}/where-to-go/${m.slug}`,
+          changeFrequency: "monthly" as const,
+          priority: 0.7,
+        }))
+      : [];
+
+  return [
+    ...staticPages,
+    ...countryPages,
+    ...cityPages,
+    ...guidePages,
+    ...bestTimeToVisitPages,
+    ...whereToGoPages,
+    ...monthPages,
+  ];
 }
