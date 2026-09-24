@@ -6,6 +6,8 @@ export const metadata: Metadata = {
   title: "API",
   description: `Overview of the ${siteConfig.name} internal weather provider API architecture.`,
   alternates: { canonical: "/api-docs" },
+  // Internal developer notes, not useful to searchers — keep out of the index.
+  robots: { index: false, follow: true },
 };
 
 export default function ApiDocsPage() {

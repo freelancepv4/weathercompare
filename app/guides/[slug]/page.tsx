@@ -30,7 +30,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
   if (!guide) return {};
   const url = `${siteConfig.url}/guides/${guide.slug}`;
   return {
-    title: guide.title,
+    title: guide.seoTitle ?? guide.title,
     description: guide.description,
     alternates: { canonical: url },
     // No `images` here on purpose — app/guides/[slug]/opengraph-image.tsx

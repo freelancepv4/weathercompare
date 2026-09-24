@@ -40,6 +40,9 @@ export interface Guide {
   slug: string;
   category: GuideCategory;
   title: string;
+  /** Optional shorter title for the browser tab / search result, when
+   * `title` plus " — WeatherCompare" would exceed ~70 characters. */
+  seoTitle?: string;
   description: string;
   updated: string; // ISO date
   intro: string;
@@ -64,6 +67,7 @@ export const guides: Guide[] = [
     slug: "what-to-pack-for-a-european-city-break",
     category: "packing",
     title: "What to Pack for a European City Break: A Season-by-Season Guide",
+    seoTitle: "European City Break Packing List: Season by Season",
     description:
       "A detailed, season-by-season packing list for European city trips — layering, footwear for cobblestones, a carry-on-only strategy, what to leave at home, and city-specific notes.",
     updated: "2026-09-24",
@@ -197,6 +201,7 @@ export const guides: Guide[] = [
     slug: "rome-vs-florence-which-italian-city-is-right-for-you",
     category: "comparison",
     title: "Rome vs Florence: Which Italian City Is Right for You?",
+    seoTitle: "Rome vs Florence: Which Italian City to Visit?",
     description:
       "Rome and Florence compared in detail — pace, size, getting around, where to stay, food, cost, and best time to visit — to help you decide between them, or how to split your time.",
     updated: "2026-09-24",
@@ -362,6 +367,7 @@ export const guides: Guide[] = [
     slug: "best-ai-travel-agents-for-trip-planning",
     category: "ai-tools",
     title: "Trending AI Travel Agents in 2026: Plan, Book and Check the Weather with AI",
+    seoTitle: "AI Travel Agents 2026: Plan, Book & Check the Weather",
     description:
       "The AI agents travellers are actually using in 2026 — ChatGPT, Claude, Google AI Mode, Mindtrip, KAYAK, Layla and more — what each one can really book, where it falls short, and how to pair them with a live forecast comparison.",
     updated: "2026-09-24",

@@ -11,7 +11,7 @@ import { GuideCard, CATEGORY_STYLES } from "@/components/GuideCard";
 export const dynamic = "force-static";
 
 export function generateMetadata(): Metadata {
-  const title = "Travel Guides: Best Time to Visit, Packing & Comparisons";
+  const title = "Travel Guides: Best Time to Visit, Packing & More";
   const description =
     "City guides beyond the forecast: when to visit, how cities compare, what to pack, seasonal picks and AI travel tools for destinations worldwide.";
   const url = `${siteConfig.url}/guides`;

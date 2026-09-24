@@ -10,7 +10,7 @@ import { TripFinder, type FinderCity } from "@/components/TripFinder";
 export const dynamic = "force-static";
 
 export function generateMetadata(): Metadata {
-  const title = "Trip Weather Finder: Where to Go for the Weather You Want";
+  const title = "Trip Weather Finder: Where to Go for Good Weather";
   const description =
     "Pick a month and the weather you want — hot and sunny, mild, or cool — and instantly see which cities match best, based on 10 years of climate data.";
   const url = `${siteConfig.url}/trip-finder`;
@@ -35,13 +35,13 @@ export default function TripFinderPage() {
 
   const jsonLd = {
     "@context": "https://schema.org",
-    "@type": "WebApplication",
+    // Plain WebPage: Google's SoftwareApplication/WebApplication rich result
+    // requires ratings or reviews, which this free tool doesn't have.
+    "@type": "WebPage",
     name: "Trip Weather Finder",
     url: `${siteConfig.url}/trip-finder`,
-    applicationCategory: "TravelApplication",
-    operatingSystem: "Any",
-    offers: { "@type": "Offer", price: "0", priceCurrency: "EUR" },
     description: "Find destinations with your preferred weather for any month of the year.",
+    isPartOf: { "@type": "WebSite", name: siteConfig.name, url: siteConfig.url },
   };
 
   return (

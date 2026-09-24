@@ -50,7 +50,9 @@ export function generateMetadata({ params }: PageProps): Metadata {
   const d = load(params);
   if (!d) return {};
   const { city, climate, i, month } = d;
-  const title = `${city.name} Weather in ${month.name}: Temperatures & Rain`;
+  // Keep the full <title> (with " — WeatherCompare" appended) within ~70 chars.
+  const longTitle = `${city.name} Weather in ${month.name}: Temperatures & Rain`;
+  const title = longTitle.length <= 53 ? longTitle : `${city.name} Weather in ${month.name}: Temps & Rain`;
   const description = `What's the weather like in ${city.name} in ${month.name}? Typical highs of ${r(climate.tMax[i]!)}°C (${toF(
     climate.tMax[i]!
   )}°F), lows of ${r(climate.tMin[i]!)}°C and about ${climate.precipMm[i]} mm of rain — plus what to pack.`;

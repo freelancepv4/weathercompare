@@ -6,7 +6,7 @@ import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
 import { Logo } from "./Logo";
 import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
 import { siteConfig, localeNames, type Locale } from "@/config/site";
-import { popularCities } from "@/config/countries";
+import { popularCities, countries } from "@/config/countries";
 import { openCookiePreferences } from "./CookieConsent";
 
 export function Footer() {
@@ -79,6 +79,24 @@ export function Footer() {
           ))}
         </FooterColumn>
       </div>
+
+      <nav aria-label="Weather by country" className="container-page border-t border-slate-100 py-6 dark:border-white/10">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Weather by country</p>
+        <ul className="flex flex-wrap gap-x-4 gap-y-2">
+          {countries.map((c) => (
+            <li key={c.slug}>
+              <Link href={`/weather/${c.slug}`} className="text-sm text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400">
+                {c.name}
+              </Link>
+            </li>
+          ))}
+          <li>
+            <Link href="/where-to-go/january" className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
+              Where to go by month
+            </Link>
+          </li>
+        </ul>
+      </nav>
 
       <div className="border-t border-slate-100 py-5 dark:border-white/10">
         <div className="container-page flex flex-col items-center justify-between gap-3 text-xs text-slate-500 dark:text-slate-400 sm:flex-row">
