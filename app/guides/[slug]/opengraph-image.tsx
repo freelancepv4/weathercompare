@@ -10,42 +10,32 @@ import { PinImageCard } from "@/lib/pinImageCard";
 // this as that route's og:image; the twitter card keeps the landscape
 // default from config/site.ts instead, since Twitter/Slack prefer that shape.
 //
-// Left on the default Edge runtime — Buffer is available there too, and
-// forcing Node.js didn't fix the crash this route was hitting.
+// Left on the default Edge runtime.
+//
+// Kept deliberately simple: earlier attempts here wrapped the render in a
+// helper that awaited `res.arrayBuffer()` and rebuilt the Response, meant
+// to catch a lazy Satori render failure — but that wrapper turned out to
+// break the route outright (confirmed by testing a slug with no photo
+// involved at all, which still 500'd only with that wrapper in place).
+// Back to the plain form that's known to work; photoUrl is a pre-fetched
+// data URI from getPortraitPhotoDataUri, which already degrades to
+// `undefined` on any fetch failure so PinImageCard always has something
+// valid to render.
 export const alt = "Guide";
 export const size = { width: 1000, height: 1500 };
 export const contentType = "image/png";
 
-// ImageResponse renders lazily — Satori/resvg does the actual PNG encode
-// when the response BODY is read, which happens after a route handler
-// returns. So a try/catch around `new ImageResponse(...)` never sees a
-// render failure — it only guards the constructor call. To actually catch
-// a bad render (e.g. an undecodable inlined photo), we force it to
-// materialize now, inside our own try/catch, by awaiting the bytes
-// ourselves before returning.
-//
-// IMPORTANT: don't spread `res.headers` into the rebuilt Response — that
-// copies headers (content-length, transfer-encoding, ...) computed for
-// the ORIGINAL streamed body, which don't validly apply to a fresh Response
-// built from raw bytes, and constructing one with them throws. Set only
-// the headers this route actually needs.
-async function render(eyebrow: string, title: string, photoUrl?: string) {
-  const res = new ImageResponse(<PinImageCard eyebrow={eyebrow} title={title} photoUrl={photoUrl} />, { ...size });
-  const buf = await res.arrayBuffer();
-  return new Response(buf, { headers: { "content-type": contentType } });
-}
-
 export default async function Image({ params }: { params: { slug: string } }) {
   const guide = getGuide(params.slug);
   const photo = guide ? await getPortraitPhotoDataUri(guide.photoQuery) : null;
-  const eyebrow = guide ? CATEGORY_LABELS[guide.category] : "Guide";
-  const title = guide?.title ?? "Travel Guide";
-
-  try {
-    return await render(eyebrow, title, photo?.dataUri);
-  } catch {
-    // Rendering with the photo failed — fall back to the flat gradient
-    // card, which has no remote image to fail on and should always render.
-    return render(eyebrow, title);
-  }
+  return new ImageResponse(
+    (
+      <PinImageCard
+        eyebrow={guide ? CATEGORY_LABELS[guide.category] : "Guide"}
+        title={guide?.title ?? "Travel Guide"}
+        photoUrl={photo?.dataUri}
+      />
+    ),
+    { ...size }
+  );
 }

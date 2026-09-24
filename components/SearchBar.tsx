@@ -11,6 +11,15 @@ import { countries } from "@/config/countries";
 interface SearchBarProps {
   size?: "lg" | "md";
   autoFocus?: boolean;
+  /**
+   * The desktop header's search slot (see Header.tsx) is only ~190px wide
+   * in practice — too narrow to fit the input AND the "Use my location"
+   * button with its text label without the two overlapping. `compact`
+   * drops the label there (icon-only button, with a title/aria-label so
+   * it's still identifiable) and tightens the input's own padding. The
+   * hero and mobile-menu search bars have plenty of room and don't use it.
+   */
+  compact?: boolean;
 }
 
 /**
@@ -18,7 +27,7 @@ interface SearchBarProps {
  * autocomplete-ready structure backed by /api/geocode. Falls back to the
  * bundled city seed list instantly while that request is in flight.
  */
-export function SearchBar({ size = "md", autoFocus = false }: SearchBarProps) {
+export function SearchBar({ size = "md", autoFocus = false, compact = false }: SearchBarProps) {
   const t = useTranslations();
   const { locale } = useI18n();
   const router = useRouter();
@@ -147,7 +156,8 @@ export function SearchBar({ size = "md", autoFocus = false }: SearchBarProps) {
     );
   }
 
-  const inputSize = size === "lg" ? "py-4 pl-13 pr-4 text-base sm:text-lg" : "py-3 pl-11 pr-3 text-sm";
+  const inputSize =
+    size === "lg" ? "py-4 pl-13 pr-4 text-base sm:text-lg" : `py-3 pl-11 text-sm ${compact ? "pr-1" : "pr-3"}`;
 
   return (
     <div ref={containerRef} className="relative w-full">
@@ -180,10 +190,14 @@ export function SearchBar({ size = "md", autoFocus = false }: SearchBarProps) {
           type="button"
           onClick={useMyLocation}
           disabled={locating}
-          className="mr-2 flex shrink-0 items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60 dark:text-brand-300 dark:hover:bg-white/5 sm:text-sm"
+          title={compact ? t("hero.useMyLocation") : undefined}
+          aria-label={compact ? t("hero.useMyLocation") : undefined}
+          className={`mr-2 flex shrink-0 items-center gap-1.5 rounded-xl text-xs font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60 dark:text-brand-300 dark:hover:bg-white/5 sm:text-sm ${
+            compact ? "p-2" : "px-3 py-2"
+          }`}
         >
           {locating ? <Loader2 size={16} className="animate-spin" aria-hidden="true" /> : <LocateFixed size={16} aria-hidden="true" />}
-          <span className="hidden sm:inline">{t("hero.useMyLocation")}</span>
+          <span className={compact ? "hidden" : "hidden sm:inline"}>{t("hero.useMyLocation")}</span>
         </button>
       </div>
 

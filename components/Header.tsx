@@ -57,7 +57,7 @@ export function Header() {
         </nav>
 
         <div className="hidden flex-1 max-w-xs xl:block">
-          <SearchBar size="md" />
+          <SearchBar size="md" compact />
         </div>
 
         <div className="flex items-center gap-1">
