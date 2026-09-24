@@ -10,11 +10,13 @@ import { PinImageCard } from "@/lib/pinImageCard";
 // this as that route's og:image; the twitter card keeps the landscape
 // default from config/site.ts instead, since Twitter/Slack prefer that shape.
 //
-// Runs on the Node.js runtime (not the default Edge) so the Pexels photo
-// fetch in getPortraitPhotoDataUri (Buffer, standard fetch semantics)
-// behaves predictably — see that function's comment for why we fetch the
-// image ourselves rather than letting ImageResponse's renderer do it.
-export const runtime = "nodejs";
+// Left on the default Edge runtime — Buffer is available there too, and
+// forcing Node.js turned out not to fix the crash this route was hitting
+// (see getPortraitPhotoDataUri's comment for the photo-fetch approach).
+// The photo render itself is wrapped in try/catch below as a second,
+// belt-and-braces layer: whatever the underlying cause, a failure here
+// must never take down the whole route — it should just fall back to the
+// flat gradient card, same as "no photo found" already does.
 export const alt = "Guide";
 export const size = { width: 1000, height: 1500 };
 export const contentType = "image/png";
@@ -22,14 +24,17 @@ export const contentType = "image/png";
 export default async function Image({ params }: { params: { slug: string } }) {
   const guide = getGuide(params.slug);
   const photo = guide ? await getPortraitPhotoDataUri(guide.photoQuery) : null;
-  return new ImageResponse(
-    (
-      <PinImageCard
-        eyebrow={guide ? CATEGORY_LABELS[guide.category] : "Guide"}
-        title={guide?.title ?? "Travel Guide"}
-        photoUrl={photo?.dataUri}
-      />
-    ),
-    { ...size }
-  );
+  const eyebrow = guide ? CATEGORY_LABELS[guide.category] : "Guide";
+  const title = guide?.title ?? "Travel Guide";
+
+  try {
+    return new ImageResponse(
+      <PinImageCard eyebrow={eyebrow} title={title} photoUrl={photo?.dataUri} />,
+      { ...size }
+    );
+  } catch {
+    // Rendering with the photo failed for some reason — fall back to the
+    // flat gradient card rather than let the route 500.
+    return new ImageResponse(<PinImageCard eyebrow={eyebrow} title={title} />, { ...size });
+  }
 }

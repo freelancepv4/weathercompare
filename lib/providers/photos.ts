@@ -31,7 +31,12 @@ function landscapeVariant(baseUrl: string) {
   return `${baseUrl}?auto=compress&cs=tinysrgb&fit=crop&w=1600&h=900`;
 }
 function portraitVariant(baseUrl: string) {
-  return `${baseUrl}?auto=compress&cs=tinysrgb&fit=crop&w=1000&h=1500`;
+  // Smaller + more compressed than the landscape variant on purpose: this
+  // one gets downloaded server-side and inlined as a base64 data URI (see
+  // getPortraitPhotoDataUri below), so a smaller payload means a smaller
+  // and faster ImageResponse render — the output PNG is still 1000x1500,
+  // this only affects the source photo's file size.
+  return `${baseUrl}?auto=compress&cs=tinysrgb&fit=crop&w=800&h=1200&q=70`;
 }
 
 async function searchPexels(query: string): Promise<Omit<CityPhoto, "url"> & { rawUrl: string } | null> {
