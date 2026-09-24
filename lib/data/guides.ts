@@ -34,6 +34,11 @@ export interface Guide {
   intro: string;
   sections: GuideSection[];
   relatedCityPaths: Array<{ country: string; city: string }>;
+  /** Search query used against the photo provider (see
+   * lib/providers/photos.ts) for this guide's hero/Pin image. Kept
+   * separate from the title so it can target a good, photographable
+   * subject even when the title itself is a question or comparison. */
+  photoQuery: string;
 }
 
 export const CATEGORY_LABELS: Record<GuideCategory, string> = {
@@ -112,6 +117,7 @@ export const guides: Guide[] = [
       { country: "spain", city: "seville" },
       { country: "germany", city: "munich" },
     ],
+    photoQuery: "traveler packing suitcase flat lay",
   },
   {
     slug: "rome-vs-florence-which-italian-city-is-right-for-you",
@@ -160,6 +166,7 @@ export const guides: Guide[] = [
       { country: "italy", city: "rome" },
       { country: "italy", city: "florence" },
     ],
+    photoQuery: "Florence Italy skyline duomo",
   },
   {
     slug: "best-european-cities-to-visit-this-autumn",
@@ -222,6 +229,7 @@ export const guides: Guide[] = [
       { country: "france", city: "nice" },
       { country: "italy", city: "rome" },
     ],
+    photoQuery: "Venice Italy canal autumn",
   },
 ];
 

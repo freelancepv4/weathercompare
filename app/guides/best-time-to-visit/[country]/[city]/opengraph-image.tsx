@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { findCity } from "@/config/countries";
+import { getPortraitPhoto } from "@/lib/providers/photos";
 import { PinImageCard } from "@/lib/pinImageCard";
 
 // Portrait (2:3) — same reasoning as app/guides/[slug]/opengraph-image.tsx.
@@ -10,5 +11,8 @@ export const contentType = "image/png";
 export default async function Image({ params }: { params: { country: string; city: string } }) {
   const found = findCity(params.country, params.city);
   const title = found ? `Best Time to Visit ${found.city.name}` : "Best Time to Visit";
-  return new ImageResponse(<PinImageCard eyebrow="Best time to visit" title={title} />, { ...size });
+  const photo = found ? await getPortraitPhoto(`${found.city.name} ${found.country.name} landmark`) : null;
+  return new ImageResponse(<PinImageCard eyebrow="Best time to visit" title={title} photoUrl={photo?.url} />, {
+    ...size,
+  });
 }

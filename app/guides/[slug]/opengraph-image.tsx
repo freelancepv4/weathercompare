@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
+import { getPortraitPhoto } from "@/lib/providers/photos";
 import { PinImageCard } from "@/lib/pinImageCard";
 
 // Portrait (2:3) so this satisfies Pinterest's "Save from URL" image ratio
@@ -14,8 +15,15 @@ export const contentType = "image/png";
 
 export default async function Image({ params }: { params: { slug: string } }) {
   const guide = getGuide(params.slug);
+  const photo = guide ? await getPortraitPhoto(guide.photoQuery) : null;
   return new ImageResponse(
-    <PinImageCard eyebrow={guide ? CATEGORY_LABELS[guide.category] : "Guide"} title={guide?.title ?? "Travel Guide"} />,
+    (
+      <PinImageCard
+        eyebrow={guide ? CATEGORY_LABELS[guide.category] : "Guide"}
+        title={guide?.title ?? "Travel Guide"}
+        photoUrl={photo?.url}
+      />
+    ),
     { ...size }
   );
 }

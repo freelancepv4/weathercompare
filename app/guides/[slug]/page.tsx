@@ -4,10 +4,12 @@ import Link from "next/link";
 import { CalendarDays } from "lucide-react";
 import { allGuideSlugs, getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
 import { findCity, type CountrySeed, type CitySeed } from "@/config/countries";
+import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
+import { HeroPhoto } from "@/components/HeroPhoto";
 
 // Hand-written editorial content, so this can stay fully static rather than
 // ISR-revalidated like the weather pages — see lib/data/guides.ts.
@@ -37,9 +39,10 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default function GuideArticlePage({ params }: PageProps) {
+export default async function GuideArticlePage({ params }: PageProps) {
   const guide = getGuide(params.slug);
   if (!guide) notFound();
+  const heroPhoto = await getLandscapePhoto(guide.photoQuery);
 
   const relatedCities = guide.relatedCityPaths
     .map((p) => findCity(p.country, p.city))
@@ -80,6 +83,8 @@ export default function GuideArticlePage({ params }: PageProps) {
       />
 
       <article className="mx-auto max-w-3xl">
+        <HeroPhoto photo={heroPhoto} priority />
+
         <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-brand-600 dark:text-brand-300">
           {CATEGORY_LABELS[guide.category]}
         </p>

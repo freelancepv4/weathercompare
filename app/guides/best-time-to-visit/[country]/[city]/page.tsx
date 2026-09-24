@@ -4,10 +4,12 @@ import Link from "next/link";
 import { CalendarDays, MapPin, Lightbulb, CloudSun } from "lucide-react";
 import { findCity, allCityPaths } from "@/config/countries";
 import { getCityGuide } from "@/lib/data/cityGuides";
+import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
+import { HeroPhoto } from "@/components/HeroPhoto";
 
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
 // data — so this stays fully static rather than ISR-revalidated like the
@@ -41,12 +43,13 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default function BestTimeToVisitCityPage({ params }: PageProps) {
+export default async function BestTimeToVisitCityPage({ params }: PageProps) {
   const found = findCity(params.country, params.city);
   if (!found) notFound();
   const { country, city } = found;
   const guide = getCityGuide(country.slug, city.slug);
   if (!guide) notFound();
+  const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} landmark`);
 
   const weatherUrl = `/weather/${country.slug}/${city.slug}`;
   const nearby = country.cities
@@ -79,6 +82,8 @@ export default function BestTimeToVisitCityPage({ params }: PageProps) {
     <div className="container-page py-8 sm:py-10">
       {/* eslint-disable-next-line react/no-danger */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <HeroPhoto photo={heroPhoto} priority />
 
       <Breadcrumb
         items={[

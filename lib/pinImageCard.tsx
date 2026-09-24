@@ -9,64 +9,117 @@ import { siteConfig } from "@/config/site";
  * accepts images between 2:3 and 1:1 (portrait or square), which a 1.91:1
  * landscape card fails outright — it isn't just a preference, Pinterest
  * reports "No suitable images found" for anything wider than that.
+ *
+ * `photoUrl` is optional: when a real Pexels photo is available (see
+ * lib/providers/photos.ts) it's used as a full-bleed background with a
+ * gradient scrim for legible text, which is what actually performs on
+ * Pinterest — a real, recognisable place beats a flat brand-colour card.
+ * Without one (no API key, fetch failed), it falls back to the original
+ * gradient-only card so nothing ever breaks or ships blank.
  */
-export function PinImageCard({ eyebrow, title }: { eyebrow: string; title: string }) {
+export function PinImageCard({
+  eyebrow,
+  title,
+  photoUrl,
+}: {
+  eyebrow: string;
+  title: string;
+  photoUrl?: string | null;
+}) {
   return (
     <div
       style={{
         width: "100%",
         height: "100%",
         display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
+        position: "relative",
         backgroundColor: "#0b1f49",
-        backgroundImage:
-          "radial-gradient(circle at 20% 15%, rgba(56,120,255,0.35), transparent 45%), radial-gradient(circle at 85% 90%, rgba(56,189,248,0.28), transparent 55%)",
-        padding: 72,
+        backgroundImage: photoUrl
+          ? undefined
+          : "radial-gradient(circle at 20% 15%, rgba(56,120,255,0.35), transparent 45%), radial-gradient(circle at 85% 90%, rgba(56,189,248,0.28), transparent 55%)",
         fontFamily: "sans-serif",
       }}
     >
+      {photoUrl && (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img
+          src={photoUrl}
+          width={1000}
+          height={1500}
+          alt=""
+          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", objectFit: "cover" }}
+        />
+      )}
+
+      {/* Gradient scrim — near-transparent at the top so the photo reads
+          clearly, opaque toward the bottom where the title/brand sit. */}
       <div
         style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "100%",
+          height: "100%",
           display: "flex",
-          fontSize: 30,
-          fontWeight: 700,
-          color: "#7dd3fc",
-          textTransform: "uppercase",
-          letterSpacing: 3,
+          background: photoUrl
+            ? "linear-gradient(180deg, rgba(11,31,73,0.05) 0%, rgba(11,31,73,0.15) 38%, rgba(11,31,73,0.94) 76%, rgba(11,31,73,0.99) 100%)"
+            : undefined,
         }}
-      >
-        {eyebrow}
-      </div>
+      />
 
       <div
         style={{
+          position: "relative",
           display: "flex",
-          fontSize: 58,
-          fontWeight: 800,
-          color: "white",
-          lineHeight: 1.2,
+          flexDirection: "column",
+          justifyContent: "space-between",
+          width: "100%",
+          height: "100%",
+          padding: 72,
         }}
       >
-        {title}
-      </div>
-
-      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
         <div
           style={{
             display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 56,
-            height: 56,
-            borderRadius: 16,
-            background: "linear-gradient(135deg, #38bdf8, #3878ff)",
             fontSize: 30,
+            fontWeight: 700,
+            color: "#7dd3fc",
+            textTransform: "uppercase",
+            letterSpacing: 3,
           }}
         >
-          ☁️
+          {eyebrow}
         </div>
-        <div style={{ display: "flex", fontSize: 34, fontWeight: 700, color: "white" }}>{siteConfig.name}</div>
+
+        <div
+          style={{
+            display: "flex",
+            fontSize: 58,
+            fontWeight: 800,
+            color: "white",
+            lineHeight: 1.2,
+          }}
+        >
+          {title}
+        </div>
+
+        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: 56,
+              height: 56,
+              borderRadius: 16,
+              background: "linear-gradient(135deg, #38bdf8, #3878ff)",
+              fontSize: 30,
+            }}
+          >
+            ☁️
+          </div>
+          <div style={{ display: "flex", fontSize: 34, fontWeight: 700, color: "white" }}>{siteConfig.name}</div>
+        </div>
       </div>
     </div>
   );

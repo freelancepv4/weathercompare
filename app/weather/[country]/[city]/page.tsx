@@ -5,8 +5,10 @@ import { findCity, allCityPaths, countries } from "@/config/countries";
 import { locationFromSeed } from "@/lib/providers/geocoding";
 import { getForecastBundles } from "@/lib/services/weatherService";
 import { getCityGuide } from "@/lib/data/cityGuides";
+import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { HeroPhoto } from "@/components/HeroPhoto";
 import { WeatherDashboard } from "@/components/WeatherDashboard";
 import { ForecastComparison } from "@/components/ForecastComparison";
 import { HourlyForecast } from "@/components/HourlyForecast";
@@ -105,6 +107,7 @@ export default async function CityPage({ params }: PageProps) {
   const { bundles, errors } = await getForecastBundles(location);
   const primary = bundles[0];
   const guide = getCityGuide(country.slug, city.slug);
+  const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} skyline`);
 
   const nearby = country.cities
     .filter((c) => c.slug !== city.slug)
@@ -186,6 +189,8 @@ export default async function CityPage({ params }: PageProps) {
     <div className="container-page py-8 sm:py-10">
       {/* eslint-disable-next-line react/no-danger */}
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+
+      <HeroPhoto photo={heroPhoto} priority />
 
       <Breadcrumb
         items={[

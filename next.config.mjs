@@ -6,6 +6,9 @@ const nextConfig = {
   images: {
     // Add remote weather-icon / avatar CDNs here if needed later.
     formats: ["image/avif", "image/webp"],
+    // Pexels-hosted hero photos (see lib/providers/photos.ts) — Next
+    // blocks unlisted remote image hosts from its optimizer by default.
+    remotePatterns: [{ protocol: "https", hostname: "images.pexels.com" }],
   },
   async headers() {
     return [
