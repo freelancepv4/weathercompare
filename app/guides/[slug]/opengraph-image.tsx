@@ -2,6 +2,7 @@ import { ImageResponse } from "next/og";
 import { getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
 import { getPortraitPhotoDataUri } from "@/lib/providers/photos";
 import { PinImageCard } from "@/lib/pinImageCard";
+import { PinInfoCard } from "@/lib/pinInfoCard";
 
 // Portrait (2:3) so this satisfies Pinterest's "Save from URL" image ratio
 // requirement — see lib/pinImageCard.tsx. Because this file lives in the
@@ -28,14 +29,26 @@ export const contentType = "image/png";
 export default async function Image({ params }: { params: { slug: string } }) {
   const guide = getGuide(params.slug);
   const photo = guide ? await getPortraitPhotoDataUri(guide.photoQuery) : null;
-  return new ImageResponse(
-    (
-      <PinImageCard
-        eyebrow={guide ? CATEGORY_LABELS[guide.category] : "Guide"}
-        title={guide?.title ?? "Travel Guide"}
-        photoUrl={photo?.dataUri}
-      />
-    ),
-    { ...size }
-  );
+  const eyebrow = guide ? CATEGORY_LABELS[guide.category] : "Guide";
+  const title = guide?.title ?? "Travel Guide";
+
+  // Use the richer infographic card when the guide has a real bulleted
+  // section to draw highlights from; otherwise fall back to the plain
+  // title card rather than showing an empty highlights box.
+  const bulletSection = guide?.sections.find((s) => s.bullets && s.bullets.length > 0);
+  if (guide && bulletSection?.bullets) {
+    return new ImageResponse(
+      (
+        <PinInfoCard
+          eyebrow={eyebrow}
+          title={title}
+          photoUrl={photo?.dataUri}
+          highlights={bulletSection.bullets}
+        />
+      ),
+      { ...size }
+    );
+  }
+
+  return new ImageResponse(<PinImageCard eyebrow={eyebrow} title={title} photoUrl={photo?.dataUri} />, { ...size });
 }
