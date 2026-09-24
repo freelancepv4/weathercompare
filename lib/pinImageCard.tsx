@@ -26,31 +26,49 @@ export function PinImageCard({
   title: string;
   photoUrl?: string | null;
 }) {
-  // Satori (next/og's renderer) errors on a style object whose value is
-  // literally `undefined` (as opposed to the key being absent) — it was
-  // the actual cause of every "Cannot read properties of undefined
-  // (reading 'toString')" 500 on this route, unrelated to photo fetching
-  // itself. So: always give backgroundImage/background a real string,
-  // never `undefined`, for both the photo and no-photo branches.
-  const outerBackgroundImage = photoUrl
-    ? "none"
-    : "radial-gradient(circle at 20% 15%, rgba(56,120,255,0.35), transparent 45%), radial-gradient(circle at 85% 90%, rgba(56,189,248,0.28), transparent 55%)";
-  const scrimBackground = photoUrl
-    ? "linear-gradient(180deg, rgba(11,31,73,0.05) 0%, rgba(11,31,73,0.15) 38%, rgba(11,31,73,0.94) 76%, rgba(11,31,73,0.99) 100%)"
-    : "none";
+  // Satori (next/og's renderer) has two separate landmines here, both
+  // confirmed via Vercel's runtime logs (the real error is only visible
+  // there — a plain browser 500 page shows nothing useful):
+  //   1. A style value of literal `undefined` (key present, value
+  //      `undefined`) crashes with "Cannot read properties of undefined
+  //      (reading 'toString')".
+  //   2. Less obviously, `backgroundImage: "none"` — a placeholder string
+  //      used to mean "nothing here" — crashes with a *different* error,
+  //      "Invalid background image: \"none\"": Satori parses
+  //      `backgroundImage` as a CSS image value and doesn't accept the
+  //      `none` keyword there (unlike real CSS). `background: "none"` (the
+  //      shorthand, used on the scrim below) is fine.
+  // The only value that's safe in every case is to omit the key entirely
+  // when there's nothing to set, so both conditional styles are built by
+  // spreading the property in only when it applies, rather than ever
+  // assigning it a "no-op" value.
+  const outerStyle: React.CSSProperties = {
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    position: "relative",
+    backgroundColor: "#0b1f49",
+    fontFamily: "sans-serif",
+    ...(!photoUrl && {
+      backgroundImage:
+        "radial-gradient(circle at 20% 15%, rgba(56,120,255,0.35), transparent 45%), radial-gradient(circle at 85% 90%, rgba(56,189,248,0.28), transparent 55%)",
+    }),
+  };
+  const scrimStyle: React.CSSProperties = {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    width: "100%",
+    height: "100%",
+    display: "flex",
+    ...(photoUrl && {
+      background:
+        "linear-gradient(180deg, rgba(11,31,73,0.05) 0%, rgba(11,31,73,0.15) 38%, rgba(11,31,73,0.94) 76%, rgba(11,31,73,0.99) 100%)",
+    }),
+  };
 
   return (
-    <div
-      style={{
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        position: "relative",
-        backgroundColor: "#0b1f49",
-        backgroundImage: outerBackgroundImage,
-        fontFamily: "sans-serif",
-      }}
-    >
+    <div style={outerStyle}>
       {photoUrl && (
         // eslint-disable-next-line @next/next/no-img-element
         <img
@@ -63,18 +81,10 @@ export function PinImageCard({
       )}
 
       {/* Gradient scrim — near-transparent at the top so the photo reads
-          clearly, opaque toward the bottom where the title/brand sit. */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          width: "100%",
-          height: "100%",
-          display: "flex",
-          background: scrimBackground,
-        }}
-      />
+          clearly, opaque toward the bottom where the title/brand sit.
+          Only rendered with a background at all when there's a photo
+          underneath it to scrim; otherwise it's an empty, invisible div. */}
+      <div style={scrimStyle} />
 
       <div
         style={{
