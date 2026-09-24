@@ -23,10 +23,16 @@ export const contentType = "image/png";
 // a bad render (e.g. an undecodable inlined photo), we force it to
 // materialize now, inside our own try/catch, by awaiting the bytes
 // ourselves before returning.
+//
+// IMPORTANT: don't spread `res.headers` into the rebuilt Response — that
+// copies headers (content-length, transfer-encoding, ...) computed for
+// the ORIGINAL streamed body, which don't validly apply to a fresh Response
+// built from raw bytes, and constructing one with them throws. Set only
+// the headers this route actually needs.
 async function render(eyebrow: string, title: string, photoUrl?: string) {
   const res = new ImageResponse(<PinImageCard eyebrow={eyebrow} title={title} photoUrl={photoUrl} />, { ...size });
   const buf = await res.arrayBuffer();
-  return new Response(buf, { headers: res.headers });
+  return new Response(buf, { headers: { "content-type": contentType } });
 }
 
 export default async function Image({ params }: { params: { slug: string } }) {

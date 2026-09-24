@@ -12,12 +12,14 @@ export const alt = "Best time to visit";
 export const size = { width: 1000, height: 1500 };
 export const contentType = "image/png";
 
+// See app/guides/[slug]/opengraph-image.tsx's `render` for why we set only
+// content-type here rather than spreading res.headers wholesale.
 async function render(title: string, photoUrl?: string) {
   const res = new ImageResponse(<PinImageCard eyebrow="Best time to visit" title={title} photoUrl={photoUrl} />, {
     ...size,
   });
   const buf = await res.arrayBuffer();
-  return new Response(buf, { headers: res.headers });
+  return new Response(buf, { headers: { "content-type": contentType } });
 }
 
 export default async function Image({ params }: { params: { country: string; city: string } }) {
