@@ -52,12 +52,13 @@ const COUNTRY_WEATHER_TERMS: Record<string, string[]> = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const country = countries.find((c) => c.slug === params.country);
   if (!country) return {};
-  const title = `${country.name} Weather: Forecasts for Every City`;
-  const description = `Compare weather forecasts for ${country.cities.length} cities across ${country.name}, from multiple independent weather sources in one place.`;
+  const title = `${country.name} Weather: 10-Day Forecast for Every City`;
+  const description = `10-day weather for ${country.name}: compare forecasts for ${country.cities.length} cities across ${country.name} from several independent weather sources, plus the best months to visit.`;
   const url = `${siteConfig.url}/weather/${country.slug}`;
   const keywords = [
     `${country.name} weather`,
     `${country.name} weather forecast`,
+    `10 day weather for ${country.name}`,
     ...(COUNTRY_WEATHER_TERMS[country.isoCode] ?? []),
     ...country.cities.slice(0, 8).map((c) => `${c.name} weather`),
   ];
@@ -130,7 +131,7 @@ export default function CountryPage({ params }: PageProps) {
       <PageHeader
         eyebrow="Weather by country"
         icon={MapPin}
-        title={`${country.name} Weather Forecast`}
+        title={`${country.name} Weather: 10-Day Forecast`}
         tone="sky"
         description={
           <p>

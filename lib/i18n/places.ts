@@ -109,3 +109,21 @@ export function cityName(slug: string, english: string, locale: ContentLocale | 
   if (locale === "en") return english;
   return CITIES[slug]?.[ORDER.indexOf(locale)] ?? english;
 }
+
+/** Language spoken locally, for countries whose city names differ from English. */
+const LOCAL_LANG: Record<string, ContentLocale> = {
+  italy: "it", germany: "de", austria: "de", france: "fr", spain: "es", mexico: "es",
+  portugal: "pt", brazil: "pt", netherlands: "nl", poland: "pl",
+};
+
+/**
+ * The city's name in its own country's language when it differs from the
+ * English one (Florence → "Firenze", Munich → "München", Warsaw → "Warszawa"),
+ * otherwise null. Used so English pages also match searches like "firenze weather".
+ */
+export function localCityName(countrySlug: string, citySlug: string, english: string): string | null {
+  const l = LOCAL_LANG[countrySlug];
+  if (!l) return null;
+  const n = cityName(citySlug, english, l);
+  return n !== english ? n : null;
+}

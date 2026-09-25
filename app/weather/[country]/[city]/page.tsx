@@ -28,6 +28,7 @@ import { monthFacts } from "@/lib/content/insights";
 import { renderInsights } from "@/lib/i18n/insights";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
+import { localCityName } from "@/lib/i18n/places";
 import { ErrorState } from "@/components/ErrorState";
 import { hreflang } from "@/lib/i18n/pageMeta";
 
@@ -81,15 +82,26 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
-  const title = `${city.name} Weather Today & Tomorrow: 10-Day Forecast`;
-  const description = `${city.name} weather today and tomorrow, compared across several forecast sources: hourly temperature, rain and wind for 10 days, plus the best time to visit.`;
+  const native = localCityName(country.slug, city.slug, city.name);
+  // Include the local name ("Florence (Firenze)") so the page also matches
+  // searches in that form, and "10-day"/"next 10 days" phrasing people use.
+  const longNative = `${city.name} (${native}) Weather: 10-Day Forecast, Today & Tomorrow`;
+  const title = native
+    ? longNative.length <= 60
+      ? longNative
+      : `${city.name} (${native}) Weather: 10-Day Forecast`
+    : `${city.name} Weather Today & Tomorrow: 10-Day Forecast`;
+  const description = `${city.name}${native ? ` (${native})` : ""} weather for today, tomorrow and the next 10 days, compared across several forecast sources: hourly temperature, rain and wind.`;
   const url = `${siteConfig.url}/weather/${country.slug}/${city.slug}`;
 
-  const nativeCityName = city.i18nName ? Object.values(city.i18nName).find((n) => n && n !== city.name) : undefined;
+  const nativeCityName = native ?? undefined;
   const nativeTerms = COUNTRY_WEATHER_TERMS[country.isoCode] ?? [];
   const keywords = [
     `${city.name} weather`,
     `${city.name} forecast`,
+    `${city.name} weather next 10 days`,
+    `${city.name} 10 day weather`,
+    ...(nativeCityName ? [`${nativeCityName} weather`] : []),
     ...(nativeCityName ? [`${nativeCityName} meteo`] : []),
     ...nativeTerms.map((term) => `${term} ${nativeCityName ?? city.name}`),
     `${country.name} weather`,
@@ -113,6 +125,7 @@ export default async function CityPage({ params }: PageProps) {
   const location = locationFromSeed(country.slug, city.slug);
   if (!location) notFound();
 
+  const nativeName = localCityName(country.slug, city.slug, city.name);
   const { bundles, errors } = await getForecastBundles(location);
   const primary = bundles[0];
   const guide = getCityGuide(country.slug, city.slug);
@@ -208,6 +221,12 @@ export default async function CityPage({ params }: PageProps) {
           { label: city.name },
         ]}
       />
+
+      <p className="-mt-3 mb-6 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+        {city.name}
+        {nativeName ? ` (${nativeName})` : ""} weather for today, tomorrow and the next 10 days, with each source&apos;s forecast
+        side by side so you can see where they agree before you plan your day in {city.name}.
+      </p>
 
       {!primary ? (
         <ErrorState message="Weather data is temporarily unavailable for this location." />
