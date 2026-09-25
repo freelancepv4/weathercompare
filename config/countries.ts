@@ -83,6 +83,14 @@ export const countries: CountrySeed[] = [
       { slug: "barcelona", name: "Barcelona", region: "Catalonia", lat: 41.3874, lon: 2.1686, population: 1620000, timezone: "Europe/Madrid" },
       { slug: "valencia", name: "Valencia", region: "Valencian Community", lat: 39.4699, lon: -0.3763, population: 791413, timezone: "Europe/Madrid" },
       { slug: "seville", name: "Seville", i18nName: { es: "Sevilla" }, region: "Andalusia", lat: 37.3891, lon: -5.9845, population: 688711, timezone: "Europe/Madrid" },
+      { slug: "tenerife", name: "Tenerife", i18nName: { de: "Teneriffa" }, region: "Canary Islands", lat: 28.0555, lon: -16.7266, population: 931000, timezone: "Atlantic/Canary" },
+      { slug: "gran-canaria", name: "Gran Canaria", region: "Canary Islands", lat: 27.7606, lon: -15.586, population: 855000, timezone: "Atlantic/Canary" },
+      { slug: "lanzarote", name: "Lanzarote", region: "Canary Islands", lat: 28.963, lon: -13.5477, population: 156000, timezone: "Atlantic/Canary" },
+      { slug: "fuerteventura", name: "Fuerteventura", region: "Canary Islands", lat: 28.5004, lon: -13.8627, population: 120000, timezone: "Atlantic/Canary" },
+      { slug: "mallorca", name: "Mallorca", i18nName: { it: "Maiorca", fr: "Majorque" }, region: "Balearic Islands", lat: 39.5696, lon: 2.6502, population: 923000, timezone: "Europe/Madrid" },
+      { slug: "ibiza", name: "Ibiza", region: "Balearic Islands", lat: 38.9067, lon: 1.4206, population: 150000, timezone: "Europe/Madrid" },
+      { slug: "malaga", name: "Málaga", region: "Andalusia", lat: 36.7213, lon: -4.4214, population: 578000, timezone: "Europe/Madrid" },
+      { slug: "benidorm", name: "Benidorm", region: "Valencian Community", lat: 38.5411, lon: -0.1225, population: 70000, timezone: "Europe/Madrid" },
     ],
   },
   {
@@ -159,6 +167,8 @@ export const countries: CountrySeed[] = [
     cities: [
       { slug: "lisbon", name: "Lisbon", region: "Lisbon", lat: 38.7223, lon: -9.1393, population: 545000, timezone: "Europe/Lisbon" },
       { slug: "porto", name: "Porto", region: "Porto", lat: 41.1579, lon: -8.6291, population: 231000, timezone: "Europe/Lisbon" },
+      { slug: "madeira", name: "Madeira", i18nName: { fr: "Madère" }, region: "Madeira (Funchal)", lat: 32.6669, lon: -16.9241, population: 250000, timezone: "Atlantic/Madeira" },
+      { slug: "algarve", name: "Algarve", region: "Algarve (Faro)", lat: 37.0194, lon: -7.9322, population: 467000, timezone: "Europe/Lisbon" },
     ],
   },
   {
@@ -179,6 +189,9 @@ export const countries: CountrySeed[] = [
     cities: [
       { slug: "athens", name: "Athens", region: "Attica", lat: 37.9838, lon: 23.7275, population: 664000, timezone: "Europe/Athens" },
       { slug: "thessaloniki", name: "Thessaloniki", region: "Central Macedonia", lat: 40.6401, lon: 22.9444, population: 325000, timezone: "Europe/Athens" },
+      { slug: "crete", name: "Crete", i18nName: { it: "Creta", de: "Kreta", fr: "Crète", es: "Creta" }, region: "Crete (Heraklion)", lat: 35.3387, lon: 25.1442, population: 634000, timezone: "Europe/Athens" },
+      { slug: "rhodes", name: "Rhodes", i18nName: { it: "Rodi", de: "Rhodos", es: "Rodas" }, region: "South Aegean", lat: 36.4341, lon: 28.2176, population: 115000, timezone: "Europe/Athens" },
+      { slug: "corfu", name: "Corfu", i18nName: { it: "Corfù", de: "Korfu", fr: "Corfou", es: "Corfú" }, region: "Ionian Islands", lat: 39.6243, lon: 19.9217, population: 100000, timezone: "Europe/Athens" },
     ],
   },
   {
@@ -219,6 +232,52 @@ export const countries: CountrySeed[] = [
     cities: [
       { slug: "brussels", name: "Brussels", i18nName: { it: "Bruxelles", de: "Brüssel", fr: "Bruxelles", es: "Bruselas" }, region: "Brussels-Capital", lat: 50.8503, lon: 4.3517, population: 1222000, timezone: "Europe/Brussels" },
       { slug: "antwerp", name: "Antwerp", i18nName: { it: "Anversa", de: "Antwerpen", fr: "Anvers", es: "Amberes" }, region: "Flanders", lat: 51.2194, lon: 4.4025, population: 530000, timezone: "Europe/Brussels" },
+    ],
+  },
+  {
+    slug: "malta",
+    name: "Malta",
+    isoCode: "MT",
+    i18nName: { it: "Malta", de: "Malta", fr: "Malte", es: "Malta", en: "Malta" },
+    cities: [
+      { slug: "valletta", name: "Valletta", i18nName: { it: "La Valletta", fr: "La Valette", es: "La Valeta" }, region: "Malta", lat: 35.8989, lon: 14.5146, population: 520000, timezone: "Europe/Malta" },
+    ],
+  },
+  {
+    slug: "cyprus",
+    name: "Cyprus",
+    isoCode: "CY",
+    i18nName: { it: "Cipro", de: "Zypern", fr: "Chypre", es: "Chipre", en: "Cyprus" },
+    cities: [
+      { slug: "paphos", name: "Paphos", i18nName: { it: "Pafo", es: "Pafos" }, region: "Paphos District", lat: 34.7754, lon: 32.4245, population: 90000, timezone: "Asia/Nicosia" },
+      { slug: "larnaca", name: "Larnaca", i18nName: { de: "Larnaka", es: "Lárnaca" }, region: "Larnaca District", lat: 34.9003, lon: 33.6232, population: 145000, timezone: "Asia/Nicosia" },
+    ],
+  },
+  {
+    slug: "tunisia",
+    name: "Tunisia",
+    isoCode: "TN",
+    i18nName: { it: "Tunisia", de: "Tunesien", fr: "Tunisie", es: "Túnez", en: "Tunisia" },
+    cities: [
+      { slug: "djerba", name: "Djerba", i18nName: { it: "Gerba", es: "Yerba" }, region: "Medenine", lat: 33.8076, lon: 10.8451, population: 163000, timezone: "Africa/Tunis" },
+    ],
+  },
+  {
+    slug: "dominican-republic",
+    name: "Dominican Republic",
+    isoCode: "DO",
+    i18nName: { it: "Repubblica Dominicana", de: "Dominikanische Republik", fr: "République dominicaine", es: "República Dominicana", en: "Dominican Republic" },
+    cities: [
+      { slug: "punta-cana", name: "Punta Cana", region: "La Altagracia", lat: 18.5601, lon: -68.3725, population: 140000, timezone: "America/Santo_Domingo" },
+    ],
+  },
+  {
+    slug: "curacao",
+    name: "Curaçao",
+    isoCode: "CW",
+    i18nName: { it: "Curaçao", de: "Curaçao", fr: "Curaçao", es: "Curazao", en: "Curaçao" },
+    cities: [
+      { slug: "willemstad", name: "Willemstad", region: "Curaçao", lat: 12.1224, lon: -68.8824, population: 150000, timezone: "America/Curacao" },
     ],
   },
   {
@@ -296,6 +355,7 @@ export const countries: CountrySeed[] = [
     i18nName: { it: "Turchia", de: "Türkei", fr: "Turquie", es: "Turquía", en: "Turkey" },
     cities: [
       { slug: "istanbul", name: "Istanbul", region: "Istanbul", lat: 41.0082, lon: 28.9784, population: 15462000, timezone: "Europe/Istanbul" },
+      { slug: "antalya", name: "Antalya", region: "Antalya", lat: 36.8969, lon: 30.7133, population: 2600000, timezone: "Europe/Istanbul" },
     ],
   },
   {
@@ -305,6 +365,7 @@ export const countries: CountrySeed[] = [
     i18nName: { it: "Marocco", de: "Marokko", fr: "Maroc", es: "Marruecos", en: "Morocco" },
     cities: [
       { slug: "marrakech", name: "Marrakech", region: "Marrakech-Safi", lat: 31.6295, lon: -7.9811, population: 928000, timezone: "Africa/Casablanca" },
+      { slug: "agadir", name: "Agadir", region: "Souss-Massa", lat: 30.4278, lon: -9.5981, population: 420000, timezone: "Africa/Casablanca" },
     ],
   },
   {
@@ -323,6 +384,8 @@ export const countries: CountrySeed[] = [
     i18nName: { it: "Egitto", de: "Ägypten", fr: "Égypte", es: "Egipto", en: "Egypt" },
     cities: [
       { slug: "cairo", name: "Cairo", region: "Cairo", lat: 30.0444, lon: 31.2357, population: 9540000, timezone: "Africa/Cairo" },
+      { slug: "hurghada", name: "Hurghada", region: "Red Sea", lat: 27.2579, lon: 33.8116, population: 250000, timezone: "Africa/Cairo" },
+      { slug: "sharm-el-sheikh", name: "Sharm el-Sheikh", region: "South Sinai", lat: 27.9158, lon: 34.33, population: 73000, timezone: "Africa/Cairo" },
     ],
   },
   {

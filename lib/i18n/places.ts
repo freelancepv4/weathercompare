@@ -38,6 +38,11 @@ const COUNTRIES: Record<string, Names> = {
   egypt: ["Egitto", "Ägypten", "Égypte", "Egipto", "Egito", "Egypte", "Egipt"],
   poland: ["Polonia", "Polen", "Pologne", "Polonia", "Polónia", "Polen", "Polska"],
   belgium: ["Belgio", "Belgien", "Belgique", "Bélgica", "Bélgica", "België", "Belgia"],
+  malta: ["Malta", "Malta", "Malte", "Malta", "Malta", "Malta", "Malta"],
+  cyprus: ["Cipro", "Zypern", "Chypre", "Chipre", "Chipre", "Cyprus", "Cypr"],
+  tunisia: ["Tunisia", "Tunesien", "Tunisie", "Túnez", "Tunísia", "Tunesië", "Tunezja"],
+  "dominican-republic": ["Repubblica Dominicana", "Dominikanische Republik", "République dominicaine", "República Dominicana", "República Dominicana", "Dominicaanse Republiek", "Dominikana"],
+  curacao: ["Curaçao", "Curaçao", "Curaçao", "Curazao", "Curaçau", "Curaçao", "Curaçao"],
   pakistan: ["Pakistan", "Pakistan", "Pakistan", "Pakistán", "Paquistão", "Pakistan", "Pakistan"],
 };
 
@@ -97,6 +102,20 @@ const CITIES: Record<string, Names> = {
   gdansk: ["Danzica", "Danzig", "Gdańsk", "Gdansk", "Gdańsk", "Gdańsk", "Gdańsk"],
   brussels: ["Bruxelles", "Brüssel", "Bruxelles", "Bruselas", "Bruxelas", "Brussel", "Bruksela"],
   antwerp: ["Anversa", "Antwerpen", "Anvers", "Amberes", "Antuérpia", "Antwerpen", "Antwerpia"],
+  tenerife: ["Tenerife", "Teneriffa", "Tenerife", "Tenerife", "Tenerife", "Tenerife", "Teneryfa"],
+  "gran-canaria": ["Gran Canaria", "Gran Canaria", "Grande Canarie", "Gran Canaria", "Gran Canária", "Gran Canaria", "Gran Canaria"],
+  fuerteventura: ["Fuerteventura", "Fuerteventura", "Fuerteventura", "Fuerteventura", "Fuerteventura", "Fuerteventura", "Fuerteventura"],
+  mallorca: ["Maiorca", "Mallorca", "Majorque", "Mallorca", "Maiorca", "Mallorca", "Majorka"],
+  malaga: ["Malaga", "Málaga", "Malaga", "Málaga", "Málaga", "Málaga", "Malaga"],
+  crete: ["Creta", "Kreta", "Crète", "Creta", "Creta", "Kreta", "Kreta"],
+  rhodes: ["Rodi", "Rhodos", "Rhodes", "Rodas", "Rodes", "Rhodos", "Rodos"],
+  corfu: ["Corfù", "Korfu", "Corfou", "Corfú", "Corfu", "Corfu", "Korfu"],
+  madeira: ["Madeira", "Madeira", "Madère", "Madeira", "Madeira", "Madeira", "Madera"],
+  "sharm-el-sheikh": ["Sharm el-Sheikh", "Scharm El-Scheich", "Charm el-Cheikh", "Sharm el-Sheij", "Sharm el-Sheikh", "Sharm-el-Sheikh", "Szarm el-Szejk"],
+  valletta: ["La Valletta", "Valletta", "La Valette", "La Valeta", "Valeta", "Valletta", "Valletta"],
+  paphos: ["Pafo", "Paphos", "Paphos", "Pafos", "Pafos", "Paphos", "Pafos"],
+  larnaca: ["Larnaca", "Larnaka", "Larnaca", "Lárnaca", "Lárnaca", "Larnaca", "Larnaka"],
+  djerba: ["Gerba", "Djerba", "Djerba", "Yerba", "Djerba", "Djerba", "Dżerba"],
   karachi: ["Karachi", "Karatschi", "Karachi", "Karachi", "Carachi", "Karachi", "Karaczi"],
 };
 
@@ -121,7 +140,11 @@ const LOCAL_LANG: Record<string, ContentLocale> = {
  * English one (Florence → "Firenze", Munich → "München", Warsaw → "Warszawa"),
  * otherwise null. Used so English pages also match searches like "firenze weather".
  */
+/** Other English spellings people search for (UK: "Majorca weather"). */
+const EN_ALIAS: Record<string, string> = { mallorca: "Majorca" };
+
 export function localCityName(countrySlug: string, citySlug: string, english: string): string | null {
+  if (EN_ALIAS[citySlug]) return EN_ALIAS[citySlug]!;
   const l = LOCAL_LANG[countrySlug];
   if (!l) return null;
   const n = cityName(citySlug, english, l);

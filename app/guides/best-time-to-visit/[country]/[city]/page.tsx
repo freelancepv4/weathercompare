@@ -9,6 +9,7 @@ import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
+import { CiteBox } from "@/components/CiteBox";
 import { monthFacts } from "@/lib/content/insights";
 import { renderInsights } from "@/lib/i18n/insights";
 import { ClimateChart } from "@/components/ClimateChart";
@@ -207,6 +208,13 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           );
         })()}
 
+        <CiteBox
+          className="mt-8"
+          url={`${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}`}
+          title={`Best time to visit ${city.name}`}
+          source="climate averages: NASA POWER 2011–2020"
+          embedUrl={`${siteConfig.url}/embed/${country.slug}/${city.slug}`}
+        />
         <div className="mt-8">
           <AdSlot variant="inline" />
         </div>

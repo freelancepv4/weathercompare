@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 const IN = M.map((m) => `en ${m}`);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const a = (c: string) => (c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
+const a = (c: string) => (c === "Crète" || c === "Algarve" ? `en ${c}` : c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
 const de = (m: number) => (/^[aeiouéè]/i.test(M[m]!) ? `d'${M[m]}` : `de ${M[m]}`);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `proches de celles ${de(m)}` : `${Math.abs(d)}°C plus ${d > 0 ? "élevées" : "basses"} qu'en ${M[m]}`;
@@ -40,8 +40,8 @@ export const fr: Copy = {
   countryMonthsH: "Quand partir, mois par mois",
   countryMonthsText: (k) => `Quels mois offrent le meilleur temps (${k}) ? Choisissez un mois.`,
 
-  cityTitle: (c) => `Météo ${c} aujourd'hui et demain : prévisions 10 jours`,
-  cityDesc: (c) => `Météo ${c} aujourd'hui et demain, comparée entre plusieurs sources : température heure par heure, pluie et vent sur 10 jours.`,
+  cityTitle: (c) => `Météo ${c} aujourd'hui, demain et 15 jours`,
+  cityDesc: (c) => `Météo ${c} aujourd'hui et demain, comparée entre plusieurs sources : température heure par heure, pluie et vent, prévisions à 15 jours.`,
   cityH1: (c) => `Météo ${c} aujourd'hui et demain`,
   cityIntro: (c, k) => `Prévisions en direct pour ${c} (${k}), comparées entre plusieurs services météo.`,
   sourcesDown: (n, t) => `${n} source(s) sur ${t} n'ont pas pu être jointes et ont été exclues de la comparaison.`,

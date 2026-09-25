@@ -11,7 +11,7 @@ export const en: Copy = {
   home: "Home",
   highsRange: (a, b) => `Highs ${a}° – ${b}°C`,
   viewForecast: "View forecast →",
-  inCity: (c) => `in ${c}`,
+  inCity: (c) => (c === "Algarve" ? "in the Algarve" : `in ${c}`),
 
   homeTitle: "Weather Today & Tomorrow, Compared",
   homeDesc: "Compare weather forecasts from several sources for 75+ cities, plus monthly climate and where to go for good weather.",

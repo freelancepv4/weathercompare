@@ -17,7 +17,7 @@ export function DailyForecast({ daily }: { daily: DailyPoint[] }) {
       <h2 id="daily-heading" className="mb-4 text-xl font-semibold text-slate-900 dark:text-white sm:text-2xl">
         {t("daily.title")}
       </h2>
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-8">
         {daily.map((d, i) => (
           <div
             key={d.date}

@@ -800,6 +800,374 @@ export const cityGuides: Record<string, CityGuide> = {
     goodToKnow:
       "Antwerp is Dutch-speaking (Flemish); a few words of Dutch are appreciated, though English is widely spoken.",
   },
+  "spain:tenerife": {
+    intro:
+      "The largest of the Canary Islands, with year-round spring-like weather, black-sand and golden beaches, and Mount Teide — Spain's highest peak — at its centre. The sunny south (Costa Adeje, Playa de las Américas, Los Cristianos) is where most visitors stay; the greener north is cooler and cloudier.",
+    bestTimeToVisit: "Any time of year — the Canaries are a classic winter-sun escape. Spring and autumn are especially pleasant; summer is hot but tempered by trade winds.",
+    landmarks: [
+      { name: "Teide National Park", description: "A UNESCO-listed volcanic landscape around Mount Teide, reachable by road and cable car." },
+      { name: "Masca", description: "A tiny village in a dramatic ravine in the Teno mountains, popular with hikers." },
+      { name: "Los Gigantes", description: "Sheer sea cliffs on the west coast, best seen from a boat trip." },
+      { name: "La Laguna", description: "The UNESCO-listed old university town in the north, with colourful colonial-era streets." },
+    ],
+    localTip: "The south is usually sunnier and warmer than the north — if the forecast looks cloudy for Puerto de la Cruz, the south coast may still be bright.",
+    gettingAround:
+      "Buses (TITSA) link the main towns, but a hire car makes it much easier to reach Teide, Masca and the north.",
+    goodToKnow:
+      "Temperatures drop sharply with altitude — bring a warm layer for Teide, where it can be near freezing on winter mornings.",
+  },
+  "spain:gran-canaria": {
+    intro:
+      "A round volcanic island often called a 'miniature continent' for its mix of dunes, pine forests and mountain villages. Most sun-seekers stay in the south around Maspalomas and Playa del Inglés; the capital, Las Palmas, has a lively city beach.",
+    bestTimeToVisit: "Year-round; it's one of Europe's most reliable winter-sun destinations. The south coast is the sunniest part of the island.",
+    landmarks: [
+      { name: "Maspalomas Dunes", description: "A protected area of rolling sand dunes next to the beach and lighthouse." },
+      { name: "Roque Nublo", description: "A striking rock monolith in the mountainous centre, reached by a short hike." },
+      { name: "Vegueta, Las Palmas", description: "The historic quarter of the capital, with the cathedral and Columbus House." },
+      { name: "Puerto de Mogán", description: "A pretty harbour village with canals, nicknamed 'little Venice'." },
+    ],
+    localTip: "Clouds often gather over the north and centre while the south stays sunny — pick your beach day accordingly.",
+    gettingAround:
+      "Global buses connect Las Palmas, the airport and the southern resorts; a car helps for the mountain villages.",
+    goodToKnow:
+      "The mountain interior is much cooler than the coast, especially in winter.",
+  },
+  "spain:lanzarote": {
+    intro:
+      "A striking volcanic island of black lava fields, white villages and art by local architect César Manrique. It's drier and flatter than the western Canaries, with a mild climate all year.",
+    bestTimeToVisit: "Year-round. It's warm and dry for most of the year; winter brings the most (still limited) rain.",
+    landmarks: [
+      { name: "Timanfaya National Park", description: "Volcanic landscapes from the 18th-century eruptions, visited by coach tour." },
+      { name: "Jameos del Agua", description: "A lava tube turned into a concert venue and lagoon by César Manrique." },
+      { name: "Papagayo beaches", description: "Sheltered golden coves on the island's southern tip." },
+      { name: "Mirador del Río", description: "A clifftop viewpoint overlooking the island of La Graciosa." },
+    ],
+    localTip: "It can be windy, especially on the north and east coasts — handy for surfers, less so for sunbathers.",
+    gettingAround:
+      "A hire car is the easiest way to see the island; buses link the main resorts and Arrecife.",
+    goodToKnow:
+      "Protect your skin even on breezy days — the wind makes the strong sun easy to underestimate.",
+  },
+  "spain:fuerteventura": {
+    intro:
+      "The second-largest Canary Island, known for long sandy beaches, dunes and some of Europe's best wind- and kite-surfing. It's the closest Canary Island to Africa and one of the driest.",
+    bestTimeToVisit: "Year-round for beaches; spring to autumn for the most consistent sunshine. Summer brings the strongest winds.",
+    landmarks: [
+      { name: "Corralejo Dunes", description: "A natural park of white sand dunes beside the sea in the north." },
+      { name: "Sotavento", description: "A huge lagoon beach in the south, famous for windsurfing." },
+      { name: "Betancuria", description: "The island's historic former capital in the mountains." },
+      { name: "Isla de Lobos", description: "A small protected island reachable by boat from Corralejo." },
+    ],
+    localTip: "Wind is part of daily life here — beaches on the south-east side are often more sheltered.",
+    gettingAround:
+      "Distances are long between resorts, so a hire car is useful; buses serve the main towns.",
+    goodToKnow:
+      "The Atlantic here is cooler than the Mediterranean, even in summer.",
+  },
+  "spain:mallorca": {
+    intro:
+      "The largest Balearic island, with the historic capital Palma, dramatic Tramuntana mountains and dozens of beaches and coves. It is one of Europe's most popular summer holiday islands.",
+    bestTimeToVisit: "May, June and September for warm, sunny weather with fewer crowds; July and August are hot and busiest.",
+    landmarks: [
+      { name: "Palma Cathedral (La Seu)", description: "A Gothic cathedral rising above Palma's seafront." },
+      { name: "Serra de Tramuntana", description: "A UNESCO-listed mountain range with stone villages like Valldemossa and Deià." },
+      { name: "Cala Mondragó", description: "A protected natural park with sheltered sandy coves." },
+      { name: "Sóller", description: "A valley town reached by a vintage wooden train from Palma." },
+    ],
+    localTip: "Visit popular coves early in the day in summer — car parks and beaches fill up quickly.",
+    gettingAround:
+      "Buses connect Palma to the main towns; a car gives the most freedom for coves and mountain villages.",
+    goodToKnow:
+      "Winters are mild but quieter: some resorts close hotels and restaurants from November to March.",
+  },
+  "spain:ibiza": {
+    intro:
+      "A Balearic island famous for its nightlife, but also for quiet coves, pine-covered hills and the UNESCO-listed old town of Ibiza Town (Dalt Vila).",
+    bestTimeToVisit: "June and September for warm sea and fewer crowds; July and August for peak season and the club scene.",
+    landmarks: [
+      { name: "Dalt Vila", description: "The fortified, UNESCO-listed old town overlooking the harbour." },
+      { name: "Cala Comte", description: "A west-coast beach famous for sunsets." },
+      { name: "Es Vedrà", description: "A dramatic rocky islet off the south-west coast." },
+      { name: "Santa Eulària", description: "A relaxed resort town with a riverside promenade." },
+    ],
+    localTip: "Sunset spots on the west coast get busy — arrive early for a good place.",
+    gettingAround:
+      "Buses cover the main resorts in season; a car or scooter helps for remote coves.",
+    goodToKnow:
+      "Much of the island is quiet from November to April, when many clubs and hotels close.",
+  },
+  "spain:malaga": {
+    intro:
+      "The capital of the Costa del Sol and Picasso's birthplace, combining city culture, beaches and one of mainland Europe's sunniest climates.",
+    bestTimeToVisit: "Spring (March–May) and autumn (September–November) for warm, pleasant sightseeing weather; summer is hot.",
+    landmarks: [
+      { name: "Alcazaba", description: "An 11th-century Moorish fortress-palace above the city centre." },
+      { name: "Picasso Museum", description: "A large collection of the artist's work in his home city." },
+      { name: "Malagueta Beach", description: "The city beach, a short walk from the old town." },
+      { name: "Gibralfaro Castle", description: "Hilltop castle walls with wide views over the port." },
+    ],
+    localTip: "Midday in July and August is very hot — plan sightseeing for the morning and evening.",
+    gettingAround:
+      "The centre is walkable; trains and buses link the airport and the Costa del Sol resorts.",
+    goodToKnow:
+      "Málaga's mild winters make it a popular off-season city break.",
+  },
+  "spain:benidorm": {
+    intro:
+      "A high-rise resort on the Costa Blanca with long sandy beaches, a busy promenade and a mild, sunny climate for much of the year.",
+    bestTimeToVisit: "May–June and September–October for warm, sunny weather without peak-summer heat.",
+    landmarks: [
+      { name: "Levante Beach", description: "The long main beach lined with bars and hotels." },
+      { name: "Balcón del Mediterráneo", description: "A viewpoint between the two main beaches in the old town." },
+      { name: "Terra Mítica", description: "A large theme park on the edge of town." },
+      { name: "Guadalest", description: "A mountain village with a castle, a popular day trip." },
+    ],
+    localTip: "Poniente beach is usually calmer and less crowded than Levante.",
+    gettingAround:
+      "The town is walkable; trams link it to Alicante along the coast.",
+    goodToKnow:
+      "Winters are mild and popular with long-stay visitors from northern Europe.",
+  },
+  "greece:crete": {
+    intro:
+      "Greece's largest island, with Minoan palaces, Venetian harbour towns, mountain gorges and a long beach season.",
+    bestTimeToVisit: "May–June and September–October for warm weather with fewer crowds; July and August are hottest.",
+    landmarks: [
+      { name: "Knossos", description: "The Minoan palace site near Heraklion." },
+      { name: "Samaria Gorge", description: "A long hiking gorge in the White Mountains, open in the warmer months." },
+      { name: "Chania Old Town", description: "A Venetian harbour with narrow lanes and waterfront tavernas." },
+      { name: "Elafonisi", description: "A lagoon beach known for its pinkish sand." },
+    ],
+    localTip: "The north coast can be windy in summer (the meltemi); south-coast beaches are often calmer.",
+    gettingAround:
+      "Buses (KTEL) link the main towns; a hire car is best for gorges and remote beaches.",
+    goodToKnow:
+      "The Samaria Gorge typically opens from spring to autumn, depending on conditions.",
+  },
+  "greece:rhodes": {
+    intro:
+      "A Dodecanese island known for its medieval walled Old Town, beaches and one of the sunniest climates in Greece.",
+    bestTimeToVisit: "May–June and September–October for warm, sunny weather; July–August are hot and busy.",
+    landmarks: [
+      { name: "Rhodes Old Town", description: "A UNESCO-listed medieval town with the Palace of the Grand Master." },
+      { name: "Lindos", description: "A white village below a clifftop acropolis." },
+      { name: "Anthony Quinn Bay", description: "A small, clear-water cove on the east coast." },
+      { name: "Valley of the Butterflies", description: "A shaded valley where butterflies gather in summer." },
+    ],
+    localTip: "The west coast is windier; the east coast has calmer, warmer water.",
+    gettingAround:
+      "Buses connect Rhodes Town with Lindos and the resorts; a car helps for the south.",
+    goodToKnow:
+      "Visit Lindos early in the day in summer, before the heat and crowds.",
+  },
+  "greece:corfu": {
+    intro:
+      "A green Ionian island with a UNESCO-listed Venetian old town, olive groves and many small beaches.",
+    bestTimeToVisit: "May–June and September for warm weather and fewer crowds; it is greener and wetter than the Aegean islands in winter.",
+    landmarks: [
+      { name: "Corfu Old Town", description: "A UNESCO-listed town with Venetian fortresses and arcaded streets." },
+      { name: "Paleokastritsa", description: "Coves and clear water below a clifftop monastery." },
+      { name: "Achilleion Palace", description: "A 19th-century palace built for Empress Elisabeth of Austria." },
+      { name: "Canal d'Amour, Sidari", description: "Sandstone rock formations and small coves in the north." },
+    ],
+    localTip: "Corfu gets more rain than most Greek islands, mostly from late autumn to early spring.",
+    gettingAround:
+      "Green buses serve the island's villages; a car helps for the quieter west coast.",
+    goodToKnow:
+      "Many hotels and tavernas in the resorts are seasonal and close in winter.",
+  },
+  "portugal:madeira": {
+    intro:
+      "A subtropical Atlantic island famous for mild temperatures all year, levada walks, flowers and dramatic cliffs. Its capital is Funchal.",
+    bestTimeToVisit: "Year-round; spring and autumn are especially pleasant for hiking.",
+    landmarks: [
+      { name: "Funchal Old Town", description: "The capital's historic centre, markets and cable car to Monte." },
+      { name: "Levada walks", description: "Paths along historic irrigation channels through the mountains." },
+      { name: "Pico do Arieiro", description: "One of the island's highest peaks, known for sunrise views above the clouds." },
+      { name: "Porto Moniz", description: "Natural volcanic rock pools on the north-west coast." },
+    ],
+    localTip: "Weather varies a lot across the island: the south around Funchal is usually sunnier than the north.",
+    gettingAround:
+      "Buses serve the main towns; a car or guided tour makes it easier to reach trailheads.",
+    goodToKnow:
+      "Mountain trails can be cold, wet or closed after storms — check conditions before hiking.",
+  },
+  "portugal:algarve": {
+    intro:
+      "Portugal's southern coast, known for golden cliffs, sea caves, golf and long sunny summers. Faro is its main airport and regional capital.",
+    bestTimeToVisit: "May–June and September–October for warm weather; July–August are hottest and busiest.",
+    landmarks: [
+      { name: "Benagil Cave", description: "A sea cave with an opening in its roof, usually visited by boat or kayak." },
+      { name: "Ponta da Piedade", description: "Rock formations and grottoes near Lagos." },
+      { name: "Ria Formosa", description: "A lagoon nature park around Faro." },
+      { name: "Tavira", description: "A historic town with a Roman bridge and whitewashed houses." },
+    ],
+    localTip: "The Atlantic stays cool even in summer — the sea is refreshing rather than warm.",
+    gettingAround:
+      "Trains and buses connect the main towns; a car helps for beaches and cliffs.",
+    goodToKnow:
+      "Winters are mild and sunny compared with most of Europe, popular for walking and golf.",
+  },
+  "turkey:antalya": {
+    intro:
+      "The main gateway to the Turkish Riviera, with a historic walled harbour (Kaleiçi), waterfalls and nearby beach resorts like Lara, Belek and Kemer.",
+    bestTimeToVisit: "May–June and September–October for warm weather; July and August are very hot.",
+    landmarks: [
+      { name: "Kaleiçi", description: "Antalya's old town with Ottoman houses and a Roman harbour." },
+      { name: "Düden Waterfalls", description: "Waterfalls dropping into the sea near the city." },
+      { name: "Aspendos", description: "A remarkably preserved Roman theatre east of the city." },
+      { name: "Konyaaltı Beach", description: "A long pebble beach backed by mountains." },
+    ],
+    localTip: "Summer afternoons are very hot — plan sightseeing for early morning and evening.",
+    gettingAround:
+      "Trams and buses serve the city; resorts are reached by shuttle, bus or taxi.",
+    goodToKnow:
+      "Spring and autumn are good for combining beaches with ancient sites.",
+  },
+  "egypt:hurghada": {
+    intro:
+      "A Red Sea resort town known for coral reefs, diving and snorkelling, with sunshine nearly every day of the year.",
+    bestTimeToVisit: "October–April for warm but comfortable weather; summer (June–September) is very hot.",
+    landmarks: [
+      { name: "Giftun Islands", description: "Protected islands with reefs and beaches, reached by boat." },
+      { name: "El Gouna", description: "A lagoon resort town north of Hurghada." },
+      { name: "Hurghada Marina", description: "A waterfront area with restaurants and boat departures." },
+      { name: "Red Sea reefs", description: "Some of the world's best snorkelling and diving sites." },
+    ],
+    localTip: "Winter evenings can feel cool, especially on boats — bring a light jacket.",
+    gettingAround:
+      "Resorts spread along the coast; taxis and hotel shuttles are the usual way to get around.",
+    goodToKnow:
+      "Wind is common on the coast, which keeps summer heat more bearable but can make boat trips choppy.",
+  },
+  "egypt:sharm-el-sheikh": {
+    intro:
+      "A resort on the southern tip of the Sinai Peninsula, famous for coral reefs and diving at Ras Mohammed and Tiran.",
+    bestTimeToVisit: "October–April for warm, comfortable weather; summer is very hot.",
+    landmarks: [
+      { name: "Ras Mohammed National Park", description: "A marine park with some of the Red Sea's best reefs." },
+      { name: "Naama Bay", description: "The lively centre with a beach and promenade." },
+      { name: "Tiran Island", description: "Reefs and dive sites in the Straits of Tiran." },
+      { name: "Old Market (Old Sharm)", description: "A traditional market area with a mosque and cafés." },
+    ],
+    localTip: "Winter nights in the desert are cooler than many visitors expect.",
+    gettingAround:
+      "Taxis and hotel shuttles are the usual way to get around.",
+    goodToKnow:
+      "Reef shoes are useful — many beaches have coral close to shore.",
+  },
+  "morocco:agadir": {
+    intro:
+      "A modern Atlantic beach resort in southern Morocco with a long sandy bay and one of the country's sunniest climates.",
+    bestTimeToVisit: "Year-round; it's popular for winter sun. Summer is warm but moderated by the Atlantic.",
+    landmarks: [
+      { name: "Agadir Beach", description: "A long, sandy bay with a seafront promenade." },
+      { name: "Agadir Oufella", description: "The hilltop kasbah ruins with views over the bay." },
+      { name: "Souk El Had", description: "A large traditional market." },
+      { name: "Paradise Valley", description: "A palm-lined gorge in the Atlas foothills, a popular day trip." },
+    ],
+    localTip: "Morning sea mist is common, especially in summer, and usually burns off by midday.",
+    gettingAround:
+      "Petit taxis are the easiest way around town; organised tours reach the valleys.",
+    goodToKnow:
+      "The Atlantic here is cooler than the Mediterranean.",
+  },
+  "malta:valletta": {
+    intro:
+      "Malta's compact capital, a UNESCO-listed fortified city on a peninsula, and the base for exploring an island nation with a warm, sunny Mediterranean climate.",
+    bestTimeToVisit: "April–June and September–October for warm weather; July and August are hot.",
+    landmarks: [
+      { name: "St John's Co-Cathedral", description: "A richly decorated Baroque church with works by Caravaggio." },
+      { name: "Upper Barrakka Gardens", description: "Terraced gardens with views over the Grand Harbour." },
+      { name: "Mdina", description: "The walled 'silent city' in the island's centre." },
+      { name: "Blue Lagoon, Comino", description: "Clear turquoise water on the small island of Comino." },
+    ],
+    localTip: "The Blue Lagoon gets very busy in summer — go early or late.",
+    gettingAround:
+      "Buses reach most of the island; ferries link Valletta with the Three Cities and Gozo.",
+    goodToKnow:
+      "Malta has mild winters, making it a good off-season city break.",
+  },
+  "cyprus:paphos": {
+    intro:
+      "A harbour town on Cyprus's south-west coast, UNESCO-listed for its Roman mosaics and ancient tombs, with a long sunny season.",
+    bestTimeToVisit: "April–June and September–November for warm weather; July and August are very hot.",
+    landmarks: [
+      { name: "Paphos Archaeological Park", description: "Roman villas with some of the finest mosaics in the Mediterranean." },
+      { name: "Tombs of the Kings", description: "Rock-cut tombs near the sea." },
+      { name: "Aphrodite's Rock", description: "The legendary birthplace of Aphrodite on the coast." },
+      { name: "Akamas Peninsula", description: "A wild area of hiking trails and coves." },
+    ],
+    localTip: "Summer heat is intense inland; the coast is more comfortable.",
+    gettingAround:
+      "Buses connect the harbour, old town and nearby beaches; a car helps for Akamas.",
+    goodToKnow:
+      "Cyprus has one of Europe's longest swimming seasons, often into November.",
+  },
+  "cyprus:larnaca": {
+    intro:
+      "A seaside town and the main entry point to Cyprus, with a palm-lined promenade, a salt lake and easy access to beaches and villages.",
+    bestTimeToVisit: "April–June and September–November for warm, pleasant weather.",
+    landmarks: [
+      { name: "Finikoudes Promenade", description: "The palm-lined seafront with cafés and a town beach." },
+      { name: "Church of Saint Lazarus", description: "A 9th-century church in the town centre." },
+      { name: "Larnaca Salt Lake", description: "A lake visited by flamingos in winter." },
+      { name: "Zenobia wreck", description: "A famous shipwreck dive site offshore." },
+    ],
+    localTip: "Flamingos are usually at the Salt Lake in winter and spring.",
+    gettingAround:
+      "Buses link the airport, town and beaches; a car helps for mountain villages.",
+    goodToKnow:
+      "The sea is warm from late spring to autumn.",
+  },
+  "tunisia:djerba": {
+    intro:
+      "A flat, sunny island off southern Tunisia with sandy beaches, whitewashed villages and a long tradition as a winter-sun destination.",
+    bestTimeToVisit: "April–June and September–October for warm weather; summer is hot.",
+    landmarks: [
+      { name: "Houmt Souk", description: "The island's main town with markets and an old fort." },
+      { name: "El Ghriba Synagogue", description: "One of the oldest synagogues in Africa." },
+      { name: "Djerbahood", description: "Street art in the village of Erriadh." },
+      { name: "Sidi Mahrez Beach", description: "A long sandy beach on the north-east coast." },
+    ],
+    localTip: "Winters are mild but can be windy.",
+    gettingAround:
+      "Taxis and hotel shuttles are the easiest way to get around.",
+    goodToKnow:
+      "Dress respectfully when visiting religious sites.",
+  },
+  "dominican-republic:punta-cana": {
+    intro:
+      "The Dominican Republic's main beach resort area, with long white-sand beaches and warm weather all year.",
+    bestTimeToVisit: "December–April for the driest, most comfortable weather; the hurricane season runs from June to November.",
+    landmarks: [
+      { name: "Bávaro Beach", description: "A long palm-lined beach with calm water." },
+      { name: "Saona Island", description: "A protected island in a national park, reached by boat." },
+      { name: "Hoyo Azul", description: "A cenote-style natural pool in a limestone cliff." },
+      { name: "Macao Beach", description: "A wilder beach popular with surfers." },
+    ],
+    localTip: "Tropical showers are usually short, even in the rainy season.",
+    gettingAround:
+      "Most visitors use taxis, resort shuttles or organised tours.",
+    goodToKnow:
+      "Check forecasts during hurricane season (June–November), especially August–October.",
+  },
+  "curacao:willemstad": {
+    intro:
+      "The capital of Curaçao, known for its colourful UNESCO-listed waterfront, and the base for exploring an island of reefs and beaches just outside the main hurricane belt.",
+    bestTimeToVisit: "Year-round; it's warm, sunny and fairly dry most of the year, with a short rainier period in late autumn.",
+    landmarks: [
+      { name: "Handelskade", description: "The colourful waterfront houses of Punda." },
+      { name: "Queen Emma Bridge", description: "A floating pontoon bridge across St Anna Bay." },
+      { name: "Playa Kenepa", description: "A popular beach on the west coast." },
+      { name: "Shete Boka National Park", description: "A wild coastline of sea inlets and caves." },
+    ],
+    localTip: "The trade winds keep the heat pleasant, but the sun is strong — use high-SPF sunscreen.",
+    gettingAround:
+      "A hire car is the easiest way to reach the west-coast beaches.",
+    goodToKnow:
+      "Curaçao lies south of the main hurricane path, so storms are rare.",
+  },
   "portugal:lisbon": {
     intro:
       "A hilly, coastal capital of pastel buildings, historic trams, and viewpoints (miradouros) over the Tagus river. Its seven hills mean a lot of up-and-down walking, softened by frequent viewpoints and outdoor café stops.",

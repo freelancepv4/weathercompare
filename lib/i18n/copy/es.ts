@@ -38,8 +38,8 @@ export const es: Copy = {
   countryMonthsH: "Cuándo ir, mes a mes",
   countryMonthsText: (k) => `¿Qué meses tienen mejor tiempo en ${k}? Elige un mes.`,
 
-  cityTitle: (c) => `Tiempo en ${c} hoy y mañana: previsión 10 días`,
-  cityDesc: (c) => `El tiempo en ${c} hoy y mañana, comparado entre varias fuentes: temperatura por horas, lluvia y viento para 10 días.`,
+  cityTitle: (c) => `Tiempo en ${c} hoy, mañana y 14 días`,
+  cityDesc: (c) => `El tiempo en ${c} hoy y mañana, comparado entre varias fuentes: temperatura por horas, lluvia y viento: previsión a 14 días.`,
   cityH1: (c) => `El tiempo en ${c} hoy y mañana`,
   cityIntro: (c, k) => `Previsión en directo para ${c} (${k}), comparada entre varios servicios meteorológicos.`,
   sourcesDown: (n, t) => `${n} de ${t} fuentes no respondieron y se han excluido de la comparación.`,

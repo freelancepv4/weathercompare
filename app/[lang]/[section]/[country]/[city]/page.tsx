@@ -37,7 +37,7 @@ import { localizedMetadata } from "@/lib/i18n/pageMeta";
 // cache) — see siteConfig.weatherCacheSeconds for the rate-limit maths.
 // Rendered on first visit, then cached (not pre-built), which keeps deploys
 // fast with 7 languages × every city.
-export const revalidate = 14400;
+export const revalidate = 21600;
 export const dynamicParams = true;
 
 export function generateStaticParams() {
@@ -86,6 +86,8 @@ export default async function LocalizedCityPage({ params }: PageProps) {
     .map((c) => ({ country, city: c }));
   const nameFor = (co: CountrySeed, ci: CitySeed) => ({ city: cityName(ci.slug, ci.name, locale), country: countryName(co.slug, co.name, locale) });
 
+  // The daily list uses whichever source forecasts furthest ahead (Open-Meteo: 16 days).
+  const longestDaily = bundles.reduce((best, b) => (b.daily.length > best.length ? b.daily : best), primary?.daily ?? []);
   const tomorrow = primary?.daily[1];
   const faqItems = primary
     ? [
@@ -160,7 +162,7 @@ export default async function LocalizedCityPage({ params }: PageProps) {
           <ForecastComparison bundles={bundles} />
           <AdSlot variant="banner" />
           <HourlyForecast hourly={primary.hourly} />
-          <DailyForecast daily={primary.daily} />
+          <DailyForecast daily={longestDaily} />
 
           <div className="grid gap-6 lg:grid-cols-2">
             <RainSection hourly={primary.hourly} />

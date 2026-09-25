@@ -4,7 +4,8 @@ const M = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** "em Lisboa", but "no Porto", "no Cairo", "na Cidade do Cabo"… */
 const em = (c: string) => {
-  if (/^(Porto|Cairo|Rio de Janeiro|Dubai)$/.test(c)) return `no ${c}`;
+  if (/^(Porto|Cairo|Rio de Janeiro|Dubai|Algarve)$/.test(c)) return `no ${c}`;
+  if (c === "Madeira") return `na ${c}`;
   if (/^Cidade /.test(c)) return `na ${c}`;
   return `em ${c}`;
 };
@@ -43,8 +44,8 @@ export const pt: Copy = {
   countryMonthsH: "Quando ir, mês a mês",
   countryMonthsText: (k) => `Em que meses o tempo é melhor (${k})? Escolha um mês.`,
 
-  cityTitle: (c) => `Tempo ${em(c)} hoje e amanhã: previsão 10 dias`,
-  cityDesc: (c) => `Previsão do tempo ${em(c)} hoje e amanhã, comparada entre várias fontes: temperatura hora a hora, chuva e vento para 10 dias.`,
+  cityTitle: (c) => `Tempo ${em(c)} hoje, amanhã e 15 dias`,
+  cityDesc: (c) => `Previsão do tempo ${em(c)} hoje e amanhã, comparada entre várias fontes: temperatura hora a hora, chuva e vento: previsão a 15 dias.`,
   cityH1: (c) => `Tempo ${em(c)} hoje e amanhã`,
   cityIntro: (c, k) => `Previsão em direto para ${c} (${k}), comparada entre vários serviços meteorológicos.`,
   sourcesDown: (n, t) => `${n} de ${t} fontes não responderam e foram excluídas da comparação.`,

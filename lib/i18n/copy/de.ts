@@ -2,6 +2,10 @@ import type { Copy } from "./types";
 
 const M = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 const IN = M.map((m) => `im ${m}`);
+/** Islands take "auf" ("auf Kreta"), the Algarve "an der". */
+const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao"]);
+const inC = (c: string) => (c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
+const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `ähnlich wie im ${M[m]}` : `${Math.abs(d)}°C ${d > 0 ? "wärmer" : "kühler"} als im ${M[m]}`;
 const TEMP = ["sehr heiß", "heiß", "warm", "mild", "kühl", "kalt", "frostig"];
@@ -13,7 +17,7 @@ export const de: Copy = {
   home: "Startseite",
   highsRange: (x, y) => `Höchstwerte ${x}° – ${y}°C`,
   viewForecast: "Zur Vorhersage →",
-  inCity: (c) => `in ${c}`,
+  inCity: inC,
 
   homeTitle: "Wetter heute und morgen: Vorhersagen im Vergleich",
   homeDesc: "Wettervorhersagen mehrerer Quellen im Vergleich für über 75 Städte, dazu Klima nach Monat und Reiseziele für gutes Wetter.",
@@ -37,8 +41,8 @@ export const de: Copy = {
   countryMonthsH: "Beste Reisezeit – Monat für Monat",
   countryMonthsText: (k) => `In welchen Monaten ist das Wetter am besten (${k})? Wähle einen Monat.`,
 
-  cityTitle: (c) => `Wetter ${c} heute & morgen: 10-Tage-Vorhersage`,
-  cityDesc: (c) => `Wetter ${c} heute und morgen im Vergleich mehrerer Quellen: Temperatur stündlich, Regen und Wind für 10 Tage.`,
+  cityTitle: (c) => `Wetter ${c} heute, morgen & 14 Tage`,
+  cityDesc: (c) => `Wetter ${c} heute und morgen im Vergleich mehrerer Quellen: Temperatur stündlich, Regen und Wind – Wettervorhersage für 14 Tage und mehr.`,
   cityH1: (c) => `Wetter ${c} heute und morgen`,
   cityIntro: (c, k) => `Aktuelle Vorhersage für ${c} (${k}), verglichen über mehrere Wetterdienste.`,
   sourcesDown: (n, t) => `${n} von ${t} Quellen waren nicht erreichbar und fehlen in diesem Vergleich.`,
@@ -47,15 +51,15 @@ export const de: Copy = {
   byMonthSub: "Typische Temperaturen, Regen und Packtipps für jeden Monat.",
   shareCity: (c) => `Reise nach ${c} geplant? Vorhersage speichern oder teilen.`,
   shareCityTitle: (c) => `Wetter ${c}: Vorhersagen im Vergleich`,
-  aboutH: (c) => `Über das Wetter in ${c}`,
+  aboutH: (c) => `Über das Wetter ${inC(c)}`,
   aboutText: (c, k, lat, lon) => `${c} (${k}) liegt bei etwa ${lat}°, ${lon}°. Die Vorhersagen oben stammen von mehreren unabhängigen Anbietern – so siehst du sofort, wo sie übereinstimmen und wo nicht.`,
   faqH: "Häufige Fragen",
-  faqTempQ: (c) => `Wie warm ist es heute in ${c}?`,
-  faqTempA: (c, t, f, s) => `In ${c} sind es gerade etwa ${t}°C, gefühlt ${f}°C (Quelle: ${s}).`,
-  faqRainQ: (c) => `Regnet es heute in ${c}?`,
-  faqRainA: (c, p, s) => `Die Regenwahrscheinlichkeit in ${c} liegt laut ${s} bei etwa ${p} %. Details zeigt die stündliche Vorhersage.`,
-  faqTomorrowQ: (c) => `Wie wird das Wetter morgen in ${c}?`,
-  faqTomorrowA: (c, h, l, p) => `Morgen werden in ${c} Höchstwerte von ${h}°C und Tiefstwerte von ${l}°C erwartet, bei ${p} % Regenwahrscheinlichkeit.`,
+  faqTempQ: (c) => `Wie warm ist es heute ${inC(c)}?`,
+  faqTempA: (c, t, f, s) => `${capI(inC(c))} sind es gerade etwa ${t}°C, gefühlt ${f}°C (Quelle: ${s}).`,
+  faqRainQ: (c) => `Regnet es heute ${inC(c)}?`,
+  faqRainA: (c, p, s) => `Die Regenwahrscheinlichkeit ${inC(c)} liegt laut ${s} bei etwa ${p} %. Details zeigt die stündliche Vorhersage.`,
+  faqTomorrowQ: (c) => `Wie wird das Wetter morgen ${inC(c)}?`,
+  faqTomorrowA: (c, h, l, p) => `Morgen werden ${inC(c)} Höchstwerte von ${h}°C und Tiefstwerte von ${l}°C erwartet, bei ${p} % Regenwahrscheinlichkeit.`,
   faqTenQ: (c) => `Wie ist die 10-Tage-Vorhersage für ${c}?`,
   faqTenA: (c) => `Die 10-Tage-Vorhersage oben zeigt Höchst- und Tiefstwerte sowie die Regenwahrscheinlichkeit für ${c}; der Quellenvergleich zeigt, wie sicher sie ist.`,
   nearby: "Städte in der Nähe",
@@ -63,15 +67,15 @@ export const de: Copy = {
   moreCountries: (n) => `Alle ${n} Länder`,
 
   monthTitle: (c, m) => `Wetter ${c} im ${M[m]}: Temperaturen & Regen`,
-  monthDesc: (c, m, h, l, mm) => `Wie ist das Wetter in ${c} im ${M[m]}? Höchstwerte um ${h}°C, Tiefstwerte um ${l}°C und etwa ${mm} mm Regen – plus Packliste.`,
+  monthDesc: (c, m, h, l, mm) => `Wie ist das Wetter ${inC(c)} im ${M[m]}? Höchstwerte um ${h}°C, Tiefstwerte um ${l}°C und etwa ${mm} mm Regen – plus Packliste.`,
   monthKicker: "Klima nach Monat",
   monthH1: (c, m) => `Wetter ${c} im ${M[m]}`,
   monthSummary: (x) =>
-    `Im ${M[x.m]} ist es in ${x.city} meist ${TEMP[x.temp]}, mit Tageshöchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen Tiefstwerten um ${x.lo}°C (${x.loF}°F). Es fallen im Schnitt etwa ${x.mm} mm Regen (${RAIN[x.rain]}), und der Himmel ist ${SKY[x.sky]}. Die Höchstwerte sind ${cmp(x.dPrev, (x.m + 11) % 12)} und ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+    `Im ${M[x.m]} ist es ${inC(x.city)} meist ${TEMP[x.temp]}, mit Tageshöchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen Tiefstwerten um ${x.lo}°C (${x.loF}°F). Es fallen im Schnitt etwa ${x.mm} mm Regen (${RAIN[x.rain]}), und der Himmel ist ${SKY[x.sky]}. Die Höchstwerte sind ${cmp(x.dPrev, (x.m + 11) % 12)} und ${cmp(x.dNext, (x.m + 1) % 12)}.`,
   monthSummaryAlt: (x) =>
-    `Mit Höchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen ${x.lo}°C (${x.loF}°F) ist der ${M[x.m]} in ${x.city} meist ${TEMP[x.temp]}. Über den Monat fallen rund ${x.mm} mm Regen (${RAIN[x.rain]}), der Himmel ist ${SKY[x.sky]}.`,
-  factWarmest: (c, m) => `Der ${M[m]} ist meist der wärmste Monat in ${c}.`,
-  factCoolest: (c, m) => `Der ${M[m]} ist meist der kühlste Monat in ${c}.`,
+    `Mit Höchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen ${x.lo}°C (${x.loF}°F) ist der ${M[x.m]} ${inC(x.city)} meist ${TEMP[x.temp]}. Über den Monat fallen rund ${x.mm} mm Regen (${RAIN[x.rain]}), der Himmel ist ${SKY[x.sky]}.`,
+  factWarmest: (c, m) => `Der ${M[m]} ist meist der wärmste Monat ${inC(c)}.`,
+  factCoolest: (c, m) => `Der ${M[m]} ist meist der kühlste Monat ${inC(c)}.`,
   factDriest: "Meist der trockenste Monat des Jahres.",
   factWettest: "Meist der nasseste Monat des Jahres.",
   stat: { high: "Ø Höchstwert", low: "Ø Tiefstwert", rain: "Niederschlag", humidity: "Luftfeuchte", relative: "relativ", sky: "Himmel", cloud: "Bewölkung" },
@@ -102,15 +106,15 @@ export const de: Copy = {
   packGuide: "Ausführliche Packliste (Englisch) →",
   goodTimeH: (c, m) => `Ist der ${M[m]} eine gute Reisezeit für ${c}?`,
   bestMonthsText: (c, ms, good, m) =>
-    good ? `Ja – der ${M[m]} gehört zu den besten Monaten für ${c}. Am angenehmsten ist es meist im ${ms}.` : `Am angenehmsten ist es in ${c} meist im ${ms}. Vergleiche die Monate im Diagramm oben.`,
+    good ? `Ja – der ${M[m]} gehört zu den besten Monaten für ${c}. Am angenehmsten ist es meist im ${ms}.` : `Am angenehmsten ist es ${inC(c)} meist im ${ms}. Vergleiche die Monate im Diagramm oben.`,
   otherCitiesH: (k, m) => `Weitere Städte (${k}) im ${M[m]}`,
   quickAnswersH: (c, m) => `${c} im ${M[m]}: kurz beantwortet`,
-  faqWarmQ: (c, m) => `Wie warm ist es in ${c} im ${M[m]}?`,
+  faqWarmQ: (c, m) => `Wie warm ist es ${inC(c)} im ${M[m]}?`,
   faqWarmA: (h, hf, l, lf) => `Die durchschnittlichen Höchstwerte liegen bei etwa ${h}°C (${hf}°F), die Tiefstwerte bei etwa ${l}°C (${lf}°F) – basierend auf 10 Jahren Tagesdaten.`,
-  faqWetQ: (c, m) => `Regnet es viel in ${c} im ${M[m]}?`,
-  faqWetA: (c, m, mm, r) => `In ${c} fallen im ${M[m]} durchschnittlich etwa ${mm} mm Regen – ${r}.`,
+  faqWetQ: (c, m) => `Regnet es viel ${inC(c)} im ${M[m]}?`,
+  faqWetA: (c, m, mm, r) => `${capI(inC(c))} fallen im ${M[m]} durchschnittlich etwa ${mm} mm Regen – ${r}.`,
   faqBestQ: (c) => `Wann ist die beste Reisezeit für ${c}?`,
-  faqBestA: (c, ms) => `Für angenehmes, eher trockenes Wetter sind in ${c} meist ${ms} die besten Monate.`,
+  faqBestA: (c, ms) => `Für angenehmes, eher trockenes Wetter sind ${inC(c)} meist ${ms} die besten Monate.`,
   cityInMonth: (c, m) => `${c} im ${M[m]}`,
   monthFoot: (c) => `Die Werte sind langjährige Mittel für die Region um ${c} (NASA POWER, 2011–2020), keine Vorhersage für ein bestimmtes Jahr.`,
   monthFootLink: "Zur aktuellen Vorhersage",
@@ -119,7 +123,7 @@ export const de: Copy = {
   chartLegendTemp: "Tief → hoch °C",
   chartLegendRain: "Regen (mm)",
   chartTableToggle: "Monatsmittel als Tabelle anzeigen",
-  chartCaption: (c) => `Durchschnittliches Klima in ${c} nach Monaten`,
+  chartCaption: (c) => `Durchschnittliches Klima ${inC(c)} nach Monaten`,
   chartCols: ["Monat", "Ø Höchstwert", "Ø Tiefstwert", "Regen", "Luftfeuchte", "Bewölkung"],
   monthLinksSub: "Typische Temperaturen, Regen und Packtipps für jeden Monat.",
 
@@ -200,7 +204,7 @@ export const de: Copy = {
     `${h >= 27 ? "Leichte Kleidung, Sonnenbrille und Wasser" : h >= 19 ? "T-Shirt und eine leichte Schicht für den Abend" : h >= 11 ? "Pullover und Übergangsjacke" : "Warmer Mantel, Mütze und Handschuhe"}${r ? ", dazu ein Regenschirm" : ""}. Typische Werte heute: ${l}–${h}°C.`,
   sugEscape: (c, t) => `Lust auf Sonne? ${c} erreicht heute ${t}°C`,
   sugEscapeText: "Der wärmste trockene Ort in Europa gerade – vielleicht das Ziel für deine nächste Reise.",
-  sugWind: (c, k) => `Windig in ${c} (Böen bis ${k} km/h)`,
+  sugWind: (c, k) => `Windig ${inC(c)} (Böen bis ${k} km/h)`,
   sugWindText: "Lose Gegenstände sichern und vor der Reise Fähren und Flüge prüfen.",
   trendingH: "Gefragte Wettersuchen",
   trendingText: "Wonach gerade gesucht wird:",

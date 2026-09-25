@@ -3,6 +3,10 @@ import type { Copy } from "./types";
 const M = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"];
 /** "in Italië", but "in het Verenigd Koninkrijk", "in de Verenigde Staten". */
 const inK = (k: string) => (k === "Verenigd Koninkrijk" ? `in het ${k}` : k.startsWith("Verenigde ") ? `in de ${k}` : `in ${k}`);
+/** Islands take "op" ("op Tenerife"), the Algarve "in de". */
+const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao"]);
+const inC = (c: string) => (c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
+const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `ongeveer gelijk aan ${M[m]}` : `${Math.abs(d)}°C ${d > 0 ? "warmer" : "koeler"} dan in ${M[m]}`;
@@ -15,7 +19,7 @@ export const nl: Copy = {
   home: "Home",
   highsRange: (x, y) => `Maxima ${x}° – ${y}°C`,
   viewForecast: "Bekijk het weer →",
-  inCity: (c) => `in ${c}`,
+  inCity: inC,
 
   homeTitle: "Weer vandaag en morgen: weerberichten vergeleken",
   homeDesc: "Vergelijk weersverwachtingen van meerdere bronnen voor 75+ steden, het klimaat per maand en waar het warm is op vakantie.",
@@ -39,8 +43,8 @@ export const nl: Copy = {
   countryMonthsH: "Beste reistijd, maand voor maand",
   countryMonthsText: (k) => `In welke maanden is het weer ${inK(k)} het best? Kies een maand.`,
 
-  cityTitle: (c) => `Weer ${c} vandaag en morgen: 10-daagse verwachting`,
-  cityDesc: (c) => `Het weer in ${c} vandaag en morgen, vergeleken tussen meerdere bronnen: temperatuur per uur, regen en wind voor 10 dagen.`,
+  cityTitle: (c) => `Weer ${c} vandaag, morgen en 14 dagen`,
+  cityDesc: (c) => `Het weer ${inC(c)} vandaag en morgen, vergeleken tussen meerdere bronnen: temperatuur per uur, regen en wind: de 14-daagse weersverwachting.`,
   cityH1: (c) => `Weer ${c} vandaag en morgen`,
   cityIntro: (c, k) => `Actuele weersverwachting voor ${c} (${k}), vergeleken tussen meerdere weerdiensten.`,
   sourcesDown: (n, t) => `${n} van de ${t} bronnen waren niet bereikbaar en zijn weggelaten.`,
@@ -49,15 +53,15 @@ export const nl: Copy = {
   byMonthSub: "Typische temperaturen, regen en wat je meeneemt, per maand.",
   shareCity: (c) => `Reis naar ${c} gepland? Bewaar of deel deze verwachting.`,
   shareCityTitle: (c) => `Weer ${c}: verwachtingen vergeleken`,
-  aboutH: (c) => `Over het weer in ${c}`,
+  aboutH: (c) => `Over het weer ${inC(c)}`,
   aboutText: (c, k, lat, lon) => `${c} (${k}) ligt op ongeveer ${lat}°, ${lon}°. De verwachtingen hierboven komen van meerdere onafhankelijke aanbieders, zodat je direct ziet waar ze het eens zijn en waar niet.`,
   faqH: "Veelgestelde vragen",
-  faqTempQ: (c) => `Hoe warm is het vandaag in ${c}?`,
-  faqTempA: (c, t, f, s) => `Het is nu ongeveer ${t}°C in ${c}, gevoelstemperatuur ${f}°C (bron: ${s}).`,
-  faqRainQ: (c) => `Gaat het vandaag regenen in ${c}?`,
-  faqRainA: (c, p, s) => `De kans op regen in ${c} is ongeveer ${p}% volgens ${s}. Bekijk de verwachting per uur voor details.`,
-  faqTomorrowQ: (c) => `Wat voor weer wordt het morgen in ${c}?`,
-  faqTomorrowA: (c, h, l, p) => `Morgen wordt in ${c} een maximum van ${h}°C en een minimum van ${l}°C verwacht, met ${p}% kans op regen.`,
+  faqTempQ: (c) => `Hoe warm is het vandaag ${inC(c)}?`,
+  faqTempA: (c, t, f, s) => `Het is nu ongeveer ${t}°C ${inC(c)}, gevoelstemperatuur ${f}°C (bron: ${s}).`,
+  faqRainQ: (c) => `Gaat het vandaag regenen ${inC(c)}?`,
+  faqRainA: (c, p, s) => `De kans op regen ${inC(c)} is ongeveer ${p}% volgens ${s}. Bekijk de verwachting per uur voor details.`,
+  faqTomorrowQ: (c) => `Wat voor weer wordt het morgen ${inC(c)}?`,
+  faqTomorrowA: (c, h, l, p) => `Morgen wordt ${inC(c)} een maximum van ${h}°C en een minimum van ${l}°C verwacht, met ${p}% kans op regen.`,
   faqTenQ: (c) => `Wat is de 10-daagse weersverwachting voor ${c}?`,
   faqTenA: (c) => `De 10-daagse verwachting hierboven toont maxima, minima en regenkans voor ${c}; vergelijk de bronnen om te zien hoe zeker die is.`,
   nearby: "Steden in de buurt",
@@ -65,15 +69,15 @@ export const nl: Copy = {
   moreCountries: (n) => `Alle ${n} landen`,
 
   monthTitle: (c, m) => `Weer ${c} in ${M[m]}: temperatuur en regen`,
-  monthDesc: (c, m, h, l, mm) => `Hoe is het weer in ${c} in ${M[m]}? Maxima rond ${h}°C, minima rond ${l}°C en zo'n ${mm} mm regen – plus een paklijst.`,
+  monthDesc: (c, m, h, l, mm) => `Hoe is het weer ${inC(c)} in ${M[m]}? Maxima rond ${h}°C, minima rond ${l}°C en zo'n ${mm} mm regen – plus een paklijst.`,
   monthKicker: "Klimaat per maand",
-  monthH1: (c, m) => `Weer in ${c} in ${M[m]}`,
+  monthH1: (c, m) => `Weer ${inC(c)} in ${M[m]}`,
   monthSummary: (x) =>
-    `In ${M[x.m]} is het in ${x.city} meestal ${TEMP[x.temp]}, met maxima rond ${x.hi}°C (${x.hiF}°F) en nachtelijke minima rond ${x.lo}°C (${x.loF}°F). Er valt gemiddeld zo'n ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}. De maxima zijn ${cmp(x.dPrev, (x.m + 11) % 12)} en ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+    `In ${M[x.m]} is het ${inC(x.city)} meestal ${TEMP[x.temp]}, met maxima rond ${x.hi}°C (${x.hiF}°F) en nachtelijke minima rond ${x.lo}°C (${x.loF}°F). Er valt gemiddeld zo'n ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}. De maxima zijn ${cmp(x.dPrev, (x.m + 11) % 12)} en ${cmp(x.dNext, (x.m + 1) % 12)}.`,
   monthSummaryAlt: (x) =>
-    `Met maxima rond ${x.hi}°C (${x.hiF}°F) en nachten van zo'n ${x.lo}°C (${x.loF}°F) is ${M[x.m]} in ${x.city} meestal ${TEMP[x.temp]}. Over de hele maand valt ongeveer ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}.`,
-  factWarmest: (c, m) => `${cap(M[m]!)} is meestal de warmste maand in ${c}.`,
-  factCoolest: (c, m) => `${cap(M[m]!)} is meestal de koelste maand in ${c}.`,
+    `Met maxima rond ${x.hi}°C (${x.hiF}°F) en nachten van zo'n ${x.lo}°C (${x.loF}°F) is ${M[x.m]} ${inC(x.city)} meestal ${TEMP[x.temp]}. Over de hele maand valt ongeveer ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}.`,
+  factWarmest: (c, m) => `${cap(M[m]!)} is meestal de warmste maand ${inC(c)}.`,
+  factCoolest: (c, m) => `${cap(M[m]!)} is meestal de koelste maand ${inC(c)}.`,
   factDriest: "Meestal de droogste maand van het jaar.",
   factWettest: "Meestal de natste maand van het jaar.",
   stat: { high: "Gem. max", low: "Gem. min", rain: "Neerslag", humidity: "Luchtvochtigheid", relative: "relatief", sky: "Lucht", cloud: "bewolking" },
@@ -104,13 +108,13 @@ export const nl: Copy = {
   packGuide: "Volledige paklijst (Engels) →",
   goodTimeH: (c, m) => `Is ${M[m]} een goede maand voor ${c}?`,
   bestMonthsText: (c, ms, good, m) =>
-    good ? `Ja – ${M[m]} is een van de beste maanden voor ${c}. Het aangenaamst is het meestal in ${ms}.` : `Het aangenaamst is het in ${c} meestal in ${ms}. Vergelijk de maanden in de grafiek hierboven.`,
+    good ? `Ja – ${M[m]} is een van de beste maanden voor ${c}. Het aangenaamst is het meestal in ${ms}.` : `Het aangenaamst is het ${inC(c)} meestal in ${ms}. Vergelijk de maanden in de grafiek hierboven.`,
   otherCitiesH: (k, m) => `Andere steden ${inK(k)} in ${M[m]}`,
   quickAnswersH: (c, m) => `${c} in ${M[m]}: snelle antwoorden`,
-  faqWarmQ: (c, m) => `Hoe warm is het in ${c} in ${M[m]}?`,
+  faqWarmQ: (c, m) => `Hoe warm is het ${inC(c)} in ${M[m]}?`,
   faqWarmA: (h, hf, l, lf) => `De gemiddelde maxima liggen rond ${h}°C (${hf}°F) en de minima rond ${l}°C (${lf}°F), op basis van 10 jaar dagelijkse gegevens.`,
-  faqWetQ: (c, m) => `Regent het veel in ${c} in ${M[m]}?`,
-  faqWetA: (c, m, mm, r) => `In ${c} valt in ${M[m]} gemiddeld zo'n ${mm} mm regen – ${r}.`,
+  faqWetQ: (c, m) => `Regent het veel ${inC(c)} in ${M[m]}?`,
+  faqWetA: (c, m, mm, r) => `${capI(inC(c))} valt in ${M[m]} gemiddeld zo'n ${mm} mm regen – ${r}.`,
   faqBestQ: (c) => `Wat is de beste reistijd voor ${c}?`,
   faqBestA: (c, ms) => `Voor aangenaam, vrij droog weer zijn ${ms} meestal de beste maanden voor ${c}.`,
   cityInMonth: (c, m) => `${c} in ${M[m]}`,
@@ -121,7 +125,7 @@ export const nl: Copy = {
   chartLegendTemp: "Min → max °C",
   chartLegendRain: "Regen (mm)",
   chartTableToggle: "Toon de maandgemiddelden als tabel",
-  chartCaption: (c) => `Gemiddeld klimaat per maand in ${c}`,
+  chartCaption: (c) => `Gemiddeld klimaat per maand ${inC(c)}`,
   chartCols: ["Maand", "Gem. max", "Gem. min", "Regen", "Vochtigheid", "Bewolking"],
   monthLinksSub: "Typische temperaturen, regen en wat je meeneemt, per maand.",
 
@@ -194,7 +198,7 @@ export const nl: Copy = {
   suggestionsH: "Tips voor vandaag",
   sugOutdoor: (c, t) => `Ideaal om naar buiten te gaan: ${c} (${t}°C)`,
   sugOutdoorText: "Droog, zonnig en aangenaam warm – perfect voor een wandeling, picknick of lunch op een terras.",
-  sugUmbrella: (c) => `Neem een paraplu mee in ${c}`,
+  sugUmbrella: (c) => `Neem een paraplu mee ${inC(c)}`,
   sugUmbrellaText: "Vandaag is regen waarschijnlijk – houd een plan binnen achter de hand (musea, markten, cafés).",
   sugNoUmbrella: "Geen noemenswaardige regen verwacht in de grote steden – de paraplu kan thuisblijven.",
   sugPackH: "Wat trek je vandaag aan?",
@@ -202,7 +206,7 @@ export const nl: Copy = {
     `${h >= 27 ? "Lichte kleding, zonnebril en water" : h >= 19 ? "T-shirt en een dunne laag voor de avond" : h >= 11 ? "Een trui en een tussenjas" : "Warme jas, muts en handschoenen"}${r ? ", plus een paraplu" : ""}. Typische temperaturen vandaag: ${l}–${h}°C.`,
   sugEscape: (c, t) => `Zin in zon? ${c} haalt vandaag ${t}°C`,
   sugEscapeText: "De warmste droge plek van Europa op dit moment – misschien je volgende bestemming.",
-  sugWind: (c, k) => `Harde wind in ${c} (windstoten tot ${k} km/u)`,
+  sugWind: (c, k) => `Harde wind ${inC(c)} (windstoten tot ${k} km/u)`,
   sugWindText: "Zet losse spullen vast en check veerboten en vluchten voor vertrek.",
   trendingH: "Populaire weerzoekopdrachten",
   trendingText: "Waar nu naar gezocht wordt:",

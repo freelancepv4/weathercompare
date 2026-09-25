@@ -72,7 +72,7 @@ async function fetchOpenMeteo(location: GeoLocation): Promise<OpenMeteoResponse>
     daily:
       "temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,weather_code,sunrise,sunset,uv_index_max",
     timezone: "auto",
-    forecast_days: "10",
+    forecast_days: "16", // Open-Meteo's free maximum — the longest horizon of our sources
   });
   // For the paid commercial tier, uncomment and set WEATHER_API_KEY:
   // if (process.env.WEATHER_API_KEY) params.set("apikey", process.env.WEATHER_API_KEY);

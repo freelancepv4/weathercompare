@@ -251,7 +251,7 @@ export default async function CityPage({ params }: PageProps) {
           <AdSlot variant="banner" />
 
           <HourlyForecast hourly={primary.hourly} />
-          <DailyForecast daily={primary.daily} />
+          <DailyForecast daily={bundles.reduce((best, b) => (b.daily.length > best.length ? b.daily : best), primary.daily)} />
 
           <div className="grid gap-6 lg:grid-cols-2">
             <RainSection hourly={primary.hourly} />

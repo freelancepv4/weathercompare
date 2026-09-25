@@ -12,6 +12,7 @@ import { ClimateChart } from "@/components/ClimateChart";
 import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
 import { InsightList } from "@/components/InsightList";
+import { CiteBox } from "@/components/CiteBox";
 import { monthFacts, pick } from "@/lib/content/insights";
 import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { getCopy, describeIdx, packingKeys, bestMonths, joinList, toF } from "@/lib/i18n/copy";
@@ -289,6 +290,14 @@ export default async function LocalizedMonthPage({ params }: PageProps) {
             </div>
           </section>
         )}
+
+        <CiteBox
+          className="mt-10"
+          url={url}
+          title={copy.monthH1(cn, i)}
+          source="NASA POWER 2011–2020"
+          embedUrl={`${siteConfig.url}/embed/${country.slug}/${city.slug}`}
+        />
 
         <section className="mt-10" aria-labelledby="faq-heading">
           <h2 id="faq-heading" className="mb-4 text-lg font-bold text-slate-900 dark:text-white">

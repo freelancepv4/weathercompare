@@ -5,7 +5,7 @@ import type { Ctx } from "./index";
 /** "qu'août" / "que mars" */
 const que = (m: string) => (/^[aeiouéè]/i.test(m) ? `qu'${m}` : `que ${m}`);
 /** "à Lyon" / "au Caire" */
-const a = (c: string) => (c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
+const a = (c: string) => (c === "Crète" || c === "Algarve" ? `en ${c}` : c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
 
 export function fr(f: Fact, x: Ctx): string {
   const { city, inC, M, seed } = x;

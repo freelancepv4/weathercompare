@@ -15,9 +15,18 @@ const LOC: Record<string, string> = {
   Ateny: "Atenach", Saloniki: "Salonikach", Zurych: "Zurychu", Genewa: "Genewie", Dublin: "Dublinie", Meksyk: "Meksyku",
   Bangkok: "Bangkoku", Singapur: "Singapurze", Mumbaj: "Mumbaju", Seul: "Seulu", Stambuł: "Stambule", Marrakesz: "Marrakeszu",
   Kapsztad: "Kapsztadzie", Kair: "Kairze", Islamabad: "Islamabadzie", Warszawa: "Warszawie", Kraków: "Krakowie",
-  Gdańsk: "Gdańsku", Bruksela: "Brukseli", Antwerpia: "Antwerpii", Toronto: "Toronto", Lahore: "Lahaurze", Karaczi: "Karaczi",
+  Gdańsk: "Gdańsku", Bruksela: "Brukseli", Antwerpia: "Antwerpii", Malaga: "Maladze", Benidorm: "Benidormie",
+  Antalya: "Antalyi", Hurghada: "Hurghadzie", "Szarm el-Szejk": "Szarm el-Szejku", Agadir: "Agadirze", Valletta: "Valletcie",
+  Larnaka: "Larnace", Algarve: "Algarve", Toronto: "Toronto", Lahore: "Lahaurze", Karaczi: "Karaczi",
+};
+/** Islands take "na" in Polish ("na Teneryfie"). */
+const NA: Record<string, string> = {
+  Teneryfa: "Teneryfie", "Gran Canaria": "Gran Canarii", Lanzarote: "Lanzarote", Fuerteventura: "Fuerteventurze",
+  Majorka: "Majorce", Ibiza: "Ibizie", Kreta: "Krecie", Rodos: "Rodos", Korfu: "Korfu", Madera: "Maderze",
+  Dżerba: "Dżerbie", Cypr: "Cyprze", Malta: "Malcie", "Curaçao": "Curaçao",
 };
 const w = (c: string) => {
+  if (NA[c]) return `na ${NA[c]}`;
   const l = LOC[c] ?? c;
   // "we" before w/f + consonant (we Florencji, we Frankfurcie), otherwise "w".
   return /^[wWfF][^aeiouyąęó]/.test(l) ? `we ${l}` : `w ${l}`;
@@ -57,8 +66,8 @@ export const pl: Copy = {
   countryMonthsH: "Kiedy jechać – miesiąc po miesiącu",
   countryMonthsText: (k) => `W których miesiącach pogoda jest najlepsza (${k})? Wybierz miesiąc.`,
 
-  cityTitle: (c) => `Pogoda ${c} dziś i jutro: prognoza na 10 dni`,
-  cityDesc: (c) => `Pogoda ${w(c)} dziś i jutro – porównanie kilku źródeł: temperatura godzina po godzinie, opady i wiatr na 10 dni.`,
+  cityTitle: (c) => `Pogoda ${c} dziś, jutro i na 16 dni`,
+  cityDesc: (c) => `Pogoda ${w(c)} dziś i jutro – porównanie kilku źródeł: temperatura godzina po godzinie, opady i wiatr – prognoza na 16 dni.`,
   cityH1: (c) => `Pogoda ${c} – dziś i jutro`,
   cityIntro: (c, k) => `Aktualna prognoza dla miasta ${c} (${k}), porównana między kilkoma serwisami pogodowymi.`,
   sourcesDown: (n, t) => `${n} z ${t} źródeł nie odpowiedziało i zostało pominiętych w porównaniu.`,

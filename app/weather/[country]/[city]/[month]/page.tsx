@@ -22,6 +22,7 @@ import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
 import { InsightList } from "@/components/InsightList";
+import { CiteBox } from "@/components/CiteBox";
 import { monthFacts, pick } from "@/lib/content/insights";
 import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { hreflang } from "@/lib/i18n/pageMeta";
@@ -332,6 +333,14 @@ export default async function CityMonthPage({ params }: PageProps) {
             </div>
           </section>
         )}
+
+        <CiteBox
+          className="mt-10"
+          url={`${base}/${month.slug}`}
+          title={`${city.name} weather in ${month.name}`}
+          source="NASA POWER 2011–2020 monthly averages"
+          embedUrl={`${siteConfig.url}/embed/${country.slug}/${city.slug}`}
+        />
 
         <section className="mt-10" aria-labelledby="faq-heading">
           <h2 id="faq-heading" className="mb-4 text-lg font-bold text-slate-900 dark:text-white">
