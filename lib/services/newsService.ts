@@ -79,7 +79,7 @@ function parseRssItems(xml: string, feed: FeedConfig, limit: number): NewsItem[]
 
 async function fetchFeed(feed: FeedConfig, limit: number): Promise<NewsItem[]> {
   const res = await fetch(feed.url, {
-    next: { revalidate: 1800 }, // refresh every 30 minutes
+    next: { revalidate: 21600 }, // refresh every 6 hours
     headers: { "User-Agent": "WeatherCompareBot/1.0 (+https://weathercompare.example)" },
   });
   if (!res.ok) throw new Error(`Feed request failed (${res.status}): ${feed.url}`);

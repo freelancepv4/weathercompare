@@ -37,7 +37,7 @@ import { localizedMetadata } from "@/lib/i18n/pageMeta";
 // cache) — see siteConfig.weatherCacheSeconds for the rate-limit maths.
 // Rendered on first visit, then cached (not pre-built), which keeps deploys
 // fast with 7 languages × every city.
-export const revalidate = 21600;
+export const revalidate = 43200; // 12h — keep in step with siteConfig.weatherCacheSeconds (ISR write budget)
 export const dynamicParams = true;
 
 export function generateStaticParams() {

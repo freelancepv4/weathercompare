@@ -5,12 +5,17 @@
  * about every page in the live sitemap, so new and changed pages get
  * crawled within days instead of weeks. Free, no account needed.
  *
- * Run it after each deploy has finished on Vercel:
- *   node scripts/indexnow.mjs
+ * Submit ONLY pages that are new or changed — every URL you send makes
+ * Bing re-crawl it, and on Vercel each crawl of a page that isn't cached yet
+ * costs an ISR write (the Hobby plan allows 200,000 a month).
  *
- * Only list a page to IndexNow when it has actually been added or changed.
- * Re-sending an unchanged list now and then is harmless; sending it
- * many times a day is not needed.
+ *   node scripts/indexnow.mjs /weather/spain/salou /guides/best-time-to-visit/spain/salou
+ *       → submits just those pages (paths or full URLs)
+ *   node scripts/indexnow.mjs --match costa-adeje,salou
+ *       → submits every sitemap URL containing one of those words
+ *   node scripts/indexnow.mjs --all
+ *       → the whole sitemap (13,000+ URLs). Rarely needed; never right
+ *         after a deploy while the ISR budget is tight.
  *
  * Ownership is proven by the key file public/bd257da50bc3d5a9a74cdf30d2c92167.txt, which Vercel
  * serves at https://weathercompare.eu/bd257da50bc3d5a9a74cdf30d2c92167.txt — keep that file.
@@ -21,6 +26,17 @@ const KEY = "bd257da50bc3d5a9a74cdf30d2c92167";
 const SITEMAP = `https://${HOST}/sitemap.xml`;
 
 async function main() {
+  const args = process.argv.slice(2);
+  if (args.length === 0) {
+    console.log("Nothing sent. Pass the pages to submit, e.g.\n  node scripts/indexnow.mjs /weather/spain/salou\n  node scripts/indexnow.mjs --match salou,costa-adeje\n  node scripts/indexnow.mjs --all   (whole sitemap — use sparingly)");
+    return;
+  }
+  const explicit = args.filter((a) => !a.startsWith("--") && !args[args.indexOf(a) - 1]?.startsWith("--match"));
+  if (explicit.length > 0 && !args.includes("--all") && !args.includes("--match")) {
+    const urls = explicit.map((a) => (a.startsWith("http") ? a : `https://${HOST}${a.startsWith("/") ? "" : "/"}${a}`));
+    return submit(urls);
+  }
+
   // 1. Check the key file is live (IndexNow rejects submissions otherwise).
   const keyRes = await fetch(`https://${HOST}/${KEY}.txt`);
   const keyText = keyRes.ok ? (await keyRes.text()).trim() : "";
@@ -43,6 +59,19 @@ async function main() {
     process.exit(1);
   }
 
+  const mi = args.indexOf("--match");
+  if (mi >= 0) {
+    const words = (args[mi + 1] ?? "").split(",").map((w) => w.trim()).filter(Boolean);
+    urls = urls.filter((u) => words.some((w) => u.includes(w)));
+    if (urls.length === 0) {
+      console.error(`No sitemap URLs contain: ${words.join(", ")}`);
+      process.exit(1);
+    }
+  }
+  return submit(urls);
+}
+
+async function submit(urls) {
   // 3. Submit (IndexNow accepts up to 10,000 URLs per request).
   for (let i = 0; i < urls.length; i += 10000) {
     const batch = urls.slice(i, i + 10000);

@@ -51,13 +51,15 @@ export const siteConfig = {
    *
    * UPDATE (Sep 2026): with 99 seed cities the same maths gives
    *   1000 / (99 * 2) ≈ 5.05 regens/day → minimum ≈ 285 min,
-   * so the default is now 21600s (6 hours).
+   * so the default was 21600s (6 hours). With 124 cities and Vercel Hobby's
+   * ISR write budget (each page regeneration is a write), it is now 43200s
+   * (12 hours).
    *
    * If you add more seed cities, swap to a paid OpenWeatherMap tier, or
    * drop OpenWeatherMap from the comparison, adjust this accordingly.
    * Override without a code change via WEATHER_CACHE_SECONDS.
    */
-  weatherCacheSeconds: Number(process.env.WEATHER_CACHE_SECONDS) || 21600,
+  weatherCacheSeconds: Number(process.env.WEATHER_CACHE_SECONDS) || 43200,
 } as const;
 
 /**

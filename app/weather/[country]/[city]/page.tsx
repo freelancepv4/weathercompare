@@ -38,7 +38,7 @@ import { hreflang } from "@/lib/i18n/pageMeta";
 // components/SearchBar.tsx for how the two are chosen between.
 // Kept in lockstep with each live provider's own fetch cache window — see
 // the comment on siteConfig.weatherCacheSeconds for the rate-limit math.
-export const revalidate = siteConfig.weatherCacheSeconds;
+export const revalidate = 43200; // 12h literal (must be static for Next.js); matches siteConfig.weatherCacheSeconds
 
 interface PageProps {
   params: { country: string; city: string };

@@ -6,7 +6,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { Newspaper } from "lucide-react";
 import { ExternalLink } from "lucide-react";
 
-export const revalidate = 1800; // ISR: refresh every 30 minutes, matching the feed cache
+export const revalidate = 21600; // ISR: refresh every 6 hours, matching the feed cache (ISR write budget)
 
 export const metadata: Metadata = {
   title: "Weather & Climate News",

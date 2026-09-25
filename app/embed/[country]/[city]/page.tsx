@@ -23,7 +23,7 @@ import { WeatherIcon } from "@/components/WeatherIcon";
  *           loading="lazy" title="Rome weather"></iframe>
  */
 
-export const revalidate = siteConfig.weatherCacheSeconds;
+export const revalidate = 43200; // 12h literal (must be static for Next.js); matches siteConfig.weatherCacheSeconds
 
 interface PageProps {
   params: { country: string; city: string };

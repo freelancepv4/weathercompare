@@ -17,7 +17,7 @@ import { getCityClimate, DAYS_IN_MONTH } from "@/lib/data/climate";
 import type { Sky } from "@/lib/i18n/copy/types";
 
 /** How often the daily pages (and this fetch) refresh, in seconds. */
-export const DAILY_REVALIDATE = 3600;
+export const DAILY_REVALIDATE = 10800; // 3h: each refresh is an ISR write, so keep it modest
 
 export interface DayPoint {
   tMax: number;
