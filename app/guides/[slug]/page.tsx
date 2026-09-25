@@ -11,6 +11,7 @@ import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { GuideCard } from "@/components/GuideCard";
+import { ShareBar } from "@/components/ShareBar";
 import { climateHighsFor } from "@/lib/data/climate";
 
 // Hand-written editorial content, so this can stay fully static rather than
@@ -100,6 +101,13 @@ export default async function GuideArticlePage({ params }: PageProps) {
           Updated{" "}
           {new Date(guide.updated).toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric" })}
         </div>
+        <ShareBar
+          className="mt-5"
+          url={`${siteConfig.url}/guides/${guide.slug}`}
+          title={guide.title}
+          pinImage={`${siteConfig.url}/guides/${guide.slug}/opengraph-image`}
+          pinDescription={guide.description}
+        />
         <p className="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-300">{guide.intro}</p>
 
         <div className="mt-8 space-y-8">
@@ -140,6 +148,16 @@ export default async function GuideArticlePage({ params }: PageProps) {
               )}
             </section>
           ))}
+        </div>
+
+        <div className="mt-10 rounded-xl3 border border-slate-200 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle">
+          <p className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Found this useful? Save it for your trip or share it with a travel buddy.</p>
+          <ShareBar
+            url={`${siteConfig.url}/guides/${guide.slug}`}
+            title={guide.title}
+            pinImage={`${siteConfig.url}/guides/${guide.slug}/opengraph-image`}
+            pinDescription={guide.description}
+          />
         </div>
 
         <div className="mt-8">

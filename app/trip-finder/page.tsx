@@ -5,6 +5,7 @@ import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
 import { regionOf } from "@/lib/tripScore";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { ShareBar } from "@/components/ShareBar";
 import { TripFinder, type FinderCity } from "@/components/TripFinder";
 
 export const dynamic = "force-static";
@@ -60,6 +61,7 @@ export default function TripFinderPage() {
           </p>
         </div>
       </header>
+      <ShareBar className="-mt-3 mb-8" url={`${siteConfig.url}/trip-finder`} title="Trip Weather Finder: where to go for the weather you want" />
 
       {cities.length > 0 ? (
         <TripFinder cities={cities} initialMonth={new Date().getMonth()} />

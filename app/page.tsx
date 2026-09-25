@@ -49,7 +49,7 @@ export default async function HomePage() {
       name: siteConfig.name,
       url: siteConfig.url,
       logo: `${siteConfig.url}/icon-512.png`,
-      sameAs: ["https://www.pinterest.com/weathercompare/"],
+      sameAs: Object.values(siteConfig.social).filter(Boolean),
     },
   ];
 

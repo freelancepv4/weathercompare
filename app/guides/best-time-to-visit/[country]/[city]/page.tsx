@@ -11,6 +11,7 @@ import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
 import { ClimateChart } from "@/components/ClimateChart";
 import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
+import { ShareBar } from "@/components/ShareBar";
 import { HeroPhoto } from "@/components/HeroPhoto";
 
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
@@ -101,6 +102,13 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           <CalendarDays size={14} aria-hidden="true" /> Best time to visit
         </p>
         <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">Best Time to Visit {city.name}</h1>
+        <ShareBar
+          className="mt-4"
+          url={`${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}`}
+          title={`Best Time to Visit ${city.name}`}
+          pinImage={`${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}/opengraph-image`}
+          pinDescription={`Best time to visit ${city.name}: ${guide.bestTimeToVisit}`}
+        />
         <p className="mt-5 text-base leading-relaxed text-slate-600 dark:text-slate-300">{guide.intro}</p>
 
         <div className="mt-6 flex items-start gap-2.5 rounded-xl2 border border-brand-100 bg-gradient-to-br from-brand-50 to-sky-50 px-5 py-4 shadow-soft dark:border-brand-500/20 text-sm text-brand-800 dark:bg-brand-500/10 dark:text-brand-200">

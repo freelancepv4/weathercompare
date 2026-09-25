@@ -17,6 +17,17 @@ export const siteConfig = {
   locales: ["en", "it", "de", "fr", "es"] as const,
   themeColor: "#0b1f49",
   twitterHandle: "@weathercompare",
+  /**
+   * Official social profiles. Leave a value empty until the account exists —
+   * empty ones are hidden everywhere (footer icons, schema.org sameAs).
+   */
+  social: {
+    pinterest: "https://www.pinterest.com/weathercompare/",
+    instagram: "",
+    facebook: "",
+    linkedin: "",
+    x: "",
+  },
 
   /**
    * How long (in seconds) a live provider response is cached — both at the

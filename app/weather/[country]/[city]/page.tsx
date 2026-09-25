@@ -23,6 +23,7 @@ import { CityGrid } from "@/components/CityGrid";
 import { MonthLinks } from "@/components/ClimateChart";
 import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { AdSlot } from "@/components/AdSlot";
+import { ShareBar } from "@/components/ShareBar";
 import { ErrorState } from "@/components/ErrorState";
 
 // This page stays fully static/ISR (no searchParams) so the pre-built
@@ -253,6 +254,16 @@ export default async function CityPage({ params }: PageProps) {
           {getCityClimate(country.slug, city.slug) && (
             <MonthLinks countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
           )}
+
+          <div className="rounded-xl3 border border-slate-200 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle">
+            <p className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Planning a trip to {city.name}? Save or share this forecast.</p>
+            <ShareBar
+              url={`${siteConfig.url}/weather/${country.slug}/${city.slug}`}
+              title={`${city.name} weather forecast, compared`}
+              pinImage={`${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}/opengraph-image`}
+              pinDescription={`${city.name} weather compared across multiple forecast sources, plus the best time to visit ${city.name}.`}
+            />
+          </div>
 
           <section aria-labelledby="about-heading" className="rounded-xl3 border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">
             <h2 id="about-heading" className="mb-3 text-xl font-semibold text-slate-900 dark:text-white">

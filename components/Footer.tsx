@@ -2,12 +2,24 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { PinterestIcon, InstagramIcon, FacebookIcon, LinkedInIcon, XIcon } from "./SocialIcons";
 import { Logo } from "./Logo";
 import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
 import { siteConfig, localeNames, type Locale } from "@/config/site";
 import { popularCities, countries } from "@/config/countries";
 import { openCookiePreferences } from "./CookieConsent";
+
+// Only profiles with a URL in siteConfig.social are shown — add Instagram,
+// Facebook etc. there once those accounts exist.
+const SOCIAL_LINKS = (
+  [
+    { key: "pinterest", label: "Pinterest", Icon: PinterestIcon, hover: "hover:bg-[#E60023]" },
+    { key: "instagram", label: "Instagram", Icon: InstagramIcon, hover: "hover:bg-[#d62976]" },
+    { key: "facebook", label: "Facebook", Icon: FacebookIcon, hover: "hover:bg-[#1877F2]" },
+    { key: "linkedin", label: "LinkedIn", Icon: LinkedInIcon, hover: "hover:bg-[#0A66C2]" },
+    { key: "x", label: "X", Icon: XIcon, hover: "hover:bg-black" },
+  ] as const
+).filter((s) => siteConfig.social[s.key]);
 
 export function Footer() {
   const t = useTranslations();
@@ -25,15 +37,19 @@ export function Footer() {
         <div className="col-span-2 lg:col-span-2">
           <Logo />
           <p className="mt-4 max-w-xs text-sm text-slate-500 dark:text-slate-400">{t("footer.tagline")}</p>
-          <div className="mt-5 flex gap-2">
-            {[Facebook, Twitter, Instagram, Linkedin].map((Icon, i) => (
+          <div className="mt-5 flex flex-wrap items-center gap-2">
+            {SOCIAL_LINKS.map(({ key, label, Icon, hover }) => (
               <a
-                key={i}
-                href="#"
-                aria-label="Social media"
-                className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-500 transition-colors hover:bg-brand-600 hover:text-white dark:bg-white/5 dark:text-slate-400"
+                key={key}
+                href={siteConfig.social[key]}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={`${siteConfig.name} on ${label}`}
+                title={`Follow us on ${label}`}
+                className={`flex h-9 items-center gap-2 rounded-full bg-slate-100 px-3 text-sm font-medium text-slate-600 transition-colors hover:text-white dark:bg-white/5 dark:text-slate-300 ${hover}`}
               >
-                <Icon size={16} aria-hidden="true" />
+                <Icon size={16} />
+                <span>{label}</span>
               </a>
             ))}
           </div>

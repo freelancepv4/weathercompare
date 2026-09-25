@@ -18,6 +18,7 @@ import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { ClimateChart } from "@/components/ClimateChart";
+import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
 
 // Built entirely from long-term averages (lib/data/climate.json), so fully static.
@@ -237,6 +238,14 @@ export default async function CityMonthPage({ params }: PageProps) {
             <Compass size={16} aria-hidden="true" /> Where else to go in {month.name}
           </Link>
         </div>
+
+        <ShareBar
+          className="mt-5"
+          url={`${base}/${month.slug}`}
+          title={`${city.name} weather in ${month.name}`}
+          pinImage={`${base}/${month.slug}/opengraph-image`}
+          pinDescription={`${city.name} in ${month.name}: average highs of ${r(hi)}°C, lows of ${r(lo)}°C and about ${rain} mm of rain. What to pack and whether it's a good time to visit.`}
+        />
 
         <div className="mt-10">
           <ClimateChart climate={climate} countrySlug={country.slug} citySlug={city.slug} cityName={city.name} activeMonth={i} />

@@ -6,6 +6,7 @@ import { citiesWithClimate, MONTHS, monthIndex } from "@/lib/data/climate";
 import { STYLES, scoreMonth } from "@/lib/tripScore";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
 
 export const dynamic = "force-static";
@@ -98,6 +99,7 @@ export default function WhereToGoPage({ params }: PageProps) {
         >
           <Compass size={16} aria-hidden="true" /> Customise in the trip finder
         </Link>
+        <ShareBar className="mt-5" url={`${siteConfig.url}/where-to-go/${month.slug}`} title={`Where to go in ${month.name}: best weather destinations`} />
       </header>
 
       <div className="mt-10 space-y-12">
