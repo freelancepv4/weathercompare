@@ -24,7 +24,7 @@ export const siteConfig = {
   social: {
     pinterest: "https://www.pinterest.com/weathercompare/",
     instagram: "",
-    facebook: "",
+    facebook: "https://www.facebook.com/share/1PDg77GKKg/",
     linkedin: "",
     x: "",
   },
