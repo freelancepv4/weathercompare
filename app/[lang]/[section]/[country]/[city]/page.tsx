@@ -23,6 +23,9 @@ import { CityFaq } from "@/components/CityFaq";
 import { CityGrid } from "@/components/CityGrid";
 import { MonthLinks } from "@/components/ClimateChart";
 import { AdSlot } from "@/components/AdSlot";
+import { InsightList } from "@/components/InsightList";
+import { monthFacts } from "@/lib/content/insights";
+import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { ShareBar } from "@/components/ShareBar";
 import { ErrorState } from "@/components/ErrorState";
 import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
@@ -169,6 +172,16 @@ export default async function LocalizedCityPage({ params }: PageProps) {
 
           {climate && (
             <>
+              <InsightList
+                title={insightsHeading(locale, new Date().getMonth())}
+                items={renderInsights(
+                  locale,
+                  monthFacts({ country, city, climate, m: new Date().getMonth(), nameOf: (c) => cityName(c.slug, c.name, locale), max: 3 }),
+                  cn,
+                  new Date().getMonth(),
+                  `${country.slug}/${city.slug}/${new Date().getMonth()}:live`
+                )}
+              />
               <MonthLinks countrySlug={country.slug} citySlug={city.slug} cityName={cn} locale={locale} />
               {best && (
                 <p className="-mt-6 flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300">

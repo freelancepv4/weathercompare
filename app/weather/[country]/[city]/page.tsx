@@ -23,6 +23,9 @@ import { CityGrid } from "@/components/CityGrid";
 import { MonthLinks } from "@/components/ClimateChart";
 import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { AdSlot } from "@/components/AdSlot";
+import { InsightList } from "@/components/InsightList";
+import { monthFacts } from "@/lib/content/insights";
+import { renderInsights } from "@/lib/i18n/insights";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { ErrorState } from "@/components/ErrorState";
@@ -253,9 +256,25 @@ export default async function CityPage({ params }: PageProps) {
             </>
           )}
 
-          {getCityClimate(country.slug, city.slug) && (
-            <MonthLinks countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
-          )}
+          {(() => {
+            const climate = getCityClimate(country.slug, city.slug);
+            if (!climate) return null;
+            // "This time of year" notes for the current month — rebuilt with the page.
+            const m = new Date().getMonth();
+            const items = renderInsights(
+              "en",
+              monthFacts({ country, city, climate, m, landmarks: guide?.landmarks, max: 3 }),
+              city.name,
+              m,
+              `${country.slug}/${city.slug}/${m}:live`
+            );
+            return (
+              <>
+                <InsightList title={`${city.name} this time of year`} items={items} />
+                <MonthLinks countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
+              </>
+            );
+          })()}
 
           <div className="rounded-xl3 border border-slate-200 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle">
             <p className="mb-3 text-sm font-semibold text-slate-900 dark:text-white">Planning a trip to {city.name}? Save or share this forecast.</p>

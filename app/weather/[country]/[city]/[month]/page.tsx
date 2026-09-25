@@ -21,6 +21,9 @@ import { ClimateChart } from "@/components/ClimateChart";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
+import { InsightList } from "@/components/InsightList";
+import { monthFacts, pick } from "@/lib/content/insights";
+import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { hreflang } from "@/lib/i18n/pageMeta";
 
 // Built entirely from long-term averages (lib/data/climate.json), so fully static.
@@ -128,11 +131,22 @@ export default async function CityMonthPage({ params }: PageProps) {
     return `${Math.abs(diff)}°C ${diff > 0 ? "warmer" : "cooler"} than ${other}`;
   };
 
-  const summary = `${month.name} in ${city.name} is typically ${feel.temp}, with average daytime highs around ${r(hi)}°C (${toF(
-    hi
-  )}°F) and night-time lows near ${r(lo)}°C (${toF(lo)}°F). The month usually brings about ${rain} mm of rain (${
-    feel.rain
-  }) and is ${feel.sky}. Daytime highs are ${compare(hi, prevHi, prev.name)} and ${compare(hi, nextHi, next.name)}.`;
+  // Three sentence structures, picked per page, so hundreds of month pages
+  // don't all open with the identical sentence.
+  const seed = `${country.slug}/${city.slug}/${i}`;
+  const cmpLine = `Daytime highs are ${compare(hi, prevHi, prev.name)} and ${compare(hi, nextHi, next.name)}.`;
+  const summary = pick(`${seed}:summary`, [
+    `${month.name} in ${city.name} is typically ${feel.temp}, with average daytime highs around ${r(hi)}°C (${toF(hi)}°F) and night-time lows near ${r(lo)}°C (${toF(lo)}°F). The month usually brings about ${rain} mm of rain (${feel.rain}) and is ${feel.sky}. ${cmpLine}`,
+    `Expect ${feel.temp} weather in ${city.name} in ${month.name}: afternoons reach about ${r(hi)}°C (${toF(hi)}°F), while nights drop to around ${r(lo)}°C (${toF(lo)}°F). Around ${rain} mm of rain falls over the month (${feel.rain}), and skies are ${feel.sky}. ${cmpLine}`,
+    `With highs near ${r(hi)}°C (${toF(hi)}°F) and lows around ${r(lo)}°C (${toF(lo)}°F), ${month.name} feels ${feel.temp} in ${city.name}. Rainfall averages about ${rain} mm (${feel.rain}) and the sky is ${feel.sky}. ${cmpLine}`,
+  ]);
+  const insights = renderInsights(
+    "en",
+    monthFacts({ country, city, climate, m: i, landmarks: guide?.landmarks }),
+    city.name,
+    i,
+    seed
+  );
 
   const packing = packingList(climate, i);
 
@@ -205,6 +219,7 @@ export default async function CityMonthPage({ params }: PageProps) {
           {city.name} weather in {month.name}
         </h1>
         <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">{summary}</p>
+        <InsightList className="mt-5" title={insightsHeading("en", i)} items={insights} />
         {facts.length > 0 && (
           <p className="mt-3 inline-flex flex-wrap gap-2">
             {facts.map((f) => (

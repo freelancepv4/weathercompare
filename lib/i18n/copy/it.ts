@@ -70,6 +70,8 @@ export const it: Copy = {
   monthH1: (c, m) => `Meteo ${c} ${IN[m]}`,
   monthSummary: (x) =>
     `${cap(IN[x.m]!)} ${a(x.city)} il clima è in genere ${TEMP[x.temp]}, con massime intorno ai ${x.hi}°C (${x.hiF}°F) e minime notturne vicine ai ${x.lo}°C (${x.loF}°F). Cadono in media circa ${x.mm} mm di pioggia (${RAIN[x.rain]}) e il cielo è ${SKY[x.sky]}. Le massime sono ${cmp(x.dPrev, (x.m + 11) % 12)} e ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+  monthSummaryAlt: (x) =>
+    `Con massime vicine ai ${x.hi}°C (${x.hiF}°F) e minime intorno ai ${x.lo}°C (${x.loF}°F), ${M[x.m]} ${a(x.city)} è un mese ${TEMP[x.temp]}. Nel corso del mese cadono circa ${x.mm} mm di pioggia (${RAIN[x.rain]}) e il cielo è ${SKY[x.sky]}.`,
   factWarmest: (c, m) => `${cap(M[m]!)} è di solito il mese più caldo ${a(c)}.`,
   factCoolest: (c, m) => `${cap(M[m]!)} è di solito il mese più freddo ${a(c)}.`,
   factDriest: "Di solito è il mese più secco dell'anno.",

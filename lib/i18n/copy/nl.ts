@@ -70,6 +70,8 @@ export const nl: Copy = {
   monthH1: (c, m) => `Weer in ${c} in ${M[m]}`,
   monthSummary: (x) =>
     `In ${M[x.m]} is het in ${x.city} meestal ${TEMP[x.temp]}, met maxima rond ${x.hi}°C (${x.hiF}°F) en nachtelijke minima rond ${x.lo}°C (${x.loF}°F). Er valt gemiddeld zo'n ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}. De maxima zijn ${cmp(x.dPrev, (x.m + 11) % 12)} en ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+  monthSummaryAlt: (x) =>
+    `Met maxima rond ${x.hi}°C (${x.hiF}°F) en nachten van zo'n ${x.lo}°C (${x.loF}°F) is ${M[x.m]} in ${x.city} meestal ${TEMP[x.temp]}. Over de hele maand valt ongeveer ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}.`,
   factWarmest: (c, m) => `${cap(M[m]!)} is meestal de warmste maand in ${c}.`,
   factCoolest: (c, m) => `${cap(M[m]!)} is meestal de koelste maand in ${c}.`,
   factDriest: "Meestal de droogste maand van het jaar.",

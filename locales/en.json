@@ -183,5 +183,12 @@
     "nearby": "Nearby cities",
     "faq": "Frequently asked questions",
     "breadcrumbHome": "Home"
+  },
+  "share": {
+    "pin": "Save to Pinterest",
+    "or": "or share",
+    "copy": "Copy link",
+    "copied": "Copied",
+    "more": "More sharing options"
   }
 }

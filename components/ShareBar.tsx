@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Link2, Check, Share2 } from "lucide-react";
+import { useTranslations } from "@/lib/i18n/I18nProvider";
 import { FacebookIcon, LinkedInIcon, PinterestIcon, WhatsAppIcon, XIcon } from "./SocialIcons";
 
 interface ShareBarProps {
@@ -23,6 +24,7 @@ interface ShareBarProps {
  */
 export function ShareBar({ url, title, pinImage, pinDescription, className = "" }: ShareBarProps) {
   const [copied, setCopied] = useState(false);
+  const tr = useTranslations();
   const u = encodeURIComponent(url);
   const t = encodeURIComponent(title);
 
@@ -70,9 +72,9 @@ export function ShareBar({ url, title, pinImage, pinDescription, className = "" 
         rel="noopener noreferrer"
         className="inline-flex items-center gap-2 rounded-full bg-[#E60023] px-4 py-2 text-sm font-semibold text-white shadow-soft transition-transform hover:scale-[1.03] hover:bg-[#ad081b]"
       >
-        <PinterestIcon size={17} /> Save to Pinterest
+        <PinterestIcon size={17} /> {tr("share.pin")}
       </a>
-      <span className="mx-1 hidden text-xs font-medium text-slate-400 sm:inline">or share</span>
+      <span className="mx-1 hidden text-xs font-medium text-slate-400 sm:inline">{tr("share.or")}</span>
       {links.map(({ name, href, Icon, hover }) => (
         <a
           key={name}
@@ -90,17 +92,17 @@ export function ShareBar({ url, title, pinImage, pinDescription, className = "" 
       <button
         type="button"
         onClick={copy}
-        aria-label="Copy link"
-        title="Copy link"
+        aria-label={tr("share.copy")}
+        title={tr("share.copy")}
         className="flex h-9 items-center gap-1.5 rounded-full bg-slate-100 px-3 text-xs font-semibold text-slate-600 transition-colors hover:bg-brand-600 hover:text-white dark:bg-white/10 dark:text-slate-300"
       >
         {copied ? <Check size={15} aria-hidden="true" /> : <Link2 size={15} aria-hidden="true" />}
-        {copied ? "Copied" : "Copy link"}
+        {copied ? tr("share.copied") : tr("share.copy")}
       </button>
       <button
         type="button"
         onClick={nativeShare}
-        aria-label="More sharing options"
+        aria-label={tr("share.more")}
         className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 hover:bg-brand-600 hover:text-white dark:bg-white/10 dark:text-slate-300 md:hidden"
       >
         <Share2 size={15} aria-hidden="true" />

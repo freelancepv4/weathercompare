@@ -66,6 +66,8 @@ export const en: Copy = {
   monthH1: (c, m) => `${c} weather in ${M[m]}`,
   monthSummary: (a) =>
     `${M[a.m]} in ${a.city} is typically ${TEMP[a.temp]}, with daytime highs around ${a.hi}°C (${a.hiF}°F) and night-time lows near ${a.lo}°C (${a.loF}°F). The month usually brings about ${a.mm} mm of rain (${RAIN[a.rain]}) and is ${SKY[a.sky]}. Highs are ${cmp(a.dPrev, M[(a.m + 11) % 12]!)} and ${cmp(a.dNext, M[(a.m + 1) % 12]!)}.`,
+  monthSummaryAlt: (a) =>
+    `Expect ${TEMP[a.temp]} weather in ${a.city} in ${M[a.m]}: afternoons reach about ${a.hi}°C (${a.hiF}°F) and nights drop to around ${a.lo}°C (${a.loF}°F). Roughly ${a.mm} mm of rain falls over the month (${RAIN[a.rain]}), with skies ${SKY[a.sky]}.`,
   factWarmest: (c, m) => `${M[m]} is usually ${c}'s warmest month.`,
   factCoolest: (c, m) => `${M[m]} is usually ${c}'s coolest month.`,
   factDriest: "Usually the driest month of the year.",

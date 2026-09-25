@@ -88,6 +88,8 @@ export const pl: Copy = {
   monthH1: (c, m) => `Pogoda ${w(c)} ${IN[m]}`,
   monthSummary: (x) =>
     `${cap(IN[x.m]!)} ${w(x.city)} jest zwykle ${TEMP[x.temp]}: w dzień około ${x.hi}°C (${x.hiF}°F), w nocy około ${x.lo}°C (${x.loF}°F). Spada średnio około ${x.mm} mm deszczu (${RAIN[x.rain]}), a na niebie ${SKY[x.sky]}. Temperatury maksymalne są ${cmp(x.dPrev, (x.m + 11) % 12)} i ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+  monthSummaryAlt: (x) =>
+    `Za dnia około ${x.hi}°C (${x.hiF}°F), nocą około ${x.lo}°C (${x.loF}°F) – ${IN[x.m]} ${w(x.city)} jest zwykle ${TEMP[x.temp]}. W ciągu miesiąca spada około ${x.mm} mm deszczu (${RAIN[x.rain]}), a na niebie ${SKY[x.sky]}.`,
   factWarmest: (c, m) => `${cap(M[m]!)} to zwykle najcieplejszy miesiąc ${w(c)}.`,
   factCoolest: (c, m) => `${cap(M[m]!)} to zwykle najchłodniejszy miesiąc ${w(c)}.`,
   factDriest: "Zwykle najsuchszy miesiąc w roku.",

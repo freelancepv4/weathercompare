@@ -9,8 +9,10 @@ import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
+import { monthFacts } from "@/lib/content/insights";
+import { renderInsights } from "@/lib/i18n/insights";
 import { ClimateChart } from "@/components/ClimateChart";
-import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
+import { MONTHS, getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { HeroPhoto } from "@/components/HeroPhoto";
@@ -170,11 +172,39 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
 
         {(() => {
           const climate = getCityClimate(country.slug, city.slug);
-          return climate ? (
-            <div className="mt-8">
-              <ClimateChart climate={climate} countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
-            </div>
-          ) : null;
+          if (!climate) return null;
+          // One month per season, each with the observations that stand out
+          // for THIS city — so every guide gets its own data-driven notes.
+          const seasons = [0, 3, 6, 9].map((m) => ({
+            m,
+            items: renderInsights("en", monthFacts({ country, city, climate, m, landmarks: guide.landmarks, max: 2 }), city.name, m, `${country.slug}/${city.slug}/${m}:guide`),
+          }));
+          return (
+            <>
+              <div className="mt-8">
+                <ClimateChart climate={climate} countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
+              </div>
+              <h2 className="mb-4 mt-10 text-xl font-bold text-slate-900 dark:text-white">{city.name} through the year</h2>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {seasons.map(({ m, items }) => (
+                  <Link
+                    key={m}
+                    href={`/weather/${country.slug}/${city.slug}/${MONTHS[m]!.slug}`}
+                    className="group rounded-xl2 border border-slate-200 bg-white p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-soft-lg dark:border-white/10 dark:bg-surface-dark-subtle"
+                  >
+                    <p className="text-sm font-bold text-slate-900 group-hover:text-brand-700 dark:text-white">
+                      {MONTHS[m]!.name} · {Math.round(climate.tMax[m]!)}° / {Math.round(climate.tMin[m]!)}°C · {climate.precipMm[m]} mm
+                    </p>
+                    <ul className="mt-2 space-y-1.5">
+                      {items.map((t) => (
+                        <li key={t} className="text-xs leading-relaxed text-slate-600 dark:text-slate-300">{t}</li>
+                      ))}
+                    </ul>
+                  </Link>
+                ))}
+              </div>
+            </>
+          );
         })()}
 
         <div className="mt-8">

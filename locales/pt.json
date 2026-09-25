@@ -183,5 +183,12 @@
     "nearby": "Cidades próximas",
     "faq": "Perguntas frequentes",
     "breadcrumbHome": "Início"
+  },
+  "share": {
+    "pin": "Guardar no Pinterest",
+    "or": "ou partilhe",
+    "copy": "Copiar link",
+    "copied": "Copiado",
+    "more": "Mais opções de partilha"
   }
 }

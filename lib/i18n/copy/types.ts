@@ -141,6 +141,8 @@ export interface Copy {
   monthKicker: string;
   monthH1: (city: string, m: number) => string;
   monthSummary: (a: MonthSummaryArgs) => string;
+  /** A second sentence structure, so month pages don't all read alike. */
+  monthSummaryAlt: (a: MonthSummaryArgs) => string;
   factWarmest: (city: string, m: number) => string;
   factCoolest: (city: string, m: number) => string;
   factDriest: string;

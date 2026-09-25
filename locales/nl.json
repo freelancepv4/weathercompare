@@ -183,5 +183,12 @@
     "nearby": "Steden in de buurt",
     "faq": "Veelgestelde vragen",
     "breadcrumbHome": "Home"
+  },
+  "share": {
+    "pin": "Opslaan op Pinterest",
+    "or": "of deel",
+    "copy": "Link kopiëren",
+    "copied": "Gekopieerd",
+    "more": "Meer deelopties"
   }
 }

@@ -11,6 +11,9 @@ import { HeroPhoto } from "@/components/HeroPhoto";
 import { ClimateChart } from "@/components/ClimateChart";
 import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
+import { InsightList } from "@/components/InsightList";
+import { monthFacts, pick } from "@/lib/content/insights";
+import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { getCopy, describeIdx, packingKeys, bestMonths, joinList, toF } from "@/lib/i18n/copy";
 import { ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
@@ -92,7 +95,7 @@ export default async function LocalizedMonthPage({ params }: PageProps) {
   if (rains.min === i) facts.push(copy.factDriest);
   if (rains.max === i) facts.push(copy.factWettest);
 
-  const summary = copy.monthSummary({
+  const summaryArgs = {
     city: cn,
     m: i,
     temp: d.temp,
@@ -105,8 +108,16 @@ export default async function LocalizedMonthPage({ params }: PageProps) {
     mm,
     dPrev: r(hi - climate.tMax[prev]!),
     dNext: r(hi - climate.tMax[next]!),
-  });
+  };
+  const summary = pick(`${country.slug}/${city.slug}/${i}:summary`, [copy.monthSummary, copy.monthSummaryAlt])(summaryArgs);
   const packing = packingKeys(climate, i).map((k) => copy.pack[k]);
+  const insights = renderInsights(
+    locale,
+    monthFacts({ country, city, climate, m: i, nameOf: (c) => cityName(c.slug, c.name, locale) }),
+    cn,
+    i,
+    `${country.slug}/${city.slug}/${i}`
+  );
   const siblings = citiesWithClimate()
     .filter((c) => c.country.slug === country.slug && c.city.slug !== city.slug)
     .slice(0, 6);
@@ -168,6 +179,7 @@ export default async function LocalizedMonthPage({ params }: PageProps) {
         </p>
         <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{copy.monthH1(cn, i)}</h1>
         <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">{summary}</p>
+        <InsightList className="mt-5" title={insightsHeading(locale, i)} items={insights} />
         {facts.length > 0 && (
           <p className="mt-3 inline-flex flex-wrap gap-2">
             {facts.map((f) => (
