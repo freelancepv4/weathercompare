@@ -7,6 +7,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { PageHeader } from "@/components/PageHeader";
 import { climateHighsFor, getCityClimate, MONTHS } from "@/lib/data/climate";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { Compass, CalendarDays, MapPin } from "lucide-react";
 
 // Fixes a real broken link: the breadcrumb on every city page ("Home >
@@ -50,7 +51,7 @@ const COUNTRY_WEATHER_TERMS: Record<string, string[]> = {
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const country = countries.find((c) => c.slug === params.country);
   if (!country) return {};
-  const title = `${country.name} Weather Forecast — All Cities`;
+  const title = `${country.name} Weather: Forecasts for Every City`;
   const description = `Compare weather forecasts for ${country.cities.length} cities across ${country.name}, from multiple independent weather sources in one place.`;
   const url = `${siteConfig.url}/weather/${country.slug}`;
   const keywords = [
@@ -61,8 +62,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   ];
 
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     keywords,
     alternates: { canonical: url },
     openGraph: { title, description, url, images: [defaultOgImage] },

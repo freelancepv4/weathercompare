@@ -7,6 +7,7 @@ import { STYLES, scoreMonth } from "@/lib/tripScore";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
 
 export const dynamic = "force-static";
@@ -28,8 +29,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   const description = `The best places to travel in ${m.name} for hot beach weather, warm sightseeing, mild city breaks or a cool escape — ranked with 10 years of climate data.`;
   const url = `${siteConfig.url}/where-to-go/${m.slug}`;
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     alternates: { canonical: url },
     openGraph: { title, description, url, images: [defaultOgImage] },
     twitter: { title, description, images: [defaultOgImage] },

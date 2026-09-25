@@ -24,6 +24,7 @@ import { MonthLinks } from "@/components/ClimateChart";
 import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { AdSlot } from "@/components/AdSlot";
 import { ShareBar } from "@/components/ShareBar";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { ErrorState } from "@/components/ErrorState";
 
 // This page stays fully static/ISR (no searchParams) so the pre-built
@@ -76,8 +77,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
-  const title = `${city.name} Weather: 10-Day Forecast Compared`;
-  const description = `${city.name} weather forecast compared across multiple sources: hourly temperature, rain and wind for the next 10 days, plus landmarks and the best time to visit.`;
+  const title = `${city.name} Weather Today & Tomorrow: 10-Day Forecast`;
+  const description = `${city.name} weather today and tomorrow, compared across several forecast sources: hourly temperature, rain and wind for 10 days, plus the best time to visit.`;
   const url = `${siteConfig.url}/weather/${country.slug}/${city.slug}`;
 
   const nativeCityName = city.i18nName ? Object.values(city.i18nName).find((n) => n && n !== city.name) : undefined;
@@ -91,8 +92,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   ];
 
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     keywords,
     alternates: { canonical: url },
     openGraph: { title, description, url, images: [defaultOgImage] },

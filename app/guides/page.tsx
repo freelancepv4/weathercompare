@@ -6,6 +6,7 @@ import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { countries } from "@/config/countries";
 import { Breadcrumb } from "@/components/Breadcrumb";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { GuideCard, CATEGORY_STYLES } from "@/components/GuideCard";
 
 export const dynamic = "force-static";
@@ -16,8 +17,8 @@ export function generateMetadata(): Metadata {
     "City guides beyond the forecast: when to visit, how cities compare, what to pack, seasonal picks and AI travel tools for destinations worldwide.";
   const url = `${siteConfig.url}/guides`;
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     alternates: { canonical: url },
     openGraph: { title, description, url, images: [defaultOgImage] },
     twitter: { title, description, images: [defaultOgImage] },

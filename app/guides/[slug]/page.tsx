@@ -12,6 +12,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { GuideCard } from "@/components/GuideCard";
 import { ShareBar } from "@/components/ShareBar";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { climateHighsFor } from "@/lib/data/climate";
 
 // Hand-written editorial content, so this can stay fully static rather than
@@ -31,8 +32,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   if (!guide) return {};
   const url = `${siteConfig.url}/guides/${guide.slug}`;
   return {
-    title: guide.seoTitle ?? guide.title,
-    description: guide.description,
+    title: seoTitle(guide.seoTitle ?? guide.title),
+    description: seoDescription(guide.description),
     alternates: { canonical: url },
     // No `images` here on purpose — app/guides/[slug]/opengraph-image.tsx
     // (a portrait image, sized for Pinterest's Save-from-URL requirement)

@@ -19,6 +19,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { ClimateChart } from "@/components/ClimateChart";
 import { ShareBar } from "@/components/ShareBar";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
 
 // Built entirely from long-term averages (lib/data/climate.json), so fully static.
@@ -59,8 +60,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   )}°F), lows of ${r(climate.tMin[i]!)}°C and about ${climate.precipMm[i]} mm of rain — plus what to pack.`;
   const url = `${siteConfig.url}/weather/${d.country.slug}/${city.slug}/${month.slug}`;
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     alternates: { canonical: url },
     // No images here on purpose — ./opengraph-image.tsx (a 2:3 Pinterest card) attaches automatically.
     openGraph: { title, description, url },

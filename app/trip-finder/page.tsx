@@ -6,6 +6,7 @@ import { regionOf } from "@/lib/tripScore";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { TripFinder, type FinderCity } from "@/components/TripFinder";
 
 export const dynamic = "force-static";
@@ -16,8 +17,8 @@ export function generateMetadata(): Metadata {
     "Pick a month and the weather you want — hot and sunny, mild, or cool — and instantly see which cities match best, based on 10 years of climate data.";
   const url = `${siteConfig.url}/trip-finder`;
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     alternates: { canonical: url },
     openGraph: { title, description, url, images: [defaultOgImage] },
     twitter: { title, description, images: [defaultOgImage] },

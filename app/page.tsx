@@ -9,7 +9,7 @@ import { getLandscapePhoto } from "@/lib/providers/photos";
 import { GuideCard } from "@/components/GuideCard";
 
 export const metadata: Metadata = {
-  title: { absolute: `Weather Forecasts Compared from Multiple Sources — ${siteConfig.name}` },
+  title: { absolute: `Weather Forecasts Compared | ${siteConfig.name}` },
   description: siteConfig.description,
   alternates: { canonical: "/" },
   openGraph: {

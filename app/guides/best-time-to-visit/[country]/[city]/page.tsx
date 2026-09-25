@@ -12,6 +12,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { ClimateChart } from "@/components/ClimateChart";
 import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { ShareBar } from "@/components/ShareBar";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import { HeroPhoto } from "@/components/HeroPhoto";
 
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
@@ -35,8 +36,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   const description = `When to visit ${city.name}: the mild-weather, lower-crowd window recommended for this city, plus what's worth planning your trip around.`;
   const url = `${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}`;
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     alternates: { canonical: url },
     // No `images` here on purpose — the sibling opengraph-image.tsx (a
     // portrait image, sized for Pinterest's Save-from-URL requirement)

@@ -6,6 +6,7 @@ import { CityGrid } from "@/components/CityGrid";
 import { PageHeader } from "@/components/PageHeader";
 import { climateHighsFor } from "@/lib/data/climate";
 import { CalendarDays, Compass } from "lucide-react";
+import { seoTitle, seoDescription } from "@/lib/seo";
 import Link from "next/link";
 
 export const dynamic = "force-static";
@@ -16,8 +17,8 @@ export function generateMetadata(): Metadata {
     "When to visit every city on WeatherCompare, worldwide: mild-weather windows, crowd-avoiding shoulder seasons, and what to expect each season.";
   const url = `${siteConfig.url}/guides/best-time-to-visit`;
   return {
-    title,
-    description,
+    title: seoTitle(title),
+    description: seoDescription(description),
     alternates: { canonical: url },
     openGraph: { title, description, url, images: [defaultOgImage] },
     twitter: { title, description, images: [defaultOgImage] },
