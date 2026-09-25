@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
 const IN = ["a gennaio", "a febbraio", "a marzo", "ad aprile", "a maggio", "a giugno", "a luglio", "ad agosto", "a settembre", "a ottobre", "a novembre", "a dicembre"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const a = (c: string) => (c === "Algarve" ? "in Algarve" : c.startsWith("Il ") ? `al ${c.slice(3)}` : `a ${c}`);
+const a = (c: string) => (c === "Algarve" ? "in Algarve" : c === "Calcidica" ? "in Calcidica" : c.startsWith("Il ") ? `al ${c.slice(3)}` : `a ${c}`);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `simili a quelle di ${M[m]}` : `${Math.abs(d)}°C più ${d > 0 ? "alte" : "basse"} rispetto a ${M[m]}`;
 const TEMP = ["molto caldo", "caldo", "piacevolmente caldo", "mite", "fresco", "freddo", "gelido"];

@@ -5,7 +5,7 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** "em Lisboa", but "no Porto", "no Cairo", "na Cidade do Cabo"… */
 const em = (c: string) => {
   if (/^(Porto|Cairo|Rio de Janeiro|Dubai|Algarve)$/.test(c)) return `no ${c}`;
-  if (c === "Madeira") return `na ${c}`;
+  if (c === "Madeira" || c === "Calcídica") return `na ${c}`;
   if (/^Cidade /.test(c)) return `na ${c}`;
   return `em ${c}`;
 };

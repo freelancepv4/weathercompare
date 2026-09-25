@@ -1168,6 +1168,406 @@ export const cityGuides: Record<string, CityGuide> = {
     goodToKnow:
       "Curaçao lies south of the main hurricane path, so storms are rare.",
   },
+  "spain:costa-adeje": {
+    intro:
+      "Tenerife's main resort area on the sunny southwest coast, with hotels along a long seafront promenade, sheltered beaches and the island's most reliable sunshine.",
+    bestTimeToVisit: "All year: winters are mild and summers rarely scorching. March–June and September–November are the most comfortable.",
+    landmarks: [
+      { name: "Playa del Duque", description: "A sheltered golden-sand beach lined with upmarket hotels." },
+      { name: "Siam Park", description: "A large Thai-themed water park just inland." },
+      { name: "Barranco del Infierno", description: "A gorge hike to a waterfall above Adeje town; permit required." },
+      { name: "Playa de las Américas", description: "The neighbouring resort, known for nightlife and surf breaks." },
+    ],
+    localTip: "Whale- and dolphin-watching boats leave from Puerto Colón; the sea is calmest in the morning.",
+    gettingAround:
+      "The seafront promenade links Costa Adeje with Playa de las Américas and Los Cristianos; TITSA buses reach the rest of the island.",
+    goodToKnow:
+      "The south is drier and sunnier than the north of the island. When Teide has snow in winter, the coast can still be around 22°C.",
+  },
+  "spain:puerto-de-la-cruz": {
+    intro:
+      "Tenerife's original resort town on the green north coast, with an old fishing harbour, sea-water pools and views of Mount Teide.",
+    bestTimeToVisit: "April–October for the most sunshine; winters are mild but cloudier and wetter than in the south.",
+    landmarks: [
+      { name: "Lago Martiánez", description: "Sea-water swimming pools designed by César Manrique." },
+      { name: "Loro Parque", description: "One of the island's best-known animal parks." },
+      { name: "Jardín Botánico", description: "A historic botanical garden founded in the 18th century." },
+      { name: "Playa Jardín", description: "A black-sand beach framed by gardens." },
+    ],
+    localTip: "The Atlantic here can be rough, so swim in Lago Martiánez or at flagged beaches.",
+    gettingAround:
+      "The town centre is walkable; buses connect it to La Orotava, Santa Cruz and the north airport.",
+    goodToKnow:
+      "Trade-wind clouds often gather over the north in the afternoons, which keeps it greener and a little cooler than Costa Adeje.",
+  },
+  "spain:maspalomas": {
+    intro:
+      "Gran Canaria's big southern resort, famous for its sand dunes, lighthouse and long beach, which runs into neighbouring Playa del Inglés.",
+    bestTimeToVisit: "All year; October–May gives warm, sunny days while most of Europe is cold.",
+    landmarks: [
+      { name: "Maspalomas Dunes", description: "A protected field of sand dunes beside the sea." },
+      { name: "Maspalomas Lighthouse", description: "A 19th-century lighthouse at the end of the promenade." },
+      { name: "Playa del Inglés", description: "The adjoining resort with the island's busiest beach." },
+      { name: "Charca de Maspalomas", description: "A small lagoon and bird reserve at the edge of the dunes." },
+    ],
+    localTip: "Walk the dunes early or late in the day; the sand gets very hot by midday.",
+    gettingAround:
+      "Buses link the resort to Las Palmas and the airport in about 40 minutes.",
+    goodToKnow:
+      "The south of the island is much sunnier than the capital, Las Palmas, which often sits under low cloud in summer.",
+  },
+  "spain:playa-blanca": {
+    intro:
+      "A quieter resort at Lanzarote's southern tip, with a marina, a seafront promenade and ferries across to Fuerteventura.",
+    bestTimeToVisit: "All year; spring and autumn are warm without the summer crowds.",
+    landmarks: [
+      { name: "Papagayo Beaches", description: "Sheltered coves in a protected natural area east of town." },
+      { name: "Marina Rubicón", description: "A marina with restaurants and a weekly market." },
+      { name: "Los Hervideros", description: "Lava caves where the waves crash through the rock." },
+      { name: "Timanfaya National Park", description: "Volcanic landscapes about 30 minutes north." },
+    ],
+    localTip: "The Papagayo coves are reached on a dirt road with a small entry fee, so bring cash.",
+    gettingAround:
+      "The resort is spread out, so a hire car helps; ferries to Corralejo take about 25 minutes.",
+    goodToKnow:
+      "Lanzarote is windy, especially in summer, which keeps the heat pleasant but can make beaches blustery.",
+  },
+  "spain:corralejo": {
+    intro:
+      "A lively resort town at the northern tip of Fuerteventura, next to a protected area of white sand dunes.",
+    bestTimeToVisit: "All year; April–June and September–October have warm days and lighter winds.",
+    landmarks: [
+      { name: "Corralejo Dunes Natural Park", description: "White sand dunes running down to long beaches." },
+      { name: "Isla de Lobos", description: "A small protected island reached by boat for walks and snorkelling." },
+      { name: "Old harbour", description: "The original fishing quarter with seafood restaurants." },
+      { name: "El Cotillo", description: "A village with calm lagoon beaches on the west coast." },
+    ],
+    localTip: "Visits to Isla de Lobos need a free online permit, so book it before you go.",
+    gettingAround:
+      "The town is walkable; buses and hire cars reach the rest of the island, and ferries cross to Lanzarote.",
+    goodToKnow:
+      "Fuerteventura is one of Europe's windiest islands, popular with kitesurfers, especially from June to August.",
+  },
+  "spain:menorca": {
+    intro:
+      "The quietest of the big Balearic Islands, known for turquoise coves, two historic towns and a protected landscape.",
+    bestTimeToVisit: "June and September for warm sea and fewer crowds; July and August are hottest and busiest.",
+    landmarks: [
+      { name: "Ciutadella", description: "The old capital, with a cathedral and a narrow harbour." },
+      { name: "Mahón (Maó) Harbour", description: "One of the largest natural harbours in the Mediterranean." },
+      { name: "Cala Macarella", description: "A pine-fringed cove with clear, shallow water." },
+      { name: "Camí de Cavalls", description: "A coastal footpath that circles the whole island." },
+    ],
+    localTip: "Parking at popular coves fills early in summer, so take the beach buses or go before 10am.",
+    gettingAround:
+      "Buses connect the main towns and beaches in summer; a hire car makes the remote coves easier.",
+    goodToKnow:
+      "Menorca is often windier than Mallorca, especially when the Tramontana blows from the north.",
+  },
+  "spain:alcudia": {
+    intro:
+      "A family resort on Mallorca's north coast, with a walled old town and a long, shallow sandy bay.",
+    bestTimeToVisit: "May–June and September for warm weather and calmer beaches.",
+    landmarks: [
+      { name: "Alcúdia Old Town", description: "Medieval walls, narrow streets and a Tuesday and Sunday market." },
+      { name: "Playa de Alcúdia", description: "A long bay with gently sloping sand, good for children." },
+      { name: "Pollentia", description: "The remains of a Roman town next to the walls." },
+      { name: "Cap de Formentor", description: "A dramatic headland with a lighthouse, a short drive away." },
+    ],
+    localTip: "Drive to Formentor early; in summer, cars are restricted at busy times and shuttle buses run instead.",
+    gettingAround:
+      "Buses connect Alcúdia with Pollença and Palma; bikes are popular on the flat coastal roads.",
+    goodToKnow:
+      "The north coast is a little cooler and greener than Palma, with more rain in autumn.",
+  },
+  "spain:salou": {
+    intro:
+      "A beach resort on the Costa Dorada near Tarragona, known for its long promenade and the PortAventura theme parks.",
+    bestTimeToVisit: "June and September for beach weather without the peak-summer crowds.",
+    landmarks: [
+      { name: "PortAventura World", description: "A large theme park resort with a water park and Ferrari Land." },
+      { name: "Platja Llarga", description: "A quieter beach backed by pine trees." },
+      { name: "Camí de Ronda", description: "A coastal path between coves and viewpoints." },
+      { name: "Tarragona", description: "A Roman city with an amphitheatre, 15 minutes away." },
+    ],
+    localTip: "Many hotels and restaurants close from November to March, so check before a winter visit.",
+    gettingAround:
+      "Trains run to Tarragona and Barcelona; local buses and taxis cover the resort.",
+    goodToKnow:
+      "Autumn can bring short, heavy rainstorms to this coast, especially in September and October.",
+  },
+  "spain:lloret-de-mar": {
+    intro:
+      "A busy Costa Brava resort with a sandy main beach, rocky coves and gardens on the cliffs.",
+    bestTimeToVisit: "June and September for warm sea and fewer crowds.",
+    landmarks: [
+      { name: "Santa Clotilde Gardens", description: "Terraced gardens on the cliffs above the sea." },
+      { name: "Sant Joan Castle", description: "A restored watchtower between two beaches." },
+      { name: "Cala Boadella", description: "A small cove reached by a path through the pines." },
+      { name: "Tossa de Mar", description: "A walled medieval town a short boat trip away." },
+    ],
+    localTip: "Boats along the coast to Tossa de Mar are the easiest way to see the coves.",
+    gettingAround:
+      "Buses run to Girona and Barcelona; the town centre is walkable.",
+    goodToKnow:
+      "The Costa Brava is greener and a little cooler than Spain's southern coasts, with more rain in autumn.",
+  },
+  "spain:alicante": {
+    intro:
+      "A port city on the Costa Blanca with a palm-lined promenade, a hilltop castle and a city beach.",
+    bestTimeToVisit: "April–June and September–October for warm, sunny days without July and August heat.",
+    landmarks: [
+      { name: "Castillo de Santa Bárbara", description: "A hilltop fortress with views over the city and coast." },
+      { name: "Explanada de España", description: "The wavy mosaic promenade along the harbour." },
+      { name: "Playa del Postiguet", description: "The city's central beach below the castle." },
+      { name: "Tabarca Island", description: "A small island with a walled village, reached by boat." },
+    ],
+    localTip: "Take the lift inside the hill up to the castle, then walk down through the old Santa Cruz quarter.",
+    gettingAround:
+      "Trams run along the coast to Benidorm; buses link the airport with the centre.",
+    goodToKnow:
+      "Alicante is one of the driest and sunniest cities in Spain, with mild winters.",
+  },
+  "spain:benalmadena": {
+    intro:
+      "A Costa del Sol resort west of Málaga, with a large marina, a hillside old village and a cable car into the mountains.",
+    bestTimeToVisit: "April–June and September–October for warm weather without the peak-summer heat.",
+    landmarks: [
+      { name: "Puerto Marina", description: "A marina with fanciful architecture, restaurants and bars." },
+      { name: "Benalmádena Cable Car", description: "A cable car up Mount Calamorro for coastal views." },
+      { name: "Colomares Castle", description: "An unusual monument to Christopher Columbus." },
+      { name: "Benalmádena Pueblo", description: "The white village in the hills above the coast." },
+    ],
+    localTip: "The cable car closes when it's windy, so check it's running before you go.",
+    gettingAround:
+      "The Cercanías train links Benalmádena with Málaga airport, Torremolinos and Fuengirola.",
+    goodToKnow:
+      "The Costa del Sol has mild winters, with daytime highs around 17°C in January.",
+  },
+  "spain:torremolinos": {
+    intro:
+      "The Costa del Sol's first big resort, close to Málaga airport, with long beaches and a lively centre.",
+    bestTimeToVisit: "April–June and September–October for warm days; July and August are hot and busy.",
+    landmarks: [
+      { name: "La Carihuela", description: "A former fishing quarter known for fried fish." },
+      { name: "Playamar Beach", description: "A long beach with a seafront promenade." },
+      { name: "Molino de Inca Botanical Garden", description: "Gardens around historic water mills." },
+      { name: "San Miguel Street", description: "The main shopping street in the old centre." },
+    ],
+    localTip: "Try espetos, sardines grilled on skewers over beach fires, at a chiringuito in La Carihuela.",
+    gettingAround:
+      "The Cercanías train reaches Málaga airport in about 10 minutes and Málaga city in 20.",
+    goodToKnow:
+      "Being so close to the airport makes it a popular short winter-sun break.",
+  },
+  "spain:fuengirola": {
+    intro:
+      "A family-friendly Costa del Sol town with 7 km of beaches, a Moorish castle and a long seafront promenade.",
+    bestTimeToVisit: "April–June and September–October for warm weather; winter stays mild.",
+    landmarks: [
+      { name: "Sohail Castle", description: "A restored Moorish castle at the mouth of the river." },
+      { name: "Bioparc Fuengirola", description: "A zoo designed around natural habitats." },
+      { name: "Paseo Marítimo", description: "A seafront promenade along the whole town." },
+      { name: "Mijas Pueblo", description: "A white hill village 20 minutes inland." },
+    ],
+    localTip: "Buses run up to Mijas Pueblo, which is cooler than the coast on hot days.",
+    gettingAround:
+      "Fuengirola is the last stop on the Cercanías line from Málaga, via the airport.",
+    goodToKnow:
+      "It has a large year-round community of northern European residents, so it stays lively in winter.",
+  },
+  "spain:marbella": {
+    intro:
+      "An upmarket Costa del Sol town with a pretty old quarter, beach clubs and the Puerto Banús marina.",
+    bestTimeToVisit: "May–June and September–October for warm, sunny days without the summer peak.",
+    landmarks: [
+      { name: "Plaza de los Naranjos", description: "The orange-tree square at the heart of the old town." },
+      { name: "Puerto Banús", description: "A marina known for yachts, boutiques and nightlife." },
+      { name: "Avenida del Mar", description: "A boulevard with Salvador Dalí sculptures." },
+      { name: "Sierra Blanca", description: "The mountains behind the town, with hiking trails." },
+    ],
+    localTip: "Explore the old town in the evening, when the squares fill with people.",
+    gettingAround:
+      "Buses link Marbella with Málaga and its airport in about 45 minutes; there's no train.",
+    goodToKnow:
+      "The Sierra Blanca shelters the town from northern winds, giving it a mild microclimate.",
+  },
+  "portugal:albufeira": {
+    intro:
+      "The Algarve's liveliest resort, a former fishing town with an old centre on the cliffs and golden beaches below.",
+    bestTimeToVisit: "May–June and September–October for warm, sunny weather and quieter beaches.",
+    landmarks: [
+      { name: "Praia dos Pescadores", description: "The central beach, reached through a tunnel from the old town." },
+      { name: "Old Town", description: "White houses and narrow streets on the cliffs." },
+      { name: "Praia da Falésia", description: "A long beach under red and orange cliffs." },
+      { name: "Benagil Cave", description: "A sea cave with a hole in its roof, reached by boat or kayak." },
+    ],
+    localTip: "Boat trips to Benagil run from Albufeira's marina; morning trips have calmer seas.",
+    gettingAround:
+      "Buses link the town with Faro airport; the old town and main beaches are walkable.",
+    goodToKnow:
+      "The Atlantic stays cool, around 20–22°C even in August.",
+  },
+  "greece:kos": {
+    intro:
+      "A Dodecanese island near the Turkish coast, with long sandy beaches, ancient ruins and flat roads made for cycling.",
+    bestTimeToVisit: "May–June and September–October for warm sea and fewer crowds.",
+    landmarks: [
+      { name: "Asklepion", description: "The ancient healing sanctuary linked to Hippocrates." },
+      { name: "Neratzia Castle", description: "A Knights of St John fortress by the harbour." },
+      { name: "Paradise Beach", description: "A popular sandy beach on the south coast." },
+      { name: "Zia", description: "A mountain village known for its sunset views." },
+    ],
+    localTip: "Rent a bike in Kos Town; there are cycle lanes along the coast.",
+    gettingAround:
+      "Buses connect the main resorts; ferries go to nearby islands and to Bodrum in Turkey.",
+    goodToKnow:
+      "The summer meltemi wind keeps temperatures bearable but can make the north coast choppy.",
+  },
+  "greece:zakynthos": {
+    intro:
+      "An Ionian island, also known as Zante, famous for Navagio shipwreck beach, sea caves and loggerhead turtles.",
+    bestTimeToVisit: "June and September for warm sea and calmer resorts; July and August are hottest.",
+    landmarks: [
+      { name: "Navagio (Shipwreck Beach)", description: "A cove with a rusting wreck under white cliffs." },
+      { name: "Blue Caves", description: "Sea caves with bright blue water on the north coast." },
+      { name: "Laganas Bay", description: "A marine park where loggerhead turtles nest." },
+      { name: "Bochali", description: "A hill above Zakynthos Town with views over the harbour." },
+    ],
+    localTip: "Check that Navagio is open before booking; access has been restricted at times because of rockfalls.",
+    gettingAround:
+      "A hire car or scooter is the easiest way to explore; boat trips go to the caves and Navagio.",
+    goodToKnow:
+      "Some beaches on Laganas Bay have restrictions during turtle nesting season, from May to October.",
+  },
+  "greece:kefalonia": {
+    intro:
+      "The largest Ionian island, with mountains, underground lakes and some of Greece's most photographed beaches.",
+    bestTimeToVisit: "June and September for warm weather and sea; spring is green and good for hiking.",
+    landmarks: [
+      { name: "Myrtos Beach", description: "A white-pebble beach between steep cliffs." },
+      { name: "Melissani Cave", description: "An underground lake lit by sunlight through a collapsed roof." },
+      { name: "Assos", description: "A fishing village beside a Venetian fortress." },
+      { name: "Mount Ainos", description: "A national park with fir forests and hiking trails." },
+    ],
+    localTip: "Visit Melissani around midday, when sunlight shines straight into the cave.",
+    gettingAround:
+      "A hire car is almost essential; buses are limited outside Argostoli.",
+    goodToKnow:
+      "The Ionian islands are greener and get more winter rain than the Aegean islands.",
+  },
+  "greece:halkidiki": {
+    intro:
+      "A peninsula in northern Greece with three long fingers of land, pine forests and many sandy beaches.",
+    bestTimeToVisit: "June and September for warm sea and quieter beaches; July and August are busiest.",
+    landmarks: [
+      { name: "Kassandra", description: "The busiest peninsula, with resorts and beach bars." },
+      { name: "Sithonia", description: "The middle peninsula, with coves and pine forests." },
+      { name: "Mount Athos", description: "A monastic community seen on boat trips from Ouranoupoli." },
+      { name: "Petralona Cave", description: "A cave with stalactites and prehistoric finds." },
+    ],
+    localTip: "Sithonia's beaches are quieter than Kassandra's; stay there if you want space.",
+    gettingAround:
+      "Thessaloniki airport is about an hour away; a hire car is the easiest way around.",
+    goodToKnow:
+      "Winters are colder than on the Greek islands, and many hotels close from November to April.",
+  },
+  "cyprus:ayia-napa": {
+    intro:
+      "A beach resort on Cyprus's southeast coast, known for clear water, sea caves and a long summer season.",
+    bestTimeToVisit: "May–June and September–October for warm sea without the peak heat.",
+    landmarks: [
+      { name: "Nissi Beach", description: "A sandy beach with a small island reached through shallow water." },
+      { name: "Cape Greco", description: "A national park with sea caves and cliff walks." },
+      { name: "Ayia Napa Monastery", description: "A Venetian-era monastery in the town centre." },
+      { name: "Konnos Bay", description: "A sheltered cove near Cape Greco." },
+    ],
+    localTip: "Walk to the sea caves at Cape Greco in the early morning, before the boat trips arrive.",
+    gettingAround:
+      "Buses link Ayia Napa with Protaras and Larnaca airport, about 45 minutes away.",
+    goodToKnow:
+      "It hardly rains from May to October, and the sea stays warm into November.",
+  },
+  "turkey:side": {
+    intro:
+      "A resort on the Turkish Riviera east of Antalya, where hotels and beaches sit around an ancient harbour town.",
+    bestTimeToVisit: "May–June and September–October; July and August often pass 35°C.",
+    landmarks: [
+      { name: "Temple of Apollo", description: "Seaside columns that are lit up at sunset." },
+      { name: "Side Ancient Theatre", description: "A large Roman theatre in the old town." },
+      { name: "Manavgat Waterfall", description: "A wide, low waterfall a short drive inland." },
+      { name: "Aspendos", description: "One of the best-preserved Roman theatres, about 40 minutes away." },
+    ],
+    localTip: "Visit the ruins in the late afternoon; they're next to the sea and cooler then.",
+    gettingAround:
+      "Minibuses (dolmuş) run between the old town and hotels; Antalya airport is about an hour away.",
+    goodToKnow:
+      "The sea is warm enough for swimming from May to early November.",
+  },
+  "turkey:marmaris": {
+    intro:
+      "A resort in a sheltered bay where the Aegean meets the Mediterranean, backed by pine-covered hills.",
+    bestTimeToVisit: "May–June and September–October for warm, sunny weather without the midsummer heat.",
+    landmarks: [
+      { name: "Marmaris Castle", description: "A small castle above the harbour with a museum." },
+      { name: "Marina", description: "A busy marina with boat trips around the bay." },
+      { name: "Turunç", description: "A quieter beach village reached by water taxi." },
+      { name: "Dalyan", description: "Rock tombs, mud baths and a turtle beach, on a day trip." },
+    ],
+    localTip: "Daily boat trips visit several coves; they're the best way to see the coastline.",
+    gettingAround:
+      "Dalaman airport is about 90 minutes away; dolmuş minibuses link nearby villages.",
+    goodToKnow:
+      "Winters are mild but wet; almost all the year's rain falls between November and March.",
+  },
+  "turkey:bodrum": {
+    intro:
+      "A stylish peninsula on the Aegean coast, with white houses, a crusader castle and many bays and beach clubs.",
+    bestTimeToVisit: "June and September for warm sea and a relaxed pace; July and August are busiest.",
+    landmarks: [
+      { name: "Bodrum Castle", description: "A Knights of St John castle with an underwater archaeology museum." },
+      { name: "Mausoleum of Halicarnassus", description: "The site of one of the Seven Wonders of the Ancient World." },
+      { name: "Gümüşlük", description: "A fishing village known for its sunset restaurants." },
+      { name: "Bodrum Windmills", description: "Old stone windmills on the hill above town." },
+    ],
+    localTip: "Book a table in Gümüşlük for sunset; the waterfront fills quickly in summer.",
+    gettingAround:
+      "Dolmuş minibuses connect the peninsula's villages; Milas-Bodrum airport is about 40 minutes away.",
+    goodToKnow:
+      "The Aegean side is a little less humid than the Turkish Riviera around Antalya.",
+  },
+  "cape-verde:sal": {
+    intro:
+      "A flat, dry Atlantic island off West Africa, with warm weather all year, white beaches and strong trade winds.",
+    bestTimeToVisit: "All year; November–June is driest, and winter is the main season for European visitors.",
+    landmarks: [
+      { name: "Santa Maria Beach", description: "A long white-sand beach in the main resort town." },
+      { name: "Pedra de Lume Salt Crater", description: "Salt pans inside an old volcanic crater where you can float." },
+      { name: "Buracona", description: "A natural rock pool and the 'Blue Eye' light effect." },
+      { name: "Kite Beach", description: "One of the best-known kitesurfing spots in the Atlantic." },
+    ],
+    localTip: "Visit Buracona around midday, when the sun lights up the Blue Eye.",
+    gettingAround:
+      "The airport is 20 minutes from Santa Maria; taxis and quad tours cover the island.",
+    goodToKnow:
+      "Daytime highs stay around 25–30°C all year, and it's windy from December to May.",
+  },
+  "cape-verde:boa-vista": {
+    intro:
+      "Cape Verde's third-largest island, known for huge empty beaches, desert-like dunes and nesting turtles.",
+    bestTimeToVisit: "November–June for dry, sunny weather; July–October brings turtle nesting and the odd shower.",
+    landmarks: [
+      { name: "Santa Monica Beach", description: "A long, empty beach on the south coast." },
+      { name: "Viana Desert", description: "Sand dunes blown in from the Sahara." },
+      { name: "Sal Rei", description: "The island's small capital, with a colourful main square." },
+      { name: "Cabo Santa Maria shipwreck", description: "A rusting cargo ship stranded on the north coast." },
+    ],
+    localTip: "Turtle-watching tours run at night from July to October with licensed local guides.",
+    gettingAround:
+      "Most hotels are outside Sal Rei; taxis and jeep tours are the way to reach remote beaches.",
+    goodToKnow:
+      "The sea can have strong currents, so swim only at supervised beaches.",
+  },
   "portugal:lisbon": {
     intro:
       "A hilly, coastal capital of pastel buildings, historic trams, and viewpoints (miradouros) over the Tagus river. Its seven hills mean a lot of up-and-down walking, softened by frequent viewpoints and outdoor café stops.",

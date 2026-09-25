@@ -4,7 +4,7 @@ const M = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augu
 /** "in Italië", but "in het Verenigd Koninkrijk", "in de Verenigde Staten". */
 const inK = (k: string) => (k === "Verenigd Koninkrijk" ? `in het ${k}` : k.startsWith("Verenigde ") ? `in de ${k}` : `in ${k}`);
 /** Islands take "op" ("op Tenerife"), the Algarve "in de". */
-const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao"]);
+const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista"]);
 const inC = (c: string) => (c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);

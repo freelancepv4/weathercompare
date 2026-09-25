@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 const IN = M.map((m) => `im ${m}`);
 /** Islands take "auf" ("auf Kreta"), the Algarve "an der". */
-const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao"]);
+const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista"]);
 const inC = (c: string) => (c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cmp = (d: number, m: number) =>

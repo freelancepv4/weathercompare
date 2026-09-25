@@ -91,6 +91,20 @@ export const countries: CountrySeed[] = [
       { slug: "ibiza", name: "Ibiza", region: "Balearic Islands", lat: 38.9067, lon: 1.4206, population: 150000, timezone: "Europe/Madrid" },
       { slug: "malaga", name: "Málaga", region: "Andalusia", lat: 36.7213, lon: -4.4214, population: 578000, timezone: "Europe/Madrid" },
       { slug: "benidorm", name: "Benidorm", region: "Valencian Community", lat: 38.5411, lon: -0.1225, population: 70000, timezone: "Europe/Madrid" },
+      { slug: "costa-adeje", name: "Costa Adeje", region: "Canary Islands (Tenerife)", lat: 28.081, lon: -16.73, population: 47000, timezone: "Atlantic/Canary" },
+      { slug: "puerto-de-la-cruz", name: "Puerto de la Cruz", region: "Canary Islands (Tenerife)", lat: 28.414, lon: -16.548, population: 30000, timezone: "Atlantic/Canary" },
+      { slug: "maspalomas", name: "Maspalomas", region: "Canary Islands (Gran Canaria)", lat: 27.76, lon: -15.586, population: 60000, timezone: "Atlantic/Canary" },
+      { slug: "playa-blanca", name: "Playa Blanca", region: "Canary Islands (Lanzarote)", lat: 28.864, lon: -13.829, population: 12000, timezone: "Atlantic/Canary" },
+      { slug: "corralejo", name: "Corralejo", region: "Canary Islands (Fuerteventura)", lat: 28.73, lon: -13.867, population: 16000, timezone: "Atlantic/Canary" },
+      { slug: "menorca", name: "Menorca", region: "Balearic Islands", lat: 39.888, lon: 4.265, population: 96000, timezone: "Europe/Madrid" },
+      { slug: "alcudia", name: "Alcúdia", region: "Balearic Islands (Mallorca)", lat: 39.853, lon: 3.121, population: 20000, timezone: "Europe/Madrid" },
+      { slug: "salou", name: "Salou", region: "Catalonia", lat: 41.076, lon: 1.14, population: 28000, timezone: "Europe/Madrid" },
+      { slug: "lloret-de-mar", name: "Lloret de Mar", region: "Catalonia", lat: 41.699, lon: 2.845, population: 39000, timezone: "Europe/Madrid" },
+      { slug: "alicante", name: "Alicante", region: "Valencian Community", lat: 38.345, lon: -0.481, population: 338000, timezone: "Europe/Madrid" },
+      { slug: "benalmadena", name: "Benalmádena", region: "Andalusia (Costa del Sol)", lat: 36.595, lon: -4.516, population: 70000, timezone: "Europe/Madrid" },
+      { slug: "torremolinos", name: "Torremolinos", region: "Andalusia (Costa del Sol)", lat: 36.62, lon: -4.5, population: 69000, timezone: "Europe/Madrid" },
+      { slug: "fuengirola", name: "Fuengirola", region: "Andalusia (Costa del Sol)", lat: 36.54, lon: -4.625, population: 83000, timezone: "Europe/Madrid" },
+      { slug: "marbella", name: "Marbella", region: "Andalusia (Costa del Sol)", lat: 36.51, lon: -4.882, population: 150000, timezone: "Europe/Madrid" },
     ],
   },
   {
@@ -169,6 +183,7 @@ export const countries: CountrySeed[] = [
       { slug: "porto", name: "Porto", region: "Porto", lat: 41.1579, lon: -8.6291, population: 231000, timezone: "Europe/Lisbon" },
       { slug: "madeira", name: "Madeira", i18nName: { fr: "Madère" }, region: "Madeira (Funchal)", lat: 32.6669, lon: -16.9241, population: 250000, timezone: "Atlantic/Madeira" },
       { slug: "algarve", name: "Algarve", region: "Algarve (Faro)", lat: 37.0194, lon: -7.9322, population: 467000, timezone: "Europe/Lisbon" },
+      { slug: "albufeira", name: "Albufeira", region: "Algarve", lat: 37.089, lon: -8.25, population: 41000, timezone: "Europe/Lisbon" },
     ],
   },
   {
@@ -192,6 +207,10 @@ export const countries: CountrySeed[] = [
       { slug: "crete", name: "Crete", i18nName: { it: "Creta", de: "Kreta", fr: "Crète", es: "Creta" }, region: "Crete (Heraklion)", lat: 35.3387, lon: 25.1442, population: 634000, timezone: "Europe/Athens" },
       { slug: "rhodes", name: "Rhodes", i18nName: { it: "Rodi", de: "Rhodos", es: "Rodas" }, region: "South Aegean", lat: 36.4341, lon: 28.2176, population: 115000, timezone: "Europe/Athens" },
       { slug: "corfu", name: "Corfu", i18nName: { it: "Corfù", de: "Korfu", fr: "Corfou", es: "Corfú" }, region: "Ionian Islands", lat: 39.6243, lon: 19.9217, population: 100000, timezone: "Europe/Athens" },
+      { slug: "kos", name: "Kos", region: "South Aegean", lat: 36.893, lon: 27.288, population: 33000, timezone: "Europe/Athens" },
+      { slug: "zakynthos", name: "Zakynthos", region: "Ionian Islands", lat: 37.787, lon: 20.899, population: 40000, timezone: "Europe/Athens" },
+      { slug: "kefalonia", name: "Kefalonia", region: "Ionian Islands", lat: 38.175, lon: 20.569, population: 36000, timezone: "Europe/Athens" },
+      { slug: "halkidiki", name: "Halkidiki", region: "Central Macedonia", lat: 40.24, lon: 23.6, population: 105000, timezone: "Europe/Athens" },
     ],
   },
   {
@@ -251,6 +270,7 @@ export const countries: CountrySeed[] = [
     cities: [
       { slug: "paphos", name: "Paphos", i18nName: { it: "Pafo", es: "Pafos" }, region: "Paphos District", lat: 34.7754, lon: 32.4245, population: 90000, timezone: "Asia/Nicosia" },
       { slug: "larnaca", name: "Larnaca", i18nName: { de: "Larnaka", es: "Lárnaca" }, region: "Larnaca District", lat: 34.9003, lon: 33.6232, population: 145000, timezone: "Asia/Nicosia" },
+      { slug: "ayia-napa", name: "Ayia Napa", region: "Famagusta District", lat: 34.982, lon: 34.0, population: 3500, timezone: "Asia/Nicosia" },
     ],
   },
   {
@@ -278,6 +298,16 @@ export const countries: CountrySeed[] = [
     i18nName: { it: "Curaçao", de: "Curaçao", fr: "Curaçao", es: "Curazao", en: "Curaçao" },
     cities: [
       { slug: "willemstad", name: "Willemstad", region: "Curaçao", lat: 12.1224, lon: -68.8824, population: 150000, timezone: "America/Curacao" },
+    ],
+  },
+  {
+    slug: "cape-verde",
+    name: "Cape Verde",
+    isoCode: "CV",
+    i18nName: { it: "Capo Verde", de: "Kap Verde", fr: "Cap-Vert", es: "Cabo Verde", en: "Cape Verde" },
+    cities: [
+      { slug: "sal", name: "Sal", region: "Sal (Santa Maria)", lat: 16.598, lon: -22.905, population: 35000, timezone: "Atlantic/Cape_Verde" },
+      { slug: "boa-vista", name: "Boa Vista", region: "Boa Vista (Sal Rei)", lat: 16.14, lon: -22.917, population: 16000, timezone: "Atlantic/Cape_Verde" },
     ],
   },
   {
@@ -356,6 +386,9 @@ export const countries: CountrySeed[] = [
     cities: [
       { slug: "istanbul", name: "Istanbul", region: "Istanbul", lat: 41.0082, lon: 28.9784, population: 15462000, timezone: "Europe/Istanbul" },
       { slug: "antalya", name: "Antalya", region: "Antalya", lat: 36.8969, lon: 30.7133, population: 2600000, timezone: "Europe/Istanbul" },
+      { slug: "side", name: "Side", region: "Antalya", lat: 36.767, lon: 31.389, population: 15000, timezone: "Europe/Istanbul" },
+      { slug: "marmaris", name: "Marmaris", region: "Muğla", lat: 36.855, lon: 28.274, population: 97000, timezone: "Europe/Istanbul" },
+      { slug: "bodrum", name: "Bodrum", region: "Muğla", lat: 37.034, lon: 27.43, population: 198000, timezone: "Europe/Istanbul" },
     ],
   },
   {

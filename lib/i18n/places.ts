@@ -17,6 +17,7 @@ const COUNTRIES: Record<string, Names> = {
   uk: ["Regno Unito", "Vereinigtes Königreich", "Royaume-Uni", "Reino Unido", "Reino Unido", "Verenigd Koninkrijk", "Wielka Brytania"],
   usa: ["Stati Uniti", "USA", "États-Unis", "Estados Unidos", "Estados Unidos", "Verenigde Staten", "Stany Zjednoczone"],
   japan: ["Giappone", "Japan", "Japon", "Japón", "Japão", "Japan", "Japonia"],
+  "cape-verde": ["Capo Verde", "Kap Verde", "Cap-Vert", "Cabo Verde", "Cabo Verde", "Kaapverdië", "Republika Zielonego Przylądka"],
   uae: ["Emirati Arabi Uniti", "Vereinigte Arabische Emirate", "Émirats arabes unis", "Emiratos Árabes Unidos", "Emirados Árabes Unidos", "Verenigde Arabische Emiraten", "Zjednoczone Emiraty Arabskie"],
   australia: ["Australia", "Australien", "Australie", "Australia", "Austrália", "Australië", "Australia"],
   netherlands: ["Paesi Bassi", "Niederlande", "Pays-Bas", "Países Bajos", "Países Baixos", "Nederland", "Holandia"],
@@ -116,6 +117,13 @@ const CITIES: Record<string, Names> = {
   paphos: ["Pafo", "Paphos", "Paphos", "Pafos", "Pafos", "Paphos", "Pafos"],
   larnaca: ["Larnaca", "Larnaka", "Larnaca", "Lárnaca", "Lárnaca", "Larnaca", "Larnaka"],
   djerba: ["Gerba", "Djerba", "Djerba", "Yerba", "Djerba", "Djerba", "Dżerba"],
+  menorca: ["Minorca", "Menorca", "Minorque", "Menorca", "Menorca", "Menorca", "Minorka"],
+  alicante: ["Alicante", "Alicante", "Alicante", "Alicante", "Alicante", "Alicante", "Alicante"],
+  kos: ["Kos", "Kos", "Kos", "Cos", "Cós", "Kos", "Kos"],
+  zakynthos: ["Zante", "Zakynthos", "Zante", "Zante", "Zante", "Zakynthos", "Zakintos"],
+  kefalonia: ["Cefalonia", "Kefalonia", "Céphalonie", "Cefalonia", "Cefalónia", "Kefalonia", "Kefalonia"],
+  halkidiki: ["Calcidica", "Chalkidiki", "Chalcidique", "Calcídica", "Calcídica", "Chalkidiki", "Chalkidiki"],
+  "boa-vista": ["Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista"],
   karachi: ["Karachi", "Karatschi", "Karachi", "Karachi", "Carachi", "Karachi", "Karaczi"],
 };
 
@@ -141,7 +149,7 @@ const LOCAL_LANG: Record<string, ContentLocale> = {
  * otherwise null. Used so English pages also match searches like "firenze weather".
  */
 /** Other English spellings people search for (UK: "Majorca weather"). */
-const EN_ALIAS: Record<string, string> = { mallorca: "Majorca" };
+const EN_ALIAS: Record<string, string> = { mallorca: "Majorca", zakynthos: "Zante" };
 
 export function localCityName(countrySlug: string, citySlug: string, english: string): string | null {
   if (EN_ALIAS[citySlug]) return EN_ALIAS[citySlug]!;

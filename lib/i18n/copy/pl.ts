@@ -17,13 +17,14 @@ const LOC: Record<string, string> = {
   Kapsztad: "Kapsztadzie", Kair: "Kairze", Islamabad: "Islamabadzie", Warszawa: "Warszawie", Kraków: "Krakowie",
   Gdańsk: "Gdańsku", Bruksela: "Brukseli", Antwerpia: "Antwerpii", Malaga: "Maladze", Benidorm: "Benidormie",
   Antalya: "Antalyi", Hurghada: "Hurghadzie", "Szarm el-Szejk": "Szarm el-Szejku", Agadir: "Agadirze", Valletta: "Valletcie",
-  Larnaka: "Larnace", Algarve: "Algarve", Toronto: "Toronto", Lahore: "Lahaurze", Karaczi: "Karaczi",
+  Larnaka: "Larnace", Alicante: "Alicante", Salou: "Salou", Marbella: "Marbelli", Bodrum: "Bodrum", Marmaris: "Marmaris", Side: "Side", Albufeira: "Albufeirze", Algarve: "Algarve", Toronto: "Toronto", Lahore: "Lahaurze", Karaczi: "Karaczi",
 };
 /** Islands take "na" in Polish ("na Teneryfie"). */
 const NA: Record<string, string> = {
   Teneryfa: "Teneryfie", "Gran Canaria": "Gran Canarii", Lanzarote: "Lanzarote", Fuerteventura: "Fuerteventurze",
   Majorka: "Majorce", Ibiza: "Ibizie", Kreta: "Krecie", Rodos: "Rodos", Korfu: "Korfu", Madera: "Maderze",
   Dżerba: "Dżerbie", Cypr: "Cyprze", Malta: "Malcie", "Curaçao": "Curaçao",
+  Minorka: "Minorce", Kos: "Kos", Zakintos: "Zakintos", Kefalonia: "Kefalonii", Chalkidiki: "Chalkidiki", Sal: "Sal", "Boa Vista": "Boa Vista",
 };
 const w = (c: string) => {
   if (NA[c]) return `na ${NA[c]}`;
