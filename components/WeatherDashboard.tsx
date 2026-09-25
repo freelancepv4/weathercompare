@@ -15,9 +15,12 @@ interface WeatherDashboardProps {
   timezone?: string;
   countrySlug?: string;
   citySlug?: string;
+  /** Use "h2" when the page already has its own <h1> (translated city pages). */
+  headingAs?: "h1" | "h2";
 }
 
-export function WeatherDashboard({ location, current, timezone, countrySlug, citySlug }: WeatherDashboardProps) {
+export function WeatherDashboard({ location, current, timezone, countrySlug, citySlug, headingAs = "h1" }: WeatherDashboardProps) {
+  const Heading = headingAs;
   const t = useTranslations();
   const { locale } = useI18n();
   const { temperatureUnit, windUnit } = usePreferences();
@@ -40,10 +43,10 @@ export function WeatherDashboard({ location, current, timezone, countrySlug, cit
         <div className="relative flex flex-col justify-between gap-6 sm:flex-row sm:items-center">
           <div>
             <div className="flex items-center gap-3">
-              <h1 id="current-weather-heading" className="text-2xl font-semibold tracking-tight sm:text-3xl">
+              <Heading id="current-weather-heading" className="text-2xl font-semibold tracking-tight sm:text-3xl">
                 {location.name}
                 <span className="ml-2 text-lg font-normal text-white/70">{location.country}</span>
-              </h1>
+              </Heading>
               {countrySlug && citySlug && (
                 <FavoriteButton
                   location={{ id: location.id, name: location.name, country: location.country, countrySlug, citySlug }}

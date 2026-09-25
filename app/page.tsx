@@ -7,11 +7,12 @@ import { climateHighsFor } from "@/lib/data/climate";
 import { allGuides } from "@/lib/data/guides";
 import { getLandscapePhoto } from "@/lib/providers/photos";
 import { GuideCard } from "@/components/GuideCard";
+import { hreflang } from "@/lib/i18n/pageMeta";
 
 export const metadata: Metadata = {
   title: { absolute: `Weather Forecasts Compared | ${siteConfig.name}` },
   description: siteConfig.description,
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/", ...hreflang({ kind: "home" }) },
   openGraph: {
     title: `${siteConfig.name} — Weather forecasts, compared in one place`,
     description: siteConfig.description,

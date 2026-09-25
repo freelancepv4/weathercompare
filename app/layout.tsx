@@ -88,6 +88,15 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang={siteConfig.defaultLocale} suppressHydrationWarning>
+      <head>
+        {/* Set <html lang> for the translated /{lang}/ sections before first paint. */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `(function(){var m=location.pathname.match(/^\\/(it|de|fr|es|pt|nl|pl)(\\/|$)/);if(m)document.documentElement.lang=m[1];})();`,
+          }}
+        />
+      </head>
       <body className="min-h-screen flex flex-col">
         <Providers locale={siteConfig.defaultLocale}>
           <a

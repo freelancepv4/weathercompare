@@ -9,6 +9,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
+import { hreflang } from "@/lib/i18n/pageMeta";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -31,7 +32,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return {
     title: seoTitle(title),
     description: seoDescription(description),
-    alternates: { canonical: url },
+    alternates: { canonical: url, ...hreflang({ kind: "whereToGo", month: i }) },
     openGraph: { title, description, url, images: [defaultOgImage] },
     twitter: { title, description, images: [defaultOgImage] },
   };

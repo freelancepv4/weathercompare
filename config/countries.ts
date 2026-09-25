@@ -201,6 +201,27 @@ export const countries: CountrySeed[] = [
     ],
   },
   {
+    slug: "poland",
+    name: "Poland",
+    isoCode: "PL",
+    i18nName: { it: "Polonia", de: "Polen", fr: "Pologne", es: "Polonia", en: "Poland" },
+    cities: [
+      { slug: "warsaw", name: "Warsaw", i18nName: { it: "Varsavia", de: "Warschau", fr: "Varsovie", es: "Varsovia" }, region: "Masovia", lat: 52.2297, lon: 21.0122, population: 1863000, timezone: "Europe/Warsaw" },
+      { slug: "krakow", name: "Kraków", i18nName: { it: "Cracovia", de: "Krakau", fr: "Cracovie", es: "Cracovia" }, region: "Lesser Poland", lat: 50.0647, lon: 19.945, population: 804000, timezone: "Europe/Warsaw" },
+      { slug: "gdansk", name: "Gdańsk", i18nName: { it: "Danzica", de: "Danzig" }, region: "Pomerania", lat: 54.352, lon: 18.6466, population: 486000, timezone: "Europe/Warsaw" },
+    ],
+  },
+  {
+    slug: "belgium",
+    name: "Belgium",
+    isoCode: "BE",
+    i18nName: { it: "Belgio", de: "Belgien", fr: "Belgique", es: "Bélgica", en: "Belgium" },
+    cities: [
+      { slug: "brussels", name: "Brussels", i18nName: { it: "Bruxelles", de: "Brüssel", fr: "Bruxelles", es: "Bruselas" }, region: "Brussels-Capital", lat: 50.8503, lon: 4.3517, population: 1222000, timezone: "Europe/Brussels" },
+      { slug: "antwerp", name: "Antwerp", i18nName: { it: "Anversa", de: "Antwerpen", fr: "Anvers", es: "Amberes" }, region: "Flanders", lat: 51.2194, lon: 4.4025, population: 530000, timezone: "Europe/Brussels" },
+    ],
+  },
+  {
     slug: "canada",
     name: "Canada",
     isoCode: "CA",

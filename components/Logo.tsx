@@ -6,9 +6,9 @@ import { siteConfig } from "@/config/site";
  * simple sun-behind-cloud glyph inside a rounded gradient tile; swap the
  * brand name in .env (NEXT_PUBLIC_SITE_NAME) without touching this file.
  */
-export function Logo({ compact = false }: { compact?: boolean }) {
+export function Logo({ compact = false, href = "/" }: { compact?: boolean; href?: string }) {
   return (
-    <Link href="/" className="flex items-center gap-2.5 group" aria-label={`${siteConfig.name} — home`}>
+    <Link href={href} className="flex items-center gap-2.5 group" aria-label={`${siteConfig.name} — home`}>
       <span className="relative flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand-500 to-brand-800 shadow-glow-brand transition-transform group-hover:scale-105">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="9" cy="9" r="4" fill="#FFD166" />

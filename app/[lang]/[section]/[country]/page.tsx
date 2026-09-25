@@ -1,0 +1,279 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { ArrowLeft, ArrowRight, Compass, CalendarDays } from "lucide-react";
+import { siteConfig } from "@/config/site";
+import { countries, type CountrySeed, type CitySeed } from "@/config/countries";
+import { citiesWithClimate, climateHighsFor, getCityClimate } from "@/lib/data/climate";
+import { STYLES, scoreMonth } from "@/lib/tripScore";
+import { Breadcrumb } from "@/components/Breadcrumb";
+import { CityGrid } from "@/components/CityGrid";
+import { ShareBar } from "@/components/ShareBar";
+import { AdSlot } from "@/components/AdSlot";
+import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
+import { CONTENT_LOCALES, ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
+import { cityName, countryName } from "@/lib/i18n/places";
+import { localizedMetadata } from "@/lib/i18n/pageMeta";
+
+export const dynamic = "force-static";
+export const dynamicParams = false;
+
+interface PageProps {
+  params: { lang: string; section: string; country: string };
+}
+
+export function generateStaticParams() {
+  const hasClimate = citiesWithClimate().length > 0;
+  return CONTENT_LOCALES.flatMap((lang) => [
+    ...countries.map((c) => ({ lang, section: ROUTING[lang].weather, country: c.slug })),
+    ...(hasClimate ? ROUTING[lang].monthSlugs.map((m) => ({ lang, section: ROUTING[lang].whereToGo, country: m })) : []),
+  ]);
+}
+
+type Resolved = { locale: ContentLocale; kind: "country"; country: CountrySeed } | { locale: ContentLocale; kind: "whereToGo"; month: number };
+
+function resolve(p: PageProps["params"]): Resolved | null {
+  if (!isContentLocale(p.lang)) return null;
+  const r = ROUTING[p.lang];
+  if (p.section === r.weather) {
+    const country = countries.find((c) => c.slug === p.country);
+    return country ? { locale: p.lang, kind: "country", country } : null;
+  }
+  if (p.section === r.whereToGo) {
+    const month = r.monthSlugs.indexOf(p.country);
+    return month >= 0 ? { locale: p.lang, kind: "whereToGo", month } : null;
+  }
+  return null;
+}
+
+export function generateMetadata({ params }: PageProps): Metadata {
+  const x = resolve(params);
+  if (!x) return {};
+  const copy = getCopy(x.locale);
+  if (x.kind === "country") {
+    const k = countryName(x.country.slug, x.country.name, x.locale);
+    const cities = x.country.cities.slice(0, 5).map((c) => cityName(c.slug, c.name, x.locale));
+    return localizedMetadata(x.locale, { kind: "country", country: x.country.slug }, copy.countryTitle(k), copy.countryDesc(k, joinList(x.locale, cities)));
+  }
+  return localizedMetadata(x.locale, { kind: "whereToGo", month: x.month }, copy.whereTitle(x.month), copy.whereDesc(x.month));
+}
+
+export default function SlugPage({ params }: PageProps) {
+  const x = resolve(params);
+  if (!x) notFound();
+  return x.kind === "country" ? <CountryView locale={x.locale} country={x.country} /> : <WhereToGoView locale={x.locale} month={x.month} />;
+}
+
+function CountryView({ locale, country }: { locale: ContentLocale; country: CountrySeed }) {
+  const copy = getCopy(locale);
+  const mi = monthInfo(locale);
+  const k = countryName(country.slug, country.name, locale);
+  const items = country.cities.map((city) => ({ country, city }));
+  const nameFor = (co: CountrySeed, ci: CitySeed) => ({ city: cityName(ci.slug, ci.name, locale), country: countryName(co.slug, co.name, locale) });
+  const best = country.cities
+    .map((city) => ({ city, climate: getCityClimate(country.slug, city.slug) }))
+    .filter((x): x is { city: CitySeed; climate: NonNullable<typeof x.climate> } => Boolean(x.climate));
+  const url = `${siteConfig.url}${paths.country(locale, country.slug)}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: copy.home, item: `${siteConfig.url}${paths.home(locale)}` },
+      { "@type": "ListItem", position: 2, name: k, item: url },
+    ],
+  };
+
+  return (
+    <div className="container-page py-8 sm:py-10">
+      {/* eslint-disable-next-line react/no-danger */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <Breadcrumb items={[{ label: copy.home, href: paths.home(locale) }, { label: k }]} />
+      <header className="max-w-3xl">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{copy.countryH1(k)}</h1>
+        <p className="mt-3 text-base text-slate-600 dark:text-slate-300">{copy.countryIntro(k, country.cities.length)}</p>
+        <ShareBar className="mt-5" url={url} title={copy.countryTitle(k)} />
+      </header>
+
+      <div className="mt-10">
+        <CityGrid
+          title={copy.countryCitiesH(k)}
+          items={items}
+          hrefFor={(co, ci) => paths.city(locale, co.slug, ci.slug)}
+          nameFor={nameFor}
+          climate={climateHighsFor(items)}
+          highsLabel={copy.highsRange}
+          viewLabel={copy.viewForecast}
+          monthShort={copy.monthShort}
+        />
+      </div>
+
+      {best.length > 0 && (
+        <section className="mt-12 rounded-xl3 border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle" aria-labelledby="best-heading">
+          <h2 id="best-heading" className="flex items-center gap-2 text-lg font-bold text-slate-900 dark:text-white">
+            <CalendarDays size={18} className="text-brand-500" aria-hidden="true" /> {copy.countryMonthsH}
+          </h2>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{copy.countryMonthsText(k)}</p>
+          <ul className="mt-4 divide-y divide-slate-100 dark:divide-white/5">
+            {best.map(({ city, climate }) => {
+              const n = cityName(city.slug, city.name, locale);
+              const months = bestMonths(climate);
+              return (
+                <li key={city.slug} className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm">
+                  <Link href={paths.city(locale, country.slug, city.slug)} className="font-semibold text-slate-900 hover:text-brand-700 dark:text-white">
+                    {n}
+                  </Link>
+                  <span className="flex flex-wrap gap-1.5">
+                    {months.map((m) => (
+                      <Link
+                        key={m}
+                        href={paths.month(locale, country.slug, city.slug, m)}
+                        className="rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 hover:bg-emerald-600 hover:text-white dark:bg-emerald-500/10 dark:text-emerald-300"
+                      >
+                        {mi.monthNames[m]}
+                      </Link>
+                    ))}
+                  </span>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      )}
+
+      <div className="mt-10 flex flex-wrap gap-3">
+        <Link href={paths.today(locale)} className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-700">
+          {copy.cardToday.cta} <ArrowRight size={16} aria-hidden="true" />
+        </Link>
+        <Link
+          href={paths.tripFinder(locale)}
+          className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:border-brand-300 hover:text-brand-700 dark:border-white/10 dark:bg-surface-dark-subtle dark:text-slate-200"
+        >
+          <Compass size={16} aria-hidden="true" /> {copy.cardTrip.title}
+        </Link>
+      </div>
+
+      <p className="mt-10 text-center text-xs text-slate-400">
+        <Link href={paths.home(locale)} className="font-medium text-brand-600 hover:underline">
+          {copy.moreCountries(countries.length)}
+        </Link>
+      </p>
+    </div>
+  );
+}
+
+const SECTIONS = ["beach", "warm", "mild", "cool"] as const;
+const TONES: Record<(typeof SECTIONS)[number], string> = {
+  beach: "from-orange-400 to-rose-500",
+  warm: "from-amber-400 to-orange-500",
+  mild: "from-sky-400 to-brand-500",
+  cool: "from-indigo-400 to-slate-600",
+};
+
+function WhereToGoView({ locale, month: i }: { locale: ContentLocale; month: number }) {
+  const copy = getCopy(locale);
+  const all = citiesWithClimate();
+  const prev = (i + 11) % 12;
+  const next = (i + 1) % 12;
+  const lists = SECTIONS.map((style) => ({
+    style: STYLES.find((s) => s.id === style)!,
+    label: copy.trip.styles[style],
+    tone: TONES[style],
+    items: all
+      .map((c) => ({ ...c, score: scoreMonth(c.climate, i, style) }))
+      .filter((c) => c.score >= 50)
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 6),
+  })).filter((l) => l.items.length > 0);
+  const url = `${siteConfig.url}${paths.whereToGo(locale, i)}`;
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: copy.whereH1(i),
+    inLanguage: locale,
+    itemListElement: lists
+      .flatMap((l) => l.items.slice(0, 3))
+      .map((c, idx) => ({
+        "@type": "ListItem",
+        position: idx + 1,
+        url: `${siteConfig.url}${paths.month(locale, c.country.slug, c.city.slug, i)}`,
+        name: `${cityName(c.city.slug, c.city.name, locale)}, ${countryName(c.country.slug, c.country.name, locale)}`,
+      })),
+  };
+
+  return (
+    <div className="container-page py-8 sm:py-10">
+      {/* eslint-disable-next-line react/no-danger */}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+      <Breadcrumb
+        items={[
+          { label: copy.home, href: paths.home(locale) },
+          { label: copy.tripCrumb, href: paths.tripFinder(locale) },
+          { label: copy.whereH1(i) },
+        ]}
+      />
+      <header className="max-w-3xl">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{copy.whereH1(i)}</h1>
+        <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">{copy.whereIntro(i)}</p>
+        <Link
+          href={`${paths.tripFinder(locale)}?month=${monthInfo(locale).monthSlugs[i]}`}
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-emerald-700"
+        >
+          <Compass size={16} aria-hidden="true" /> {copy.whereCustomise}
+        </Link>
+        <ShareBar className="mt-5" url={url} title={copy.whereTitle(i)} />
+      </header>
+
+      <div className="mt-10 space-y-12">
+        {lists.map((l) => (
+          <section key={l.style.id} aria-labelledby={`${l.style.id}-heading`}>
+            <div className={`mb-4 inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${l.tone} px-4 py-1.5 text-white`}>
+              <span aria-hidden="true">{l.style.emoji}</span>
+              <h2 id={`${l.style.id}-heading`} className="text-sm font-bold">
+                {copy.whereStyleH(l.label.label, i)}
+              </h2>
+            </div>
+            <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">{l.label.blurb}.</p>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {l.items.map((c, idx) => (
+                <Link
+                  key={`${c.country.slug}/${c.city.slug}`}
+                  href={paths.month(locale, c.country.slug, c.city.slug, i)}
+                  className="group flex items-center gap-4 rounded-xl2 border border-slate-200 bg-white p-4 shadow-soft transition-all hover:-translate-y-0.5 hover:shadow-soft-lg dark:border-white/10 dark:bg-surface-dark-subtle"
+                >
+                  <span className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br ${l.tone} text-sm font-bold text-white`}>
+                    {idx + 1}
+                  </span>
+                  <span className="min-w-0 flex-1">
+                    <span className="block truncate text-sm font-semibold text-slate-900 group-hover:text-brand-700 dark:text-white">
+                      {cityName(c.city.slug, c.city.name, locale)}, {countryName(c.country.slug, c.country.name, locale)}
+                    </span>
+                    <span className="block text-xs text-slate-500">
+                      {Math.round(c.climate.tMax[i]!)}° / {Math.round(c.climate.tMin[i]!)}°C · {c.climate.precipMm[i]} mm {copy.whereRain}
+                    </span>
+                  </span>
+                  <ArrowRight size={16} className="shrink-0 text-slate-300 group-hover:text-brand-500" aria-hidden="true" />
+                </Link>
+              ))}
+            </div>
+          </section>
+        ))}
+      </div>
+
+      <div className="mt-10">
+        <AdSlot variant="inline" />
+      </div>
+
+      <nav className="mt-10 flex items-center justify-between gap-3 text-sm font-semibold" aria-label={copy.whereMonthsH}>
+        <Link href={paths.whereToGo(locale, prev)} className="inline-flex items-center gap-1.5 text-brand-600 hover:underline dark:text-brand-300">
+          <ArrowLeft size={16} aria-hidden="true" /> {copy.wherePrevNext(prev)}
+        </Link>
+        <Link href={paths.whereToGo(locale, next)} className="inline-flex items-center gap-1.5 text-brand-600 hover:underline dark:text-brand-300">
+          {copy.wherePrevNext(next)} <ArrowRight size={16} aria-hidden="true" />
+        </Link>
+      </nav>
+      <p className="mt-8 text-[11px] text-slate-400">{copy.whereFoot}</p>
+    </div>
+  );
+}

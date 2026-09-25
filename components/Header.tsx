@@ -10,7 +10,9 @@ import { UnitSelector } from "./UnitSelector";
 import { ThemeToggle } from "./ThemeToggle";
 import { SearchBar } from "./SearchBar";
 import { NavDropdown } from "./NavDropdown";
-import { useTranslations } from "@/lib/i18n/I18nProvider";
+import { useI18n } from "@/lib/i18n/I18nProvider";
+import { paths, type AnyLocale } from "@/lib/i18n/routing";
+import { cityName, countryName } from "@/lib/i18n/places";
 import { countries, worldHighlights } from "@/config/countries";
 import { allGuides, CATEGORY_LABELS } from "@/lib/data/guides";
 
@@ -23,13 +25,16 @@ const FLAGSHIP_CITY_PATH = "/weather/italy/rome";
 
 // Plain-link nav items. "weather" and "guides" are handled separately below
 // as dropdowns (desktop) / expandable sections (mobile) — see NAV_DROPDOWNS.
-const NAV_ITEMS = [
-  { key: "tripFinder", href: "/trip-finder" },
-  { key: "compare", href: `${FLAGSHIP_CITY_PATH}#compare` },
-  { key: "maps", href: `${FLAGSHIP_CITY_PATH}#map` },
-  { key: "news", href: "/news" },
-  { key: "favorites", href: "/favorites" },
-] as const;
+// Built per language: the daily page, trip finder and flagship city link to
+// the visitor's language version when one exists.
+const navItems = (l: AnyLocale) =>
+  [
+    { key: "weatherToday", href: paths.today(l) },
+    { key: "tripFinder", href: paths.tripFinder(l) },
+    { key: "compare", wideOnly: true, href: l === "en" ? `${FLAGSHIP_CITY_PATH}#compare` : `${paths.city(l, "italy", "rome")}#compare` },
+    { key: "news", wideOnly: true, href: "/news" },
+    { key: "favorites", href: "/favorites" },
+  ] as Array<{ key: string; href: string; wideOnly?: boolean }>;
 
 // A handful of well-known destinations across different countries, for the
 // "Weather" dropdown's quick-links column — worldHighlights() already picks
@@ -43,8 +48,12 @@ const WEATHER_COUNTRIES = countries.slice(0, 10);
 const GUIDE_CATEGORIES: Array<keyof typeof CATEGORY_LABELS> = ["comparison", "packing", "seasonal", "ai-tools"];
 
 export function Header() {
-  const t = useTranslations();
+  const { t, locale } = useI18n();
   const pathname = usePathname();
+  const NAV_ITEMS = navItems(locale);
+  const cityHref = (country: string, city: string) => paths.city(locale, country, city);
+  const cn = (slug: string, name: string) => cityName(slug, name, locale);
+  const kn = (slug: string, name: string) => countryName(slug, name, locale);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileWeatherOpen, setMobileWeatherOpen] = useState(false);
@@ -58,9 +67,9 @@ export function Header() {
   return (
     <header className="sticky top-0 z-50 glass-surface">
       <div className="container-page flex h-16 items-center justify-between gap-4">
-        <Logo />
+        <Logo href={paths.home(locale)} />
 
-        <nav className="hidden items-center gap-1 lg:flex" aria-label="Primary">
+        <nav className="hidden items-center gap-1 xl:flex" aria-label="Primary">
           <NavDropdown label={t("nav.weather")} panelClassName="w-[30rem]">
             <div className="grid grid-cols-2 gap-6">
               <div>
@@ -71,10 +80,10 @@ export function Header() {
                   {WEATHER_QUICK_LINKS.map(({ country, city }) => (
                     <li key={`${country.slug}:${city.slug}`}>
                       <Link
-                        href={`/weather/${country.slug}/${city.slug}`}
+                        href={cityHref(country.slug, city.slug)}
                         className="block rounded-lg px-2.5 py-1.5 text-sm text-slate-700 hover:bg-brand-50 dark:text-slate-200 dark:hover:bg-white/5"
                       >
-                        {city.name} <span className="text-slate-400">· {country.name}</span>
+                        {cn(city.slug, city.name)} <span className="text-slate-400">· {kn(country.slug, country.name)}</span>
                       </Link>
                     </li>
                   ))}
@@ -88,10 +97,10 @@ export function Header() {
                   {WEATHER_COUNTRIES.map((country) => (
                     <li key={country.slug}>
                       <Link
-                        href={`/weather/${country.slug}`}
+                        href={paths.country(locale, country.slug)}
                         className="block rounded-lg px-2.5 py-1.5 text-sm text-slate-700 hover:bg-brand-50 dark:text-slate-200 dark:hover:bg-white/5"
                       >
-                        {country.name}
+                        {kn(country.slug, country.name)}
                       </Link>
                     </li>
                   ))}
@@ -99,7 +108,7 @@ export function Header() {
               </div>
               <div className="col-span-2 border-t border-slate-100 pt-3 dark:border-white/10">
                 <Link
-                  href="/"
+                  href={paths.home(locale)}
                   className="flex items-center gap-1.5 text-sm font-medium text-brand-600 hover:underline dark:text-brand-300"
                 >
                   {t("nav.allDestinations")}
@@ -150,7 +159,9 @@ export function Header() {
             <Link
               key={item.key}
               href={item.href}
-              className="whitespace-nowrap rounded-lg px-3 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white"
+              // Longer translated labels (e.g. Polish, German) would overflow the
+              // bar at laptop widths — secondary items only show on wide screens.
+              className={`${item.wideOnly ? "hidden 2xl:block " : ""}whitespace-nowrap rounded-lg px-2.5 py-2 text-sm font-medium text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-white/10 dark:hover:text-white`}
             >
               {t(`nav.${item.key}`)}
             </Link>
@@ -185,7 +196,7 @@ export function Header() {
           <button
             type="button"
             onClick={() => setMobileOpen((o) => !o)}
-            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 lg:hidden"
+            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 xl:hidden"
             aria-label={mobileOpen ? t("nav.close") : t("nav.menu")}
             aria-expanded={mobileOpen}
           >
@@ -201,7 +212,7 @@ export function Header() {
       )}
 
       {mobileOpen && (
-        <div className="border-t border-slate-200 bg-white px-5 py-4 dark:border-white/10 dark:bg-surface-dark-subtle lg:hidden">
+        <div className="border-t border-slate-200 bg-white px-5 py-4 dark:border-white/10 dark:bg-surface-dark-subtle xl:hidden">
           <nav className="mb-4 flex flex-col gap-1" aria-label="Mobile primary">
             <div>
               <button
@@ -218,15 +229,15 @@ export function Header() {
                   {WEATHER_QUICK_LINKS.map(({ country, city }) => (
                     <Link
                       key={`${country.slug}:${city.slug}`}
-                      href={`/weather/${country.slug}/${city.slug}`}
+                      href={cityHref(country.slug, city.slug)}
                       onClick={() => setMobileOpen(false)}
                       className="rounded-lg px-2.5 py-2 text-sm text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/5"
                     >
-                      {city.name} <span className="text-slate-400">· {country.name}</span>
+                      {cn(city.slug, city.name)} <span className="text-slate-400">· {kn(country.slug, country.name)}</span>
                     </Link>
                   ))}
                   <Link
-                    href="/"
+                    href={paths.home(locale)}
                     onClick={() => setMobileOpen(false)}
                     className="rounded-lg px-2.5 py-2 text-sm font-medium text-brand-600 dark:text-brand-300"
                   >

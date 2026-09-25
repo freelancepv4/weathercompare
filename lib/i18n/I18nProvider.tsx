@@ -1,7 +1,9 @@
 "use client";
 
 import { createContext, useCallback, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { siteConfig, type Locale } from "@/config/site";
+import { localeFromPath } from "./routing";
 import { dictionaries, type Dictionary } from "./dictionaries";
 
 interface I18nContextValue {
@@ -65,7 +67,14 @@ export function I18nProvider({ initialLocale, children }: { initialLocale: Local
   // which makes React throw away the server-rendered markup and re-render
   // the whole tree from scratch on load. The saved/detected locale is
   // applied after mount instead, in the effect below, which is safe.
-  const [locale, setLocaleState] = useState<Locale>(initialLocale);
+  // Translated pages live under /it, /de, … — on those, the URL decides the
+  // language (so the server-rendered HTML and the UI always match, and a
+  // saved preference can never show German menus on an Italian page).
+  const pathname = usePathname();
+  const pathLocale = localeFromPath(pathname);
+  const lockedByPath = pathLocale !== "en";
+  const [chosen, setLocaleState] = useState<Locale>(lockedByPath ? (pathLocale as Locale) : initialLocale);
+  const locale: Locale = lockedByPath ? (pathLocale as Locale) : chosen;
 
   const setLocale = useCallback((next: Locale) => {
     setLocaleState(next);
@@ -83,6 +92,7 @@ export function I18nProvider({ initialLocale, children }: { initialLocale: Local
   // markup; it just swaps in before the visitor has had time to read
   // anything.
   useEffect(() => {
+    if (lockedByPath) return;
     const stored = readStoredLocale();
     if (stored) {
       if (stored !== locale) setLocaleState(stored);
@@ -92,6 +102,12 @@ export function I18nProvider({ initialLocale, children }: { initialLocale: Local
     if (detected && detected !== locale) setLocale(detected);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    try {
+      document.documentElement.lang = locale;
+    } catch {}
+  }, [locale]);
 
   const dict = dictionaries[locale] ?? dictionaries.en;
 

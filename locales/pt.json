@@ -1,0 +1,187 @@
+{
+  "nav": {
+    "weather": "Tempo",
+    "compare": "Comparar",
+    "tripFinder": "Encontrar destino",
+    "weatherToday": "Tempo hoje",
+    "maps": "Mapas",
+    "alerts": "Alertas",
+    "news": "Notícias",
+    "guides": "Guias",
+    "favorites": "Favoritos",
+    "menu": "Menu",
+    "close": "Fechar",
+    "popularCities": "Cidades populares",
+    "browseByCountry": "Ver por país",
+    "allDestinations": "Todos os destinos",
+    "bestTimeToVisit": "Melhor época para visitar",
+    "browseAllGuides": "Ver todos os guias"
+  },
+  "hero": {
+    "headline": "Previsões do tempo. Comparadas num só lugar.",
+    "subheadline": "Compare previsões fiáveis para 71 cidades do mundo — com clima mês a mês, planeamento de viagens e guias.",
+    "searchPlaceholder": "Pesquisar cidade, vila ou local...",
+    "useMyLocation": "Usar a minha localização",
+    "popularLocations": "Locais populares",
+    "locating": "A localizar…",
+    "locationDenied": "Não foi possível aceder à sua localização. Pode pesquisar uma cidade."
+  },
+  "home": {
+    "italySection": "Tempo em Itália",
+    "worldSection": "Tempo pelo mundo",
+    "whyCompareTitle": "Porquê comparar previsões do tempo?",
+    "whyCompareBody": "Cada fornecedor de previsões usa modelos, dados e horários de atualização diferentes — por isso as previsões podem variar, sobretudo a vários dias de distância. Compará-las lado a lado dá-lhe mais contexto antes de decidir, sem afirmar que uma única fonte está sempre certa.",
+    "viewForecast": "Ver previsão"
+  },
+  "search": {
+    "noResults": "Nenhum local encontrado. Tente outra pesquisa.",
+    "recentSearches": "Pesquisas recentes",
+    "clearHistory": "Limpar histórico",
+    "resultsFor": "Resultados para"
+  },
+  "dashboard": {
+    "feelsLike": "Sensação",
+    "humidity": "Humidade",
+    "wind": "Vento",
+    "pressure": "Pressão",
+    "visibility": "Visibilidade",
+    "uvIndex": "Índice UV",
+    "precipitation": "Precipitação",
+    "sunrise": "Nascer do sol",
+    "sunset": "Pôr do sol",
+    "updated": "Atualizado",
+    "addFavorite": "Adicionar aos favoritos",
+    "removeFavorite": "Remover dos favoritos"
+  },
+  "comparison": {
+    "title": "Comparação de previsões",
+    "subtitle": "Veja como fontes meteorológicas independentes preveem o mesmo local agora.",
+    "agreement": "Concordância das previsões",
+    "temperatureRange": "Intervalo de temperatura",
+    "rainRange": "Probabilidade de chuva",
+    "windRange": "Velocidade do vento",
+    "agreementHigh": "As fontes estão muito alinhadas",
+    "agreementModerate": "As fontes mostram alguma variação",
+    "agreementLow": "As fontes mostram variação notável",
+    "source": "Fonte",
+    "poweredBy": "Dados de",
+    "chartTitle": "Temperatura por fornecedor",
+    "viewHourly": "Por hora",
+    "viewDaily": "Diária",
+    "unavailable": "Esta fonte está temporariamente indisponível."
+  },
+  "hourly": {
+    "title": "Previsão horária"
+  },
+  "daily": {
+    "title": "Previsão a 10 dias",
+    "rain": "chuva",
+    "today": "Hoje"
+  },
+  "rain": {
+    "title": "Previsão de chuva",
+    "probability": "Probabilidade de precipitação",
+    "timeline": "Precipitação hora a hora"
+  },
+  "wind": {
+    "title": "Vento",
+    "current": "Vento atual",
+    "gusts": "Rajadas",
+    "direction": "Direção",
+    "hourly": "Vento por hora",
+    "daily": "Vento diário"
+  },
+  "alerts": {
+    "title": "Alertas meteorológicos",
+    "none": "Sem alertas meteorológicos ativos.",
+    "severity": "Gravidade",
+    "area": "Área afetada",
+    "starts": "Início",
+    "ends": "Fim",
+    "officialSource": "Fonte oficial"
+  },
+  "map": {
+    "title": "Mapa meteorológico",
+    "placeholderTitle": "Mapa meteorológico em breve",
+    "placeholderBody": "Esta secção está reservada para um mapa interativo de temperatura, precipitação, vento e nuvens.",
+    "temperature": "Temperatura",
+    "precipitation": "Precipitação",
+    "wind": "Vento",
+    "clouds": "Nebulosidade",
+    "satellite": "Satélite"
+  },
+  "units": {
+    "title": "Unidades",
+    "temperature": "Temperatura",
+    "windSpeed": "Velocidade do vento",
+    "precipitation": "Precipitação"
+  },
+  "theme": {
+    "light": "Claro",
+    "dark": "Escuro",
+    "system": "Sistema"
+  },
+  "favorites": {
+    "title": "Favoritos",
+    "empty": "Ainda não guardou nenhum local favorito.",
+    "emptyHint": "Pesquise uma cidade e toque no coração para a guardar aqui."
+  },
+  "loading": {
+    "generic": "A carregar previsão…"
+  },
+  "empty": {
+    "searchPrompt": "Pesquise uma cidade para ver a previsão."
+  },
+  "error": {
+    "generic": "Não foi possível obter a previsão mais recente. Tente novamente.",
+    "unavailable": "Os dados meteorológicos estão temporariamente indisponíveis.",
+    "retry": "Tentar novamente",
+    "invalidLocation": "Não encontrámos esse local."
+  },
+  "footer": {
+    "tagline": "Informação meteorológica, comparada num só lugar.",
+    "navigation": "Navegação",
+    "company": "Empresa",
+    "languages": "Idiomas",
+    "about": "Sobre",
+    "contact": "Contacto",
+    "dataSources": "Fontes de dados",
+    "status": "Estado",
+    "api": "API",
+    "privacy": "Política de privacidade",
+    "cookies": "Política de cookies",
+    "cookieSettings": "Definições de cookies",
+    "terms": "Termos de serviço",
+    "cities": "Cidades",
+    "rights": "Todos os direitos reservados.",
+    "notMeteorologicalAuthority": "O WeatherCompare agrega e compara dados de fornecedores meteorológicos externos e não é uma autoridade meteorológica. Para avisos oficiais, consulte sempre o serviço meteorológico nacional.",
+    "byCountry": "Tempo por país",
+    "whereByMonth": "Para onde viajar, mês a mês"
+  },
+  "cookieConsent": {
+    "title": "Valorizamos a sua privacidade",
+    "body": "Usamos cookies para fazer funcionar este site e, com a sua autorização, para perceber como é utilizado. Pode alterar as suas preferências a qualquer momento.",
+    "acceptAll": "Aceitar tudo",
+    "rejectNonEssential": "Rejeitar não essenciais",
+    "managePreferences": "Gerir preferências",
+    "necessary": "Necessários",
+    "necessaryDesc": "Indispensáveis ao funcionamento do site. Sempre ativos.",
+    "analytics": "Análise",
+    "analyticsDesc": "Ajuda-nos a perceber, de forma agregada, como o site é usado.",
+    "advertising": "Publicidade",
+    "advertisingDesc": "Usados para mostrar anúncios relevantes quando a monetização estiver ativa.",
+    "preferences": "Preferências",
+    "preferencesDesc": "Guarda escolhas como idioma, unidades e tema.",
+    "save": "Guardar preferências"
+  },
+  "ad": {
+    "label": "Publicidade"
+  },
+  "city": {
+    "currentWeather": "Tempo atual",
+    "about": "Sobre o tempo em {city}",
+    "nearby": "Cidades próximas",
+    "faq": "Perguntas frequentes",
+    "breadcrumbHome": "Início"
+  }
+}

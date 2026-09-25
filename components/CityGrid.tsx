@@ -19,6 +19,14 @@ interface CityGridProps {
   climate?: ClimateHighs;
   /** Optional line under the title. */
   subtitle?: string;
+  /** Localized display names (translated site versions). */
+  nameFor?: (country: CountrySeed, city: CitySeed) => { city: string; country: string };
+  /** Localized "Highs 3° – 30°C" label. */
+  highsLabel?: (min: number, max: number) => string;
+  /** Localized "View forecast →" label. */
+  viewLabel?: string;
+  /** Localized short month names (Jan..Dec), for initials and screen-reader text. */
+  monthShort?: string[];
 }
 
 const MONTH_INITIALS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
@@ -50,7 +58,9 @@ function accentFor(slug: string) {
   return ACCENTS[h % ACCENTS.length]!;
 }
 
-export function CityGrid({ title, items, hrefFor, climate, subtitle }: CityGridProps) {
+export function CityGrid({ title, items, hrefFor, climate, subtitle, nameFor, highsLabel, viewLabel, monthShort }: CityGridProps) {
+  const short = monthShort ?? MONTH_SHORT;
+  const initials = monthShort ? monthShort.map((m) => m.charAt(0)) : MONTH_INITIALS;
   const headingId = `${title.replace(/[^a-zA-Z0-9]+/g, "-").toLowerCase()}-heading`;
   return (
     <section aria-labelledby={headingId}>
@@ -66,6 +76,7 @@ export function CityGrid({ title, items, hrefFor, climate, subtitle }: CityGridP
           const max = highs ? Math.max(...highs) : 0;
           const min = highs ? Math.min(...highs) : 0;
           const span = Math.max(max - min, 1);
+          const names = nameFor ? nameFor(country, city) : { city: city.name, country: country.name };
           return (
             <Link
               key={`${country.slug}-${city.slug}`}
@@ -76,9 +87,9 @@ export function CityGrid({ title, items, hrefFor, climate, subtitle }: CityGridP
               <div className="flex items-start justify-between gap-2">
                 <span className="min-w-0">
                   <span className="block truncate text-sm font-bold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-200 sm:text-base">
-                    {city.name}
+                    {names.city}
                   </span>
-                  <span className="block truncate text-xs text-slate-400">{country.name}</span>
+                  <span className="block truncate text-xs text-slate-400">{names.country}</span>
                 </span>
                 <ArrowRight
                   size={15}
@@ -99,22 +110,28 @@ export function CityGrid({ title, items, hrefFor, climate, subtitle }: CityGridP
                     ))}
                   </div>
                   <div className="mt-1 flex gap-[3px] text-center text-[8px] font-medium text-slate-300" aria-hidden="true">
-                    {MONTH_INITIALS.map((m, i) => (
+                    {initials.map((m, i) => (
                       <span key={i} className="flex-1">
                         {m}
                       </span>
                     ))}
                   </div>
                   <p className="mt-2 text-[11px] text-slate-500 dark:text-slate-400">
-                    Highs {Math.round(min)}° – {Math.round(max)}°C
-                    <span className="sr-only">
-                      {" "}
-                      (warmest in {MONTH_SHORT[highs.indexOf(max)]}, coolest in {MONTH_SHORT[highs.indexOf(min)]})
-                    </span>
+                    {highsLabel ? (
+                      highsLabel(Math.round(min), Math.round(max))
+                    ) : (
+                      <>
+                        Highs {Math.round(min)}° – {Math.round(max)}°C
+                        <span className="sr-only">
+                          {" "}
+                          (warmest in {short[highs.indexOf(max)]}, coolest in {short[highs.indexOf(min)]})
+                        </span>
+                      </>
+                    )}
                   </p>
                 </>
               ) : (
-                <span className="mt-3 text-[11px] font-medium text-brand-600 dark:text-brand-300">View forecast →</span>
+                <span className="mt-3 text-[11px] font-medium text-brand-600 dark:text-brand-300">{viewLabel ?? "View forecast →"}</span>
               )}
             </Link>
           );

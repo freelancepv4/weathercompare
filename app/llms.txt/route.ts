@@ -1,3 +1,4 @@
+import { CONTENT_LOCALES, ROUTING, paths } from "@/lib/i18n/routing";
 import { siteConfig } from "@/config/site";
 import { countries } from "@/config/countries";
 import { allGuides } from "@/lib/data/guides";
@@ -21,6 +22,7 @@ export function GET() {
     )} cities worldwide, and publishes travel-weather guides: best time to visit, month-by-month climate averages (NASA POWER, 2011–2020), packing advice and a trip weather finder.`,
     "",
     "## Key pages",
+    `- [Weather today](${base}/weather-today): daily hottest, coldest, wettest and windiest places, tomorrow's outlook and tips (updated hourly)`,
     `- [Trip weather finder](${base}/trip-finder): rank cities by month and preferred weather`,
     `- [Travel guides](${base}/guides): comparisons, packing lists, seasonal picks, AI travel tools`,
     `- [Best time to visit](${base}/guides/best-time-to-visit): recommended season for every city`,
@@ -42,6 +44,10 @@ export function GET() {
     `- Live multi-source forecast: ${base}/weather/{country}/{city}`,
     `- Climate for a month: ${base}/weather/{country}/{city}/{month} (month = january … december)`,
     `- Best time to visit: ${base}/guides/best-time-to-visit/{country}/{city}`,
+    "",
+    "## Languages",
+    "The site is available in English plus Italian, German, French, Spanish, Portuguese, Dutch and Polish (hreflang-linked):",
+    ...CONTENT_LOCALES.map((l) => `- ${l}: ${base}${paths.home(l)} · daily: ${base}${paths.today(l)} · city: ${base}/${l}/${ROUTING[l].weather}/{country}/{city}`),
     "",
     "## Notes",
     `- ${siteConfig.name} is not a meteorological authority; for official warnings consult national weather services.`,

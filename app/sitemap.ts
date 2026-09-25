@@ -3,6 +3,7 @@ import { siteConfig } from "@/config/site";
 import { countries, allCityPaths } from "@/config/countries";
 import { allGuides } from "@/lib/data/guides";
 import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
+import { CONTENT_LOCALES, paths } from "@/lib/i18n/routing";
 
 /**
  * Dynamic sitemap: homepage, static pages, country pages, and every seed
@@ -24,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/guides",
     "/guides/best-time-to-visit",
     "/trip-finder",
+    "/weather-today",
   ].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
@@ -78,6 +80,24 @@ export default function sitemap(): MetadataRoute.Sitemap {
         }))
       : [];
 
+  // Translated versions (/it, /de, /fr, /es, /pt, /nl, /pl) of every page
+  // type that exists in all languages. Each page also declares its
+  // hreflang alternates in <head>.
+  const url = (path: string) => `${siteConfig.url}${path}`;
+  const localizedPages = CONTENT_LOCALES.flatMap((l) => [
+    { url: url(paths.home(l)), changeFrequency: "daily" as const, priority: 0.9 },
+    { url: url(paths.today(l)), changeFrequency: "hourly" as const, priority: 0.8 },
+    { url: url(paths.tripFinder(l)), changeFrequency: "monthly" as const, priority: 0.5 },
+    ...countries.map((c) => ({ url: url(paths.country(l, c.slug)), changeFrequency: "daily" as const, priority: 0.6 })),
+    ...allCityPaths().map(({ country, city }) => ({ url: url(paths.city(l, country, city)), changeFrequency: "hourly" as const, priority: 0.8 })),
+    ...(climateCities.length > 0
+      ? MONTHS.map((_, i) => ({ url: url(paths.whereToGo(l, i)), changeFrequency: "monthly" as const, priority: 0.7 }))
+      : []),
+    ...climateCities.flatMap(({ country, city }) =>
+      MONTHS.map((_, i) => ({ url: url(paths.month(l, country.slug, city.slug, i)), changeFrequency: "yearly" as const, priority: 0.6 }))
+    ),
+  ]);
+
   return [
     ...staticPages,
     ...countryPages,
@@ -86,5 +106,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...bestTimeToVisitPages,
     ...whereToGoPages,
     ...monthPages,
+    ...localizedPages,
   ];
 }

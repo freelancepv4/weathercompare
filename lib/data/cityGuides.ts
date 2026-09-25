@@ -720,6 +720,86 @@ export const cityGuides: Record<string, CityGuide> = {
     goodToKnow:
       "Because Rotterdam was rebuilt almost entirely after WWII, it has a very different, far more modern architectural character than most other historic Dutch cities.",
   },
+  "poland:warsaw": {
+    intro:
+      "Poland's capital is a city of contrasts: a meticulously rebuilt Old Town, Stalin-era landmarks and a fast-growing skyline of glass towers. Largely destroyed in WWII, it has become one of Central Europe's most dynamic cities, with green parks and a lively food scene.",
+    bestTimeToVisit: "May to September, when days are long and mild; July and August are the warmest months.",
+    landmarks: [
+      { name: "Old Town (Stare Miasto)", description: "The historic centre, rebuilt after WWII from paintings and records and now a UNESCO World Heritage Site." },
+      { name: "Royal Castle", description: "The former residence of Polish monarchs, facing Castle Square at the edge of the Old Town." },
+      { name: "Łazienki Park", description: "A large landscaped park with a palace on the water and free summer Chopin concerts." },
+      { name: "Palace of Culture and Science", description: "A towering 1950s landmark with an observation terrace over the whole city." },
+    ],
+    localTip: "Try a milk bar (bar mleczny) — simple, traditional canteens serving pierogi and soups at very low prices.",
+    gettingAround:
+      "Two metro lines, trams and buses cover the city well; the Old Town and the Royal Route along Krakowskie Przedmieście are best explored on foot.",
+    goodToKnow:
+      "Winters are cold, often around or below freezing, so pack properly warm layers between December and February.",
+  },
+  "poland:krakow": {
+    intro:
+      "Poland's former royal capital survived WWII largely intact, and its medieval Old Town, Wawel Castle and the Kazimierz district make it one of Europe's most atmospheric cities. It's compact, walkable and popular for weekend breaks.",
+    bestTimeToVisit: "May to June or September, for comfortable sightseeing weather without the peak summer crowds.",
+    landmarks: [
+      { name: "Main Market Square (Rynek Główny)", description: "One of Europe's largest medieval squares, with the Cloth Hall and St Mary's Basilica." },
+      { name: "Wawel Castle & Cathedral", description: "The hilltop seat of Polish kings, overlooking the Vistula river." },
+      { name: "Kazimierz", description: "The historic Jewish quarter, now known for its synagogues, cafés and nightlife." },
+      { name: "Wieliczka Salt Mine (day trip)", description: "A centuries-old salt mine with underground chapels carved from salt, just outside the city." },
+    ],
+    localTip: "Listen for the hejnał — a trumpet call played every hour from St Mary's tower that stops abruptly mid-melody.",
+    gettingAround:
+      "The Old Town and Kazimierz are easily walkable; trams cover longer distances, and trains connect to the airport and nearby towns.",
+    goodToKnow:
+      "Book timed tickets for the Wieliczka Salt Mine and the Auschwitz-Birkenau memorial in advance — both fill up, especially in summer.",
+  },
+  "poland:gdansk": {
+    intro:
+      "A Baltic port city of colourful merchant houses, Gothic brick churches and a long maritime history. Gdańsk is also where the Solidarity movement began, and it pairs well with the nearby beaches of Sopot.",
+    bestTimeToVisit: "June to August for the warmest weather and beach days; May and September are quieter and still pleasant.",
+    landmarks: [
+      { name: "Long Market (Długi Targ)", description: "The grand main street of the Main Town, lined with ornate gabled facades and Neptune's Fountain." },
+      { name: "St Mary's Church", description: "One of the largest brick churches in the world, with a tower offering views over the old town." },
+      { name: "European Solidarity Centre", description: "A modern museum at the shipyard where the Solidarity movement was born." },
+      { name: "Sopot (day trip)", description: "A seaside resort a short train ride away, known for its long wooden pier and sandy beach." },
+    ],
+    localTip: "Walk along the Motława riverside in the evening, when the old granaries and the medieval crane are lit up.",
+    gettingAround:
+      "The historic centre is compact and walkable; SKM commuter trains link Gdańsk with Sopot and Gdynia along the coast.",
+    goodToKnow:
+      "The Baltic sea stays cool even in summer, and the coast can be windy — bring a warm layer for evenings by the water.",
+  },
+  "belgium:brussels": {
+    intro:
+      "Belgium's capital and the seat of the EU mixes grand Gothic and Art Nouveau architecture with a relaxed café culture. It's a compact city that is easy to combine with Bruges, Ghent and Antwerp by train.",
+    bestTimeToVisit: "May to September for the mildest weather; Brussels sees rain in every season, so pack a light jacket.",
+    landmarks: [
+      { name: "Grand-Place", description: "The ornate central square framed by guildhalls and the Gothic Town Hall, a UNESCO World Heritage Site." },
+      { name: "Atomium", description: "A giant model of an iron crystal built for the 1958 World's Fair, with viewing spheres inside." },
+      { name: "Manneken Pis", description: "The small bronze statue that has become one of the city's best-known (and often costumed) symbols." },
+      { name: "Royal Museums of Fine Arts", description: "A major collection of Flemish and Belgian art, from the old masters to Magritte." },
+    ],
+    localTip: "Try fries from a friterie and waffles from a proper bakery rather than the tourist stalls around the Grand-Place.",
+    gettingAround:
+      "The centre is walkable, and metro, trams and buses cover the rest; fast trains connect Brussels with Bruges, Ghent and Antwerp in under an hour.",
+    goodToKnow:
+      "Brussels is officially bilingual — street signs and station names appear in both French and Dutch.",
+  },
+  "belgium:antwerp": {
+    intro:
+      "Flanders' largest city is a fashion and diamond hub with a handsome old centre, one of Europe's biggest ports and a strong Rubens heritage. It feels more laid-back than Brussels, with excellent food and shopping.",
+    bestTimeToVisit: "May to September for the warmest, longest days; spring and early autumn are quieter.",
+    landmarks: [
+      { name: "Antwerp Central Station", description: "A spectacular early-20th-century railway station, often called one of the most beautiful in the world." },
+      { name: "Cathedral of Our Lady", description: "A soaring Gothic cathedral housing several major Rubens paintings." },
+      { name: "Grote Markt", description: "The main square, with its Renaissance city hall and the Brabo fountain." },
+      { name: "MAS Museum", description: "A striking red-stone museum tower by the docks, with a free rooftop viewpoint." },
+    ],
+    localTip: "Visit the Rubens House to see where the painter lived and worked, then walk to the cathedral to see his altarpieces.",
+    gettingAround:
+      "The centre is compact and walkable, trams run across the city, and trains reach Brussels in about 40 minutes.",
+    goodToKnow:
+      "Antwerp is Dutch-speaking (Flemish); a few words of Dutch are appreciated, though English is widely spoken.",
+  },
   "portugal:lisbon": {
     intro:
       "A hilly, coastal capital of pastel buildings, historic trams, and viewpoints (miradouros) over the Tagus river. Its seven hills mean a lot of up-and-down walking, softened by frequent viewpoints and outdoor café stops.",

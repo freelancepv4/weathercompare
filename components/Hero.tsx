@@ -5,9 +5,18 @@ import { SearchBar } from "./SearchBar";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
 import { popularCities } from "@/config/countries";
 
-export function Hero() {
+interface HeroProps {
+  /** Overrides for the translated site versions (server-rendered, SEO-targeted copy). */
+  title?: string;
+  subtitle?: string;
+  links?: Array<{ href: string; label: string }>;
+}
+
+export function Hero({ title, subtitle, links }: HeroProps = {}) {
   const t = useTranslations();
-  const popular = popularCities(8);
+  const popular =
+    links ??
+    popularCities(8).map(({ country, city }) => ({ href: `/weather/${country.slug}/${city.slug}`, label: city.name }));
 
   return (
     <section className="relative overflow-hidden bg-hero-gradient text-white">
@@ -19,9 +28,9 @@ export function Hero() {
       <div className="container-page relative py-9 sm:py-12">
         <div className="mx-auto max-w-2xl text-center">
           <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-[2.75rem] animate-fade-up">
-            {t("hero.headline")}
+            {title ?? t("hero.headline")}
           </h1>
-          <p className="mx-auto mt-3 max-w-xl text-sm text-white/75 sm:text-base">{t("hero.subheadline")}</p>
+          <p className="mx-auto mt-3 max-w-xl text-sm text-white/75 sm:text-base">{subtitle ?? t("hero.subheadline")}</p>
         </div>
 
         <div className="mx-auto mt-6 max-w-xl">
@@ -33,13 +42,13 @@ export function Hero() {
             {t("hero.popularLocations")}
           </p>
           <div className="flex flex-wrap justify-center gap-2">
-            {popular.map(({ country, city }, i) => (
+            {popular.map(({ href, label }, i) => (
               <Link
-                key={city.slug}
-                href={`/weather/${country.slug}/${city.slug}`}
+                key={href}
+                href={href}
                 className={`${i >= 6 ? "hidden sm:inline-block " : ""}rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-sm font-medium text-white/85 backdrop-blur-sm transition-colors hover:bg-white/15`}
               >
-                {city.name}
+                {label}
               </Link>
             ))}
           </div>

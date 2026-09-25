@@ -26,6 +26,7 @@ import { AdSlot } from "@/components/AdSlot";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { ErrorState } from "@/components/ErrorState";
+import { hreflang } from "@/lib/i18n/pageMeta";
 
 // This page stays fully static/ISR (no searchParams) so the pre-built
 // cities in config/countries.ts keep their fast, SEO-friendly pages. Cities
@@ -95,7 +96,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     title: seoTitle(title),
     description: seoDescription(description),
     keywords,
-    alternates: { canonical: url },
+    alternates: { canonical: url, ...hreflang({ kind: "city", country: country.slug, city: city.slug }) },
     openGraph: { title, description, url, images: [defaultOgImage] },
     twitter: { title, description, images: [defaultOgImage] },
   };

@@ -4,6 +4,9 @@ import it from "@/locales/it.json";
 import de from "@/locales/de.json";
 import fr from "@/locales/fr.json";
 import es from "@/locales/es.json";
+import pt from "@/locales/pt.json";
+import nl from "@/locales/nl.json";
+import pl from "@/locales/pl.json";
 
 /**
  * All locale dictionaries, loaded once. Adding a new language is:
@@ -13,7 +16,7 @@ import es from "@/locales/es.json";
  * Nothing else in the app needs to change — every component reads strings
  * through useTranslations()/getDictionary(), never hardcoded text.
  */
-export const dictionaries = { en, it, de, fr, es } satisfies Record<Locale, unknown>;
+export const dictionaries = { en, it, de, fr, es, pt, nl, pl } satisfies Record<Locale, unknown>;
 
 export type Dictionary = typeof en;
 

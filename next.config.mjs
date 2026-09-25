@@ -33,6 +33,13 @@ const nextConfig = {
         source: "/embed/:path*",
         headers: [{ key: "Content-Security-Policy", value: "frame-ancestors *" }],
       },
+      // Translated site versions: tell crawlers (Bing in particular reads
+      // this) which language each /{lang}/ section is in. The <html lang>
+      // attribute comes from the single root layout, so it can't vary.
+      ...["it", "de", "fr", "es", "pt", "nl", "pl"].flatMap((lang) => [
+        { source: `/${lang}`, headers: [{ key: "Content-Language", value: lang }] },
+        { source: `/${lang}/:path*`, headers: [{ key: "Content-Language", value: lang }] },
+      ]),
     ];
   },
 };

@@ -11,7 +11,8 @@
  * specific weather station.
  *
  * Run it once (and again whenever you add cities to config/countries.ts):
- *   node scripts/fetch-climate.mjs
+ *   node scripts/fetch-climate.mjs            (all cities)
+ *   node scripts/fetch-climate.mjs --missing  (only cities not in climate.json yet — fast)
  *
  * Takes a few minutes — requests are made one at a time with a short
  * pause so the free API isn't hammered.
@@ -95,13 +96,23 @@ async function fetchCity(city) {
   }
 }
 
-const cities = readCities();
+const onlyMissing = process.argv.includes("--missing");
+const outPath = join(root, "lib", "data", "climate.json");
+let existing = {};
+if (onlyMissing) {
+  try {
+    existing = JSON.parse(readFileSync(outPath, "utf8")).cities ?? {};
+  } catch {
+    existing = {};
+  }
+}
+const cities = readCities().filter((c) => !onlyMissing || !existing[`${c.country}/${c.slug}`]);
 console.log(`Fetching climate averages for ${cities.length} cities from NASA POWER...`);
 
 const out = {
   source: `NASA POWER daily data, ${START_YEAR}–${END_YEAR} monthly averages, https://power.larc.nasa.gov`,
   generatedAt: new Date().toISOString().slice(0, 10),
-  cities: {},
+  cities: { ...existing },
 };
 const failed = [];
 
@@ -117,7 +128,7 @@ for (const [i, city] of cities.entries()) {
   await sleep(500);
 }
 
-writeFileSync(join(root, "lib", "data", "climate.json"), JSON.stringify(out, null, 1) + "\n");
+writeFileSync(outPath, JSON.stringify(out, null, 1) + "\n");
 console.log(`\nWrote lib/data/climate.json — ${Object.keys(out.cities).length} cities OK, ${failed.length} failed.`);
 if (failed.length) {
   console.log(`Failed: ${failed.join(", ")} — just run the script again to retry.`);

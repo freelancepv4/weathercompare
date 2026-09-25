@@ -8,6 +8,8 @@ import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
 import { siteConfig, localeNames, type Locale } from "@/config/site";
 import { popularCities, countries } from "@/config/countries";
 import { openCookiePreferences } from "./CookieConsent";
+import { paths, parsePath, pathFor } from "@/lib/i18n/routing";
+import { cityName, countryName } from "@/lib/i18n/places";
 
 // Only profiles with a URL in siteConfig.social are shown — add Instagram,
 // Facebook etc. there once those accounts exist.
@@ -35,7 +37,7 @@ export function Footer() {
     <footer className="border-t border-slate-200 bg-white dark:border-white/10 dark:bg-surface-dark">
       <div className="container-page grid grid-cols-2 gap-10 py-14 sm:grid-cols-2 lg:grid-cols-5">
         <div className="col-span-2 lg:col-span-2">
-          <Logo />
+          <Logo href={paths.home(locale)} />
           <p className="mt-4 max-w-xs text-sm text-slate-500 dark:text-slate-400">{t("footer.tagline")}</p>
           <div className="mt-5 flex flex-wrap items-center gap-2">
             {SOCIAL_LINKS.map(({ key, label, Icon, hover }) => (
@@ -56,12 +58,13 @@ export function Footer() {
         </div>
 
         <FooterColumn title={t("footer.navigation")}>
-          <FooterLink href="/">{t("nav.weather")}</FooterLink>
+          <FooterLink href={paths.home(locale)}>{t("nav.weather")}</FooterLink>
+          <FooterLink href={paths.today(locale)}>{t("nav.weatherToday")}</FooterLink>
           {/* compare/map/alerts are sections on a city page, not the homepage
               — see the matching comment in components/Header.tsx */}
           <FooterLink href="/weather/italy/rome#compare">{t("nav.compare")}</FooterLink>
           <FooterLink href="/weather/italy/rome#map">{t("nav.maps")}</FooterLink>
-          <FooterLink href="/trip-finder">{t("nav.tripFinder")}</FooterLink>
+          <FooterLink href={paths.tripFinder(locale)}>{t("nav.tripFinder")}</FooterLink>
           <FooterLink href="/news">{t("nav.news")}</FooterLink>
           <FooterLink href="/guides">{t("nav.guides")}</FooterLink>
           <FooterLink href="/favorites">{t("nav.favorites")}</FooterLink>
@@ -89,26 +92,26 @@ export function Footer() {
 
         <FooterColumn title={t("footer.cities")}>
           {cities.map(({ country, city }) => (
-            <FooterLink key={city.slug} href={`/weather/${country.slug}/${city.slug}`}>
-              {city.name}
+            <FooterLink key={city.slug} href={paths.city(locale, country.slug, city.slug)}>
+              {cityName(city.slug, city.name, locale)}
             </FooterLink>
           ))}
         </FooterColumn>
       </div>
 
-      <nav aria-label="Weather by country" className="container-page border-t border-slate-100 py-6 dark:border-white/10">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">Weather by country</p>
+      <nav aria-label={t("footer.byCountry")} className="container-page border-t border-slate-100 py-6 dark:border-white/10">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">{t("footer.byCountry")}</p>
         <ul className="flex flex-wrap gap-x-4 gap-y-2">
           {countries.map((c) => (
             <li key={c.slug}>
-              <Link href={`/weather/${c.slug}`} className="text-sm text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400">
-                {c.name}
+              <Link href={paths.country(locale, c.slug)} className="text-sm text-slate-500 transition-colors hover:text-brand-600 dark:text-slate-400">
+                {countryName(c.slug, c.name, locale)}
               </Link>
             </li>
           ))}
           <li>
-            <Link href="/where-to-go/january" className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
-              Where to go by month
+            <Link href={paths.whereToGo(locale, new Date().getMonth())} className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
+              {t("footer.whereByMonth")}
             </Link>
           </li>
         </ul>
@@ -119,18 +122,24 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {siteConfig.name}. {t("footer.rights")}
           </p>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1">
             <span className="hidden sm:inline">{t("footer.languages")}:</span>
-            {siteConfig.locales.map((code: Locale) => (
-              <button
-                key={code}
-                type="button"
-                onClick={() => setLocale(code)}
-                className={`transition-colors hover:text-brand-600 ${locale === code ? "font-semibold text-brand-600" : ""}`}
-              >
-                {localeNames[code]}
-              </button>
-            ))}
+            {siteConfig.locales.map((code: Locale) => {
+              // Real links (crawlable) to this page in each language, or that language's home.
+              const parsed = parsePath(pathname || "/");
+              const href = parsed ? pathFor(code, parsed.ref) : paths.home(code);
+              return (
+                <Link
+                  key={code}
+                  href={href}
+                  hrefLang={code}
+                  onClick={() => setLocale(code)}
+                  className={`transition-colors hover:text-brand-600 ${locale === code ? "font-semibold text-brand-600" : ""}`}
+                >
+                  {localeNames[code]}
+                </Link>
+              );
+            })}
           </div>
         </div>
         <div className="container-page mt-3">

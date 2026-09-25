@@ -3,6 +3,7 @@
     "weather": "Météo",
     "compare": "Comparer",
     "tripFinder": "Où partir",
+    "weatherToday": "Météo du jour",
     "maps": "Cartes",
     "alerts": "Alertes",
     "news": "Actualités",
@@ -153,7 +154,9 @@
     "terms": "Conditions d'utilisation",
     "cities": "Villes",
     "rights": "Tous droits réservés.",
-    "notMeteorologicalAuthority": "WeatherCompare agrège et compare les données de fournisseurs météo tiers et n'est pas une autorité météorologique. Pour les avis officiels, consultez toujours votre service météorologique national."
+    "notMeteorologicalAuthority": "WeatherCompare agrège et compare les données de fournisseurs météo tiers et n'est pas une autorité météorologique. Pour les avis officiels, consultez toujours votre service météorologique national.",
+    "byCountry": "Météo par pays",
+    "whereByMonth": "Où partir, mois par mois"
   },
   "cookieConsent": {
     "title": "Votre vie privée compte pour nous",

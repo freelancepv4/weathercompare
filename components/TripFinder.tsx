@@ -4,7 +4,9 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CloudRain, MapPin, Share2, Check } from "lucide-react";
 import { MONTHS, type CityClimate } from "@/lib/data/climate";
-import { REGIONS, STYLES, scoreLabel, scoreMonth, type WeatherStyle } from "@/lib/tripScore";
+import { REGIONS, STYLES, scoreMonth, type WeatherStyle } from "@/lib/tripScore";
+import { paths, monthInfo as routeMonths, type AnyLocale } from "@/lib/i18n/routing";
+import type { TripUi } from "@/lib/i18n/copy/types";
 
 export interface FinderCity {
   country: string;
@@ -17,7 +19,44 @@ export interface FinderCity {
 
 const toF = (c: number) => Math.round((c * 9) / 5 + 32);
 
-export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; initialMonth: number }) {
+/** English UI strings — the default when no translated `ui` is passed. */
+const EN_UI: TripUi = {
+  step1: "1 · When are you travelling?",
+  step2: "2 · What weather do you want?",
+  step3: "3 · Region",
+  anywhere: "Anywhere",
+  avoidRain: "Avoid rainy places",
+  share: "Share these results",
+  copied: "Link copied",
+  shareTitle: "Where to go for good weather",
+  bestMatches: "Best matches for {month}",
+  high: "High",
+  low: "Low",
+  rain: "Rain",
+  score: "score",
+  seeDetails: "see {month} details →",
+  showTop: "Show top 9 only",
+  showAll: "Show all {n} cities",
+  scoreLabels: ["Excellent match", "Good match", "Fair match", "Poor match"],
+  monthShort: MONTHS.map((m) => m.short),
+  monthNames: MONTHS.map((m) => m.name),
+  styles: Object.fromEntries(STYLES.map((s) => [s.id, { label: s.label, blurb: s.blurb }])) as TripUi["styles"],
+  regions: Object.fromEntries(REGIONS.map((r) => [r, r])),
+};
+
+export function TripFinder({
+  cities,
+  initialMonth,
+  ui = EN_UI,
+  locale = "en",
+}: {
+  cities: FinderCity[];
+  initialMonth: number;
+  ui?: TripUi;
+  locale?: AnyLocale;
+}) {
+  const slugs = routeMonths(locale).monthSlugs;
+  const scoreLabel = (s: number) => ui.scoreLabels[s >= 85 ? 0 : s >= 70 ? 1 : s >= 50 ? 2 : 3];
   const [month, setMonth] = useState(initialMonth);
   const [style, setStyle] = useState<WeatherStyle>("warm");
   const [region, setRegion] = useState<string>("All");
@@ -29,7 +68,7 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
   // otherwise default to the visitor's current month.
   useEffect(() => {
     const q = new URLSearchParams(window.location.search);
-    const m = MONTHS.findIndex((x) => x.slug === q.get("month"));
+    const m = slugs.indexOf(q.get("month") ?? "");
     setMonth(m >= 0 ? m : new Date().getMonth());
     const s = q.get("style");
     if (s && STYLES.some((x) => x.id === s)) setStyle(s as WeatherStyle);
@@ -46,12 +85,11 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
     [cities, month, style, region, avoidRain]
   );
   const shown = showAll ? ranked : ranked.slice(0, 9);
-  const monthInfo = MONTHS[month]!;
 
   async function share() {
-    const url = `${window.location.origin}/trip-finder?month=${monthInfo.slug}&style=${style}${region !== "All" ? `&region=${encodeURIComponent(region)}` : ""}`;
+    const url = `${window.location.origin}${paths.tripFinder(locale)}?month=${slugs[month]}&style=${style}${region !== "All" ? `&region=${encodeURIComponent(region)}` : ""}`;
     try {
-      if (navigator.share) await navigator.share({ title: "Where to go for good weather", url });
+      if (navigator.share) await navigator.share({ title: ui.shareTitle, url });
       else {
         await navigator.clipboard.writeText(url);
         setCopied(true);
@@ -67,7 +105,7 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
       {/* Controls */}
       <div className="rounded-xl3 border border-slate-200 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle sm:p-6">
         <fieldset>
-          <legend className="text-xs font-bold uppercase tracking-widest text-slate-400">1 · When are you travelling?</legend>
+          <legend className="text-xs font-bold uppercase tracking-widest text-slate-400">{ui.step1}</legend>
           <div className="mt-3 grid grid-cols-4 gap-2 sm:grid-cols-6 lg:grid-cols-12">
             {MONTHS.map((m, i) => (
               <button
@@ -81,14 +119,14 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
                     : "bg-slate-100 text-slate-600 hover:bg-brand-50 hover:text-brand-700 dark:bg-white/5 dark:text-slate-300"
                 }`}
               >
-                {m.short}
+                {ui.monthShort[i]}
               </button>
             ))}
           </div>
         </fieldset>
 
         <fieldset className="mt-6">
-          <legend className="text-xs font-bold uppercase tracking-widest text-slate-400">2 · What weather do you want?</legend>
+          <legend className="text-xs font-bold uppercase tracking-widest text-slate-400">{ui.step2}</legend>
           <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
             {STYLES.map((s) => (
               <button
@@ -103,8 +141,8 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
                 }`}
               >
                 <span className="text-xl" aria-hidden="true">{s.emoji}</span>
-                <span className="mt-1 block text-sm font-semibold text-slate-900 dark:text-white">{s.label}</span>
-                <span className="block text-[11px] leading-snug text-slate-500 dark:text-slate-400">{s.blurb}</span>
+                <span className="mt-1 block text-sm font-semibold text-slate-900 dark:text-white">{ui.styles[s.id].label}</span>
+                <span className="block text-[11px] leading-snug text-slate-500 dark:text-slate-400">{ui.styles[s.id].blurb}</span>
               </button>
             ))}
           </div>
@@ -112,7 +150,7 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
 
         <div className="mt-6 flex flex-wrap items-center gap-3">
           <label className="text-xs font-bold uppercase tracking-widest text-slate-400" htmlFor="region">
-            3 · Region
+            {ui.step3}
           </label>
           <select
             id="region"
@@ -120,16 +158,16 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
             onChange={(e) => setRegion(e.target.value)}
             className="rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-medium dark:border-white/10 dark:bg-surface-dark dark:text-white"
           >
-            <option value="All">Anywhere</option>
+            <option value="All">{ui.anywhere}</option>
             {REGIONS.map((r) => (
               <option key={r} value={r}>
-                {r}
+                {ui.regions[r] ?? r}
               </option>
             ))}
           </select>
           <label className="flex cursor-pointer items-center gap-2 text-sm text-slate-600 dark:text-slate-300">
             <input type="checkbox" checked={avoidRain} onChange={(e) => setAvoidRain(e.target.checked)} className="h-4 w-4 rounded accent-brand-600" />
-            Avoid rainy places
+            {ui.avoidRain}
           </label>
           <button
             type="button"
@@ -137,15 +175,15 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
             className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-slate-200 px-4 py-2 text-xs font-semibold text-slate-600 hover:border-brand-300 hover:text-brand-700 dark:border-white/10 dark:text-slate-300"
           >
             {copied ? <Check size={14} aria-hidden="true" /> : <Share2 size={14} aria-hidden="true" />}
-            {copied ? "Link copied" : "Share these results"}
+            {copied ? ui.copied : ui.share}
           </button>
         </div>
       </div>
 
       {/* Results */}
       <h2 className="mt-10 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl" aria-live="polite">
-        Best matches for {monthInfo.name}
-        <span className="ml-2 text-sm font-medium text-slate-400">{STYLES.find((s) => s.id === style)!.label.toLowerCase()}</span>
+        {ui.bestMatches.replace("{month}", ui.monthNames[month]!)}
+        <span className="ml-2 text-sm font-medium text-slate-400">{ui.styles[style].label.toLowerCase()}</span>
       </h2>
       <ol className="mt-5 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {shown.map((c, idx) => {
@@ -156,7 +194,7 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
           return (
             <li key={`${c.countrySlug}/${c.citySlug}`}>
               <Link
-                href={`/weather/${c.countrySlug}/${c.citySlug}/${monthInfo.slug}`}
+                href={paths.month(locale, c.countrySlug, c.citySlug, month)}
                 className="group block h-full rounded-xl3 border border-slate-200 bg-white p-5 shadow-soft transition-all hover:-translate-y-1 hover:shadow-soft-lg dark:border-white/10 dark:bg-surface-dark-subtle"
               >
                 <div className="flex items-start justify-between gap-3">
@@ -169,29 +207,29 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
                   </div>
                   <span className={`flex h-12 w-12 shrink-0 flex-col items-center justify-center rounded-full text-white ${tone}`}>
                     <span className="text-base font-bold leading-none">{c.score}</span>
-                    <span className="text-[8px] font-semibold uppercase">score</span>
+                    <span className="text-[8px] font-semibold uppercase">{ui.score}</span>
                   </span>
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-2 text-center">
                   <div className="rounded-xl bg-orange-50 py-2 dark:bg-orange-500/10">
-                    <p className="text-[10px] font-semibold uppercase text-orange-600">High</p>
+                    <p className="text-[10px] font-semibold uppercase text-orange-600">{ui.high}</p>
                     <p className="text-sm font-bold text-slate-800 dark:text-white">{Math.round(hi)}°C</p>
                     <p className="text-[10px] text-slate-400">{toF(hi)}°F</p>
                   </div>
                   <div className="rounded-xl bg-sky-50 py-2 dark:bg-sky-500/10">
-                    <p className="text-[10px] font-semibold uppercase text-sky-600">Low</p>
+                    <p className="text-[10px] font-semibold uppercase text-sky-600">{ui.low}</p>
                     <p className="text-sm font-bold text-slate-800 dark:text-white">{Math.round(lo)}°C</p>
                     <p className="text-[10px] text-slate-400">{toF(lo)}°F</p>
                   </div>
                   <div className="rounded-xl bg-brand-50 py-2 dark:bg-brand-500/10">
                     <p className="flex items-center justify-center gap-0.5 text-[10px] font-semibold uppercase text-brand-600">
-                      <CloudRain size={10} aria-hidden="true" /> Rain
+                      <CloudRain size={10} aria-hidden="true" /> {ui.rain}
                     </p>
                     <p className="text-sm font-bold text-slate-800 dark:text-white">{c.climate.precipMm[month]}</p>
                     <p className="text-[10px] text-slate-400">mm</p>
                   </div>
                 </div>
-                <p className="mt-3 text-xs font-semibold text-slate-500">{scoreLabel(c.score)} · see {monthInfo.name} details →</p>
+                <p className="mt-3 text-xs font-semibold text-slate-500">{scoreLabel(c.score)} · {ui.seeDetails.replace("{month}", ui.monthNames[month]!)}</p>
               </Link>
             </li>
           );
@@ -204,7 +242,7 @@ export function TripFinder({ cities, initialMonth }: { cities: FinderCity[]; ini
             onClick={() => setShowAll((v) => !v)}
             className="rounded-full border border-slate-200 bg-white px-6 py-2.5 text-sm font-semibold text-slate-700 hover:border-brand-300 hover:text-brand-700 dark:border-white/10 dark:bg-surface-dark-subtle dark:text-slate-200"
           >
-            {showAll ? "Show top 9 only" : `Show all ${ranked.length} cities`}
+            {showAll ? ui.showTop : ui.showAll.replace("{n}", String(ranked.length))}
           </button>
         </div>
       )}

@@ -14,7 +14,7 @@ export const siteConfig = {
     "Compare weather forecasts from multiple trusted sources for cities worldwide, in one clean dashboard.",
   demoMode: (process.env.DEMO_MODE ?? "true") !== "false",
   defaultLocale: "en" as const,
-  locales: ["en", "it", "de", "fr", "es"] as const,
+  locales: ["en", "it", "de", "fr", "es", "pt", "nl", "pl"] as const,
   themeColor: "#0b1f49",
   twitterHandle: "@weathercompare",
   /**
@@ -80,6 +80,9 @@ export const localeNames: Record<Locale, string> = {
   de: "Deutsch",
   fr: "Français",
   es: "Español",
+  pt: "Português",
+  nl: "Nederlands",
+  pl: "Polski",
 };
 
 export const localeFlags: Record<Locale, string> = {
@@ -88,4 +91,7 @@ export const localeFlags: Record<Locale, string> = {
   de: "DE",
   fr: "FR",
   es: "ES",
+  pt: "PT",
+  nl: "NL",
+  pl: "PL",
 };

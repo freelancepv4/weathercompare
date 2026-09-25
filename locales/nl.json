@@ -1,0 +1,187 @@
+{
+  "nav": {
+    "weather": "Weer",
+    "compare": "Vergelijken",
+    "tripFinder": "Bestemming zoeken",
+    "weatherToday": "Weer vandaag",
+    "maps": "Kaarten",
+    "alerts": "Waarschuwingen",
+    "news": "Nieuws",
+    "guides": "Gidsen",
+    "favorites": "Favorieten",
+    "menu": "Menu",
+    "close": "Sluiten",
+    "popularCities": "Populaire steden",
+    "browseByCountry": "Per land",
+    "allDestinations": "Alle bestemmingen",
+    "bestTimeToVisit": "Beste reistijd",
+    "browseAllGuides": "Alle gidsen bekijken"
+  },
+  "hero": {
+    "headline": "Weersvoorspellingen. Vergeleken op één plek.",
+    "subheadline": "Vergelijk betrouwbare verwachtingen voor 71 steden wereldwijd — plus klimaat per maand, reisplanning en reisgidsen.",
+    "searchPlaceholder": "Zoek een stad, dorp of plaats...",
+    "useMyLocation": "Mijn locatie gebruiken",
+    "popularLocations": "Populaire plaatsen",
+    "locating": "Locatie bepalen…",
+    "locationDenied": "We konden je locatie niet bepalen. Je kunt ook een stad zoeken."
+  },
+  "home": {
+    "italySection": "Het weer in Italië",
+    "worldSection": "Het weer wereldwijd",
+    "whyCompareTitle": "Waarom weersverwachtingen vergelijken?",
+    "whyCompareBody": "Elke weerdienst gebruikt andere modellen, gegevens en updatemomenten — daardoor kunnen verwachtingen verschillen, vooral een paar dagen vooruit. Door ze naast elkaar te zetten krijg je meer context voordat je beslist, zonder te beweren dat één bron altijd gelijk heeft.",
+    "viewForecast": "Bekijk verwachting"
+  },
+  "search": {
+    "noResults": "Geen plaatsen gevonden. Probeer een andere zoekopdracht.",
+    "recentSearches": "Recente zoekopdrachten",
+    "clearHistory": "Geschiedenis wissen",
+    "resultsFor": "Resultaten voor"
+  },
+  "dashboard": {
+    "feelsLike": "Voelt als",
+    "humidity": "Luchtvochtigheid",
+    "wind": "Wind",
+    "pressure": "Luchtdruk",
+    "visibility": "Zicht",
+    "uvIndex": "UV-index",
+    "precipitation": "Neerslag",
+    "sunrise": "Zonsopkomst",
+    "sunset": "Zonsondergang",
+    "updated": "Bijgewerkt",
+    "addFavorite": "Toevoegen aan favorieten",
+    "removeFavorite": "Verwijderen uit favorieten"
+  },
+  "comparison": {
+    "title": "Verwachtingen vergeleken",
+    "subtitle": "Zie hoe onafhankelijke weerbronnen dezelfde plek nu voorspellen.",
+    "agreement": "Overeenstemming",
+    "temperatureRange": "Temperatuurbereik",
+    "rainRange": "Kans op regen",
+    "windRange": "Windsnelheid",
+    "agreementHigh": "Bronnen zijn het sterk eens",
+    "agreementModerate": "Bronnen verschillen enigszins",
+    "agreementLow": "Bronnen verschillen duidelijk",
+    "source": "Bron",
+    "poweredBy": "Gegevens van",
+    "chartTitle": "Temperatuur per bron",
+    "viewHourly": "Per uur",
+    "viewDaily": "Per dag",
+    "unavailable": "Deze bron is tijdelijk niet beschikbaar."
+  },
+  "hourly": {
+    "title": "Verwachting per uur"
+  },
+  "daily": {
+    "title": "10-daagse verwachting",
+    "rain": "regen",
+    "today": "Vandaag"
+  },
+  "rain": {
+    "title": "Regenverwachting",
+    "probability": "Kans op neerslag",
+    "timeline": "Neerslag per uur"
+  },
+  "wind": {
+    "title": "Wind",
+    "current": "Huidige wind",
+    "gusts": "Windstoten",
+    "direction": "Richting",
+    "hourly": "Wind per uur",
+    "daily": "Wind per dag"
+  },
+  "alerts": {
+    "title": "Weerwaarschuwingen",
+    "none": "Geen actieve weerwaarschuwingen.",
+    "severity": "Ernst",
+    "area": "Getroffen gebied",
+    "starts": "Begint",
+    "ends": "Eindigt",
+    "officialSource": "Officiële bron"
+  },
+  "map": {
+    "title": "Weerkaart",
+    "placeholderTitle": "Live weerkaart binnenkort",
+    "placeholderBody": "Deze sectie is gereserveerd voor een interactieve kaart met temperatuur, neerslag, wind en bewolking.",
+    "temperature": "Temperatuur",
+    "precipitation": "Neerslag",
+    "wind": "Wind",
+    "clouds": "Bewolking",
+    "satellite": "Satelliet"
+  },
+  "units": {
+    "title": "Eenheden",
+    "temperature": "Temperatuur",
+    "windSpeed": "Windsnelheid",
+    "precipitation": "Neerslag"
+  },
+  "theme": {
+    "light": "Licht",
+    "dark": "Donker",
+    "system": "Systeem"
+  },
+  "favorites": {
+    "title": "Favorieten",
+    "empty": "Je hebt nog geen favoriete plaatsen opgeslagen.",
+    "emptyHint": "Zoek een stad en tik op het hartje om hem hier op te slaan."
+  },
+  "loading": {
+    "generic": "Verwachting laden…"
+  },
+  "empty": {
+    "searchPrompt": "Zoek een stad om de verwachting te zien."
+  },
+  "error": {
+    "generic": "We konden de laatste verwachting niet ophalen. Probeer het opnieuw.",
+    "unavailable": "Weergegevens zijn tijdelijk niet beschikbaar.",
+    "retry": "Opnieuw proberen",
+    "invalidLocation": "We konden die plaats niet vinden."
+  },
+  "footer": {
+    "tagline": "Weerinformatie, vergeleken op één plek.",
+    "navigation": "Navigatie",
+    "company": "Bedrijf",
+    "languages": "Talen",
+    "about": "Over ons",
+    "contact": "Contact",
+    "dataSources": "Gegevensbronnen",
+    "status": "Status",
+    "api": "API",
+    "privacy": "Privacybeleid",
+    "cookies": "Cookiebeleid",
+    "cookieSettings": "Cookie-instellingen",
+    "terms": "Gebruiksvoorwaarden",
+    "cities": "Steden",
+    "rights": "Alle rechten voorbehouden.",
+    "notMeteorologicalAuthority": "WeatherCompare verzamelt en vergelijkt gegevens van externe weerdiensten en is geen meteorologische instantie. Raadpleeg voor officiële waarschuwingen altijd je nationale weerdienst.",
+    "byCountry": "Weer per land",
+    "whereByMonth": "Waar naartoe, per maand"
+  },
+  "cookieConsent": {
+    "title": "Wij respecteren je privacy",
+    "body": "We gebruiken cookies om deze site te laten werken en, met je toestemming, om te begrijpen hoe hij wordt gebruikt. Je kunt je voorkeuren altijd wijzigen.",
+    "acceptAll": "Alles accepteren",
+    "rejectNonEssential": "Niet-essentiële weigeren",
+    "managePreferences": "Voorkeuren beheren",
+    "necessary": "Noodzakelijk",
+    "necessaryDesc": "Nodig om de site te laten werken. Altijd aan.",
+    "analytics": "Analyse",
+    "analyticsDesc": "Helpt ons, geanonimiseerd, te begrijpen hoe de site wordt gebruikt.",
+    "advertising": "Advertenties",
+    "advertisingDesc": "Voor relevante advertenties zodra monetisatie actief is.",
+    "preferences": "Voorkeuren",
+    "preferencesDesc": "Onthoudt keuzes zoals taal, eenheden en thema.",
+    "save": "Voorkeuren opslaan"
+  },
+  "ad": {
+    "label": "Advertentie"
+  },
+  "city": {
+    "currentWeather": "Huidig weer",
+    "about": "Over het weer in {city}",
+    "nearby": "Steden in de buurt",
+    "faq": "Veelgestelde vragen",
+    "breadcrumbHome": "Home"
+  }
+}

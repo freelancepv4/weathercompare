@@ -1,0 +1,187 @@
+{
+  "nav": {
+    "weather": "Pogoda",
+    "compare": "Porównaj",
+    "tripFinder": "Wyszukiwarka kierunków",
+    "weatherToday": "Pogoda dziś",
+    "maps": "Mapy",
+    "alerts": "Ostrzeżenia",
+    "news": "Wiadomości",
+    "guides": "Poradniki",
+    "favorites": "Ulubione",
+    "menu": "Menu",
+    "close": "Zamknij",
+    "popularCities": "Popularne miasta",
+    "browseByCountry": "Według kraju",
+    "allDestinations": "Wszystkie kierunki",
+    "bestTimeToVisit": "Najlepszy czas na podróż",
+    "browseAllGuides": "Wszystkie poradniki"
+  },
+  "hero": {
+    "headline": "Prognozy pogody. Porównane w jednym miejscu.",
+    "subheadline": "Porównaj wiarygodne prognozy dla 71 miast na świecie — plus klimat miesiąc po miesiącu, planowanie podróży i poradniki.",
+    "searchPlaceholder": "Szukaj miasta lub miejscowości...",
+    "useMyLocation": "Użyj mojej lokalizacji",
+    "popularLocations": "Popularne miejsca",
+    "locating": "Ustalanie lokalizacji…",
+    "locationDenied": "Nie udało się ustalić Twojej lokalizacji. Możesz wyszukać miasto."
+  },
+  "home": {
+    "italySection": "Pogoda we Włoszech",
+    "worldSection": "Pogoda na świecie",
+    "whyCompareTitle": "Po co porównywać prognozy pogody?",
+    "whyCompareBody": "Każdy dostawca prognoz korzysta z innych modeli, danych i terminów aktualizacji — dlatego prognozy mogą się różnić, zwłaszcza na kilka dni naprzód. Porównanie ich obok siebie daje więcej kontekstu przed podjęciem decyzji, bez twierdzenia, że jedno źródło zawsze ma rację.",
+    "viewForecast": "Zobacz prognozę"
+  },
+  "search": {
+    "noResults": "Nie znaleziono miejsc. Spróbuj innego wyszukiwania.",
+    "recentSearches": "Ostatnie wyszukiwania",
+    "clearHistory": "Wyczyść historię",
+    "resultsFor": "Wyniki dla"
+  },
+  "dashboard": {
+    "feelsLike": "Odczuwalna",
+    "humidity": "Wilgotność",
+    "wind": "Wiatr",
+    "pressure": "Ciśnienie",
+    "visibility": "Widoczność",
+    "uvIndex": "Indeks UV",
+    "precipitation": "Opady",
+    "sunrise": "Wschód słońca",
+    "sunset": "Zachód słońca",
+    "updated": "Aktualizacja",
+    "addFavorite": "Dodaj do ulubionych",
+    "removeFavorite": "Usuń z ulubionych"
+  },
+  "comparison": {
+    "title": "Porównanie prognoz",
+    "subtitle": "Zobacz, jak niezależne źródła prognozują pogodę dla tego samego miejsca.",
+    "agreement": "Zgodność prognoz",
+    "temperatureRange": "Zakres temperatur",
+    "rainRange": "Szansa na deszcz",
+    "windRange": "Prędkość wiatru",
+    "agreementHigh": "Źródła są bardzo zgodne",
+    "agreementModerate": "Źródła nieco się różnią",
+    "agreementLow": "Źródła wyraźnie się różnią",
+    "source": "Źródło",
+    "poweredBy": "Dane:",
+    "chartTitle": "Temperatura według źródła",
+    "viewHourly": "Godzinowo",
+    "viewDaily": "Dziennie",
+    "unavailable": "To źródło jest chwilowo niedostępne."
+  },
+  "hourly": {
+    "title": "Prognoza godzinowa"
+  },
+  "daily": {
+    "title": "Prognoza na 10 dni",
+    "rain": "deszcz",
+    "today": "Dziś"
+  },
+  "rain": {
+    "title": "Prognoza opadów",
+    "probability": "Prawdopodobieństwo opadów",
+    "timeline": "Opady godzina po godzinie"
+  },
+  "wind": {
+    "title": "Wiatr",
+    "current": "Obecny wiatr",
+    "gusts": "Porywy",
+    "direction": "Kierunek",
+    "hourly": "Wiatr godzinowo",
+    "daily": "Wiatr dziennie"
+  },
+  "alerts": {
+    "title": "Ostrzeżenia pogodowe",
+    "none": "Brak aktywnych ostrzeżeń.",
+    "severity": "Stopień",
+    "area": "Obszar",
+    "starts": "Od",
+    "ends": "Do",
+    "officialSource": "Oficjalne źródło"
+  },
+  "map": {
+    "title": "Mapa pogody",
+    "placeholderTitle": "Mapa pogody wkrótce",
+    "placeholderBody": "Ta sekcja jest zarezerwowana na interaktywną mapę temperatury, opadów, wiatru i zachmurzenia.",
+    "temperature": "Temperatura",
+    "precipitation": "Opady",
+    "wind": "Wiatr",
+    "clouds": "Zachmurzenie",
+    "satellite": "Satelita"
+  },
+  "units": {
+    "title": "Jednostki",
+    "temperature": "Temperatura",
+    "windSpeed": "Prędkość wiatru",
+    "precipitation": "Opady"
+  },
+  "theme": {
+    "light": "Jasny",
+    "dark": "Ciemny",
+    "system": "Systemowy"
+  },
+  "favorites": {
+    "title": "Ulubione",
+    "empty": "Nie zapisano jeszcze ulubionych miejsc.",
+    "emptyHint": "Wyszukaj miasto i kliknij serce, aby je tu zapisać."
+  },
+  "loading": {
+    "generic": "Wczytywanie prognozy…"
+  },
+  "empty": {
+    "searchPrompt": "Wyszukaj miasto, aby zobaczyć prognozę."
+  },
+  "error": {
+    "generic": "Nie udało się pobrać najnowszej prognozy. Spróbuj ponownie.",
+    "unavailable": "Dane pogodowe są chwilowo niedostępne.",
+    "retry": "Spróbuj ponownie",
+    "invalidLocation": "Nie znaleźliśmy tego miejsca."
+  },
+  "footer": {
+    "tagline": "Informacje o pogodzie, porównane w jednym miejscu.",
+    "navigation": "Nawigacja",
+    "company": "Firma",
+    "languages": "Języki",
+    "about": "O nas",
+    "contact": "Kontakt",
+    "dataSources": "Źródła danych",
+    "status": "Status",
+    "api": "API",
+    "privacy": "Polityka prywatności",
+    "cookies": "Polityka cookies",
+    "cookieSettings": "Ustawienia cookies",
+    "terms": "Regulamin",
+    "cities": "Miasta",
+    "rights": "Wszelkie prawa zastrzeżone.",
+    "notMeteorologicalAuthority": "WeatherCompare zbiera i porównuje dane od zewnętrznych dostawców prognoz i nie jest instytucją meteorologiczną. Oficjalne ostrzeżenia sprawdzaj zawsze w krajowej służbie meteorologicznej.",
+    "byCountry": "Pogoda według kraju",
+    "whereByMonth": "Gdzie jechać – miesiąc po miesiącu"
+  },
+  "cookieConsent": {
+    "title": "Dbamy o Twoją prywatność",
+    "body": "Używamy plików cookie, aby strona działała, a za Twoją zgodą — aby zrozumieć, jak jest używana. Możesz w każdej chwili zmienić ustawienia.",
+    "acceptAll": "Akceptuj wszystkie",
+    "rejectNonEssential": "Odrzuć opcjonalne",
+    "managePreferences": "Zarządzaj ustawieniami",
+    "necessary": "Niezbędne",
+    "necessaryDesc": "Wymagane do działania strony. Zawsze włączone.",
+    "analytics": "Analityczne",
+    "analyticsDesc": "Pomagają nam zrozumieć, w sposób zbiorczy, jak używana jest strona.",
+    "advertising": "Reklamowe",
+    "advertisingDesc": "Służą do wyświetlania trafnych reklam po włączeniu monetyzacji.",
+    "preferences": "Preferencje",
+    "preferencesDesc": "Zapamiętują wybory takie jak język, jednostki i motyw.",
+    "save": "Zapisz ustawienia"
+  },
+  "ad": {
+    "label": "Reklama"
+  },
+  "city": {
+    "currentWeather": "Aktualna pogoda",
+    "about": "Pogoda w mieście {city}",
+    "nearby": "Pobliskie miasta",
+    "faq": "Najczęstsze pytania",
+    "breadcrumbHome": "Strona główna"
+  }
+}

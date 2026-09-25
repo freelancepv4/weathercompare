@@ -3,11 +3,15 @@
 import { useState, useRef, useEffect } from "react";
 import { Globe, Check } from "lucide-react";
 import { siteConfig, localeNames, localeFlags, type Locale } from "@/config/site";
+import { usePathname, useRouter } from "next/navigation";
 import { useI18n } from "@/lib/i18n/I18nProvider";
+import { parsePath, pathFor } from "@/lib/i18n/routing";
 
 export function LanguageSelector() {
   const { locale, setLocale } = useI18n();
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
+  const router = useRouter();
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -44,6 +48,9 @@ export function LanguageSelector() {
                 onClick={() => {
                   setLocale(code);
                   setOpen(false);
+                  // Jump to the same page in the chosen language when one exists.
+                  const parsed = parsePath(pathname || "/");
+                  if (parsed && parsed.locale !== code) router.push(pathFor(code, parsed.ref));
                 }}
                 className="flex w-full items-center justify-between px-3.5 py-2 text-sm text-slate-700 hover:bg-brand-50 dark:text-slate-200 dark:hover:bg-white/5"
               >

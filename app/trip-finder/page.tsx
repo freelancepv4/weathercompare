@@ -8,6 +8,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { TripFinder, type FinderCity } from "@/components/TripFinder";
+import { hreflang } from "@/lib/i18n/pageMeta";
 
 export const dynamic = "force-static";
 
@@ -19,7 +20,7 @@ export function generateMetadata(): Metadata {
   return {
     title: seoTitle(title),
     description: seoDescription(description),
-    alternates: { canonical: url },
+    alternates: { canonical: url, ...hreflang({ kind: "tripFinder" }) },
     openGraph: { title, description, url, images: [defaultOgImage] },
     twitter: { title, description, images: [defaultOgImage] },
   };

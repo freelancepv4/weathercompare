@@ -21,6 +21,7 @@ import { ClimateChart } from "@/components/ClimateChart";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { AdSlot } from "@/components/AdSlot";
+import { hreflang } from "@/lib/i18n/pageMeta";
 
 // Built entirely from long-term averages (lib/data/climate.json), so fully static.
 export const dynamic = "force-static";
@@ -62,7 +63,7 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return {
     title: seoTitle(title),
     description: seoDescription(description),
-    alternates: { canonical: url },
+    alternates: { canonical: url, ...hreflang({ kind: "month", country: d.country.slug, city: city.slug, month: i }) },
     // No images here on purpose — ./opengraph-image.tsx (a 2:3 Pinterest card) attaches automatically.
     openGraph: { title, description, url },
     twitter: { title, description, images: [defaultOgImage] },

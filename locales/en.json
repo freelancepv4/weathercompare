@@ -3,6 +3,7 @@
     "weather": "Weather",
     "compare": "Compare",
     "tripFinder": "Trip finder",
+    "weatherToday": "Weather today",
     "maps": "Maps",
     "alerts": "Alerts",
     "news": "News",
@@ -153,7 +154,9 @@
     "terms": "Terms of Service",
     "cities": "Cities",
     "rights": "All rights reserved.",
-    "notMeteorologicalAuthority": "WeatherCompare aggregates and compares data from third-party weather providers and is not a meteorological authority. For official warnings, always check your national weather service."
+    "notMeteorologicalAuthority": "WeatherCompare aggregates and compares data from third-party weather providers and is not a meteorological authority. For official warnings, always check your national weather service.",
+    "byCountry": "Weather by country",
+    "whereByMonth": "Where to go by month"
   },
   "cookieConsent": {
     "title": "We value your privacy",
