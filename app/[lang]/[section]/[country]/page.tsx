@@ -64,6 +64,20 @@ export default function SlugPage({ params }: PageProps) {
   return x.kind === "country" ? <CountryView locale={x.locale} country={x.country} /> : <WhereToGoView locale={x.locale} month={x.month} />;
 }
 
+/** Localized labels for the per-country climate table. */
+const GLANCE: Record<ContentLocale, { h: (k: string) => string; p: (k: string) => string; city: string; warm: string; cool: string; wet: string; dry: string }> = {
+  it: { h: (k) => `Il clima in ${k} a colpo d'occhio`, p: (k) => `Per ogni città: il mese più caldo e più fresco (massime e minime medie) e i mesi più piovosi e più secchi, dalle medie 2011–2020.`, city: "Città", warm: "Mese più caldo", cool: "Mese più fresco", wet: "Più piovoso", dry: "Più secco" },
+  de: { h: (k) => `Klima in ${k} auf einen Blick`, p: (k) => `Für jede Stadt: der wärmste und kühlste Monat (durchschnittliche Höchst- und Tiefstwerte) sowie der nasseste und trockenste Monat, nach Mittelwerten 2011–2020.`, city: "Stadt", warm: "Wärmster Monat", cool: "Kühlster Monat", wet: "Nassester", dry: "Trockenster" },
+  fr: { h: (k) => `Le climat en un coup d'œil : ${k}`, p: (k) => `Pour chaque ville : le mois le plus chaud et le plus frais (maximales et minimales moyennes), ainsi que les mois les plus pluvieux et les plus secs, d'après les moyennes 2011–2020.`, city: "Ville", warm: "Mois le plus chaud", cool: "Mois le plus frais", wet: "Plus pluvieux", dry: "Plus sec" },
+  es: { h: (k) => `El clima de ${k} de un vistazo`, p: (k) => `Para cada ciudad: el mes más cálido y el más fresco (máximas y mínimas medias) y los meses más lluviosos y más secos, según las medias 2011–2020.`, city: "Ciudad", warm: "Mes más cálido", cool: "Mes más fresco", wet: "Más lluvioso", dry: "Más seco" },
+  pt: { h: (k) => `O clima em ${k} num relance`, p: (k) => `Para cada cidade: o mês mais quente e o mais fresco (máximas e mínimas médias) e os meses mais chuvosos e mais secos, segundo as médias 2011–2020.`, city: "Cidade", warm: "Mês mais quente", cool: "Mês mais fresco", wet: "Mais chuvoso", dry: "Mais seco" },
+  nl: { h: (k) => `Het klimaat in ${k} in één oogopslag`, p: (k) => `Per stad: de warmste en koelste maand (gemiddelde maxima en minima) en de natste en droogste maand, op basis van gemiddelden 2011–2020.`, city: "Stad", warm: "Warmste maand", cool: "Koelste maand", wet: "Natste", dry: "Droogste" },
+  pl: { h: (k) => `Klimat – ${k} w skrócie`, p: (k) => `Dla każdego miasta: najcieplejszy i najchłodniejszy miesiąc (średnie maksima i minima) oraz najbardziej deszczowy i najsuchszy miesiąc, według średnich z lat 2011–2020.`, city: "Miasto", warm: "Najcieplejszy", cool: "Najchłodniejszy", wet: "Najbardziej deszczowy", dry: "Najsuchszy" },
+};
+
+const argMax = (a: number[]) => a.reduce((b, v, i) => (v > a[b]! ? i : b), 0);
+const argMin = (a: number[]) => a.reduce((b, v, i) => (v < a[b]! ? i : b), 0);
+
 function CountryView({ locale, country }: { locale: ContentLocale; country: CountrySeed }) {
   const copy = getCopy(locale);
   const mi = monthInfo(locale);
@@ -141,6 +155,56 @@ function CountryView({ locale, country }: { locale: ContentLocale; country: Coun
         </section>
       )}
 
+      {best.length > 0 && (() => {
+        const g = GLANCE[locale];
+        const cell = (m: number, v: string) => (
+          <span>
+            <span className="font-medium text-slate-800 dark:text-slate-200">{mi.monthNames[m]}</span>{" "}
+            <span className="tabular-nums text-slate-500 dark:text-slate-400">{v}</span>
+          </span>
+        );
+        return (
+          <section className="mt-12" aria-labelledby="glance-heading">
+            <h2 id="glance-heading" className="text-lg font-bold text-slate-900 dark:text-white">{g.h(k)}</h2>
+            <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">{g.p(k)}</p>
+            <div className="mt-4 overflow-x-auto rounded-xl2 border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle">
+              <table className="w-full min-w-[560px] text-sm">
+                <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500 dark:bg-white/5 dark:text-slate-400">
+                  <tr>
+                    <th scope="col" className="px-3 py-2">{g.city}</th>
+                    <th scope="col" className="px-3 py-2">{g.warm}</th>
+                    <th scope="col" className="px-3 py-2">{g.cool}</th>
+                    <th scope="col" className="px-3 py-2">{g.wet}</th>
+                    <th scope="col" className="px-3 py-2">{g.dry}</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+                  {best.map(({ city, climate }) => {
+                    const hot = argMax(climate.tMax);
+                    const cold = argMin(climate.tMin);
+                    const wet = argMax(climate.precipMm);
+                    const dry = argMin(climate.precipMm);
+                    return (
+                      <tr key={city.slug}>
+                        <th scope="row" className="px-3 py-2 text-left font-semibold">
+                          <Link href={paths.city(locale, country.slug, city.slug)} className="text-brand-700 hover:underline dark:text-brand-300">
+                            {cityName(city.slug, city.name, locale)}
+                          </Link>
+                        </th>
+                        <td className="px-3 py-2">{cell(hot, `${Math.round(climate.tMax[hot]!)}°C`)}</td>
+                        <td className="px-3 py-2">{cell(cold, `${Math.round(climate.tMin[cold]!)}°C`)}</td>
+                        <td className="px-3 py-2">{cell(wet, `${Math.round(climate.precipMm[wet]!)} mm`)}</td>
+                        <td className="px-3 py-2">{cell(dry, `${Math.round(climate.precipMm[dry]!)} mm`)}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        );
+      })()}
+
       <div className="mt-10 flex flex-wrap gap-3">
         <Link href={paths.today(locale)} className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-700">
           {copy.cardToday.cta} <ArrowRight size={16} aria-hidden="true" />
@@ -187,11 +251,18 @@ function WhereToGoView({ locale, month: i }: { locale: ContentLocale; month: num
   })).filter((l) => l.items.length > 0);
   const url = `${siteConfig.url}${paths.whereToGo(locale, i)}`;
 
-  const jsonLd = {
+  // ItemList is not a CreativeWork, so it can't carry inLanguage (Semrush
+  // flags it as invalid); the language goes on a sibling WebPage instead.
+  const jsonLd = [{
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name: copy.whereH1(i),
+    url,
+    inLanguage: locale,
+  }, {
     "@context": "https://schema.org",
     "@type": "ItemList",
     name: copy.whereH1(i),
-    inLanguage: locale,
     itemListElement: lists
       .flatMap((l) => l.items.slice(0, 3))
       .map((c, idx) => ({
@@ -200,7 +271,7 @@ function WhereToGoView({ locale, month: i }: { locale: ContentLocale; month: num
         url: `${siteConfig.url}${paths.month(locale, c.country.slug, c.city.slug, i)}`,
         name: `${cityName(c.city.slug, c.city.name, locale)}, ${countryName(c.country.slug, c.country.name, locale)}`,
       })),
-  };
+  }];
 
   return (
     <div className="container-page py-8 sm:py-10">

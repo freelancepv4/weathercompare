@@ -56,38 +56,39 @@ export function ShareBar({ url, title, pinImage, pinDescription, className = "" 
     }
   }
 
-  const popup = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    // Open share dialogs in a small window on desktop; phones follow the link normally.
-    if (window.innerWidth < 768) return;
-    e.preventDefault();
-    window.open(e.currentTarget.href, "share", "width=720,height=640,noopener,noreferrer");
+  // Share targets are buttons, not <a href> links: share endpoints (wa.me,
+  // sharer.php, …) answer crawlers with 429/redirect loops, which audit tools
+  // report as thousands of "broken external links", and they are not links
+  // search engines should follow anyway.
+  const open = (href: string) => {
+    if (window.innerWidth < 768) {
+      window.open(href, "_blank", "noopener,noreferrer");
+      return;
+    }
+    window.open(href, "share", "width=720,height=640,noopener,noreferrer");
   };
 
   return (
     <div className={`flex flex-wrap items-center gap-2 ${className}`}>
-      <a
-        href={pinterest}
-        onClick={popup}
-        target="_blank"
-        rel="noopener noreferrer"
+      <button
+        type="button"
+        onClick={() => open(pinterest)}
         className="inline-flex items-center gap-2 rounded-full bg-[#E60023] px-4 py-2 text-sm font-semibold text-white shadow-soft transition-transform hover:scale-[1.03] hover:bg-[#ad081b]"
       >
         <PinterestIcon size={17} /> {tr("share.pin")}
-      </a>
+      </button>
       <span className="mx-1 hidden text-xs font-medium text-slate-400 sm:inline">{tr("share.or")}</span>
       {links.map(({ name, href, Icon, hover }) => (
-        <a
+        <button
+          type="button"
           key={name}
-          href={href}
-          onClick={popup}
-          target="_blank"
-          rel="noopener noreferrer"
+          onClick={() => open(href)}
           aria-label={`Share on ${name}`}
           title={`Share on ${name}`}
           className={`flex h-9 w-9 items-center justify-center rounded-full bg-slate-100 text-slate-600 transition-colors hover:text-white dark:bg-white/10 dark:text-slate-300 ${hover}`}
         >
           <Icon size={16} />
-        </a>
+        </button>
       ))}
       <button
         type="button"

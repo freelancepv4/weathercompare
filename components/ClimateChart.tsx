@@ -14,6 +14,8 @@ interface ClimateChartProps {
   activeMonth?: number;
   /** Language version of the page (defaults to English). */
   locale?: AnyLocale;
+  /** Skip the collapsible data table (when the page shows its own). */
+  hideTable?: boolean;
 }
 
 /**
@@ -23,7 +25,7 @@ interface ClimateChartProps {
  * its links are crawlable. A plain data table follows for screen readers
  * and for search engines that like tabular answers.
  */
-export function ClimateChart({ climate, countrySlug, citySlug, cityName, activeMonth = -1, locale = "en" }: ClimateChartProps) {
+export function ClimateChart({ climate, countrySlug, citySlug, cityName, activeMonth = -1, locale = "en", hideTable = false }: ClimateChartProps) {
   const copy = getCopy(locale);
   const names = monthInfo(locale).monthNames;
   const hrefFor = (i: number) => paths.month(locale, countrySlug, citySlug, i);
@@ -82,6 +84,7 @@ export function ClimateChart({ climate, countrySlug, citySlug, cityName, activeM
         })}
       </div>
 
+      {!hideTable && (
       <details className="mt-5 text-sm">
         <summary className="cursor-pointer font-semibold text-brand-600 dark:text-brand-300">{copy.chartTableToggle}</summary>
         <div className="mt-3 overflow-x-auto">
@@ -116,6 +119,7 @@ export function ClimateChart({ climate, countrySlug, citySlug, cityName, activeM
           </table>
         </div>
       </details>
+      )}
     </section>
   );
 }

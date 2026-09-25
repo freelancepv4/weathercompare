@@ -187,7 +187,7 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
           return (
             <>
               <div className="mt-8">
-                <ClimateChart climate={climate} countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
+                <ClimateChart climate={climate} countrySlug={country.slug} citySlug={city.slug} cityName={city.name} hideTable />
               </div>
               <h2 className="mb-2 mt-10 text-xl font-bold text-slate-900 dark:text-white">{city.name} weather by month</h2>
               <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">
