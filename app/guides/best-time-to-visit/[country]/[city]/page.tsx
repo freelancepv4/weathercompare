@@ -35,8 +35,12 @@ export function generateMetadata({ params }: PageProps): Metadata {
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
-  const title = `Best Time to Visit ${city.name}, ${country.name}`;
-  const description = `When to visit ${city.name}: the mild-weather, lower-crowd window recommended for this city, plus what's worth planning your trip around.`;
+  // "{city} weather by month" is a big, low-competition query family (it is
+  // what ranks holiday-weather.com's averages pages), so name it in the title
+  // whenever it fits.
+  const long = `Best Time to Visit ${city.name}: Weather by Month`;
+  const title = long.length <= 60 ? long : `Best Time to Visit ${city.name}, ${country.name}`;
+  const description = `When to visit ${city.name}: ${city.name} weather by month (average highs, lows and rainfall), the mild-weather, lower-crowd window, and what's worth planning your trip around.`;
   const url = `${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}`;
   return {
     title: seoTitle(title),
@@ -184,6 +188,39 @@ export default async function BestTimeToVisitCityPage({ params }: PageProps) {
             <>
               <div className="mt-8">
                 <ClimateChart climate={climate} countrySlug={country.slug} citySlug={city.slug} cityName={city.name} />
+              </div>
+              <h2 className="mb-2 mt-10 text-xl font-bold text-slate-900 dark:text-white">{city.name} weather by month</h2>
+              <p className="mb-4 text-sm text-slate-500 dark:text-slate-400">
+                Average temperatures and rainfall {city.name} gets in each month (2011–2020). Tap a month for the full breakdown.
+              </p>
+              <div className="overflow-x-auto rounded-xl2 border border-slate-200 bg-white shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle">
+                <table className="w-full text-sm">
+                  <caption className="sr-only">{city.name} average weather by month</caption>
+                  <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500 dark:bg-white/5 dark:text-slate-400">
+                    <tr>
+                      <th scope="col" className="px-3 py-2">Month</th>
+                      <th scope="col" className="px-3 py-2 text-right">High</th>
+                      <th scope="col" className="px-3 py-2 text-right">Low</th>
+                      <th scope="col" className="px-3 py-2 text-right">Rain</th>
+                      <th scope="col" className="hidden px-3 py-2 text-right sm:table-cell">Humidity</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-100 dark:divide-white/5">
+                    {MONTHS.map((mo, i) => (
+                      <tr key={mo.slug}>
+                        <th scope="row" className="px-3 py-2 text-left font-medium">
+                          <Link href={`/weather/${country.slug}/${city.slug}/${mo.slug}`} className="text-brand-700 hover:underline dark:text-brand-300">
+                            {mo.name}
+                          </Link>
+                        </th>
+                        <td className="px-3 py-2 text-right tabular-nums text-slate-800 dark:text-slate-200">{Math.round(climate.tMax[i]!)}°C</td>
+                        <td className="px-3 py-2 text-right tabular-nums text-slate-500 dark:text-slate-400">{Math.round(climate.tMin[i]!)}°C</td>
+                        <td className="px-3 py-2 text-right tabular-nums text-slate-500 dark:text-slate-400">{Math.round(climate.precipMm[i]!)} mm</td>
+                        <td className="hidden px-3 py-2 text-right tabular-nums text-slate-500 dark:text-slate-400 sm:table-cell">{Math.round(climate.humidity[i]!)}%</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
               </div>
               <h2 className="mb-4 mt-10 text-xl font-bold text-slate-900 dark:text-white">{city.name} through the year</h2>
               <div className="grid gap-4 sm:grid-cols-2">
