@@ -30,8 +30,14 @@ async function main() {
   }
 
   // 2. Read every URL from the live sitemap.
-  const xml = await (await fetch(SITEMAP)).text();
-  const urls = [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
+  // /sitemap.xml is an index of per-language sitemaps; follow it one level.
+  const locs = (xml) => [...xml.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1].trim());
+  const root = await (await fetch(SITEMAP)).text();
+  let urls = locs(root);
+  if (root.includes("<sitemapindex")) {
+    const children = await Promise.all(urls.map(async (u) => locs(await (await fetch(u)).text())));
+    urls = children.flat();
+  }
   if (urls.length === 0) {
     console.error("No URLs found in the sitemap — nothing sent.");
     process.exit(1);

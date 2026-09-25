@@ -1,4 +1,3 @@
-import type { MetadataRoute } from "next";
 import { siteConfig } from "@/config/site";
 import { countries, allCityPaths } from "@/config/countries";
 import { allGuides } from "@/lib/data/guides";
@@ -6,13 +5,38 @@ import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
 import { CONTENT_LOCALES, paths } from "@/lib/i18n/routing";
 
 /**
- * Dynamic sitemap: homepage, static pages, country pages, and every seed
- * city page — generated from config/countries.ts rather than a manual
- * list, so it scales as cities are added without hand-editing this file.
- * Intentionally does NOT generate thousands of speculative location pages;
- * see the project brief's "SITEMAP" section.
+ * Every URL for the sitemaps, grouped by language. Served as a sitemap
+ * index at /sitemap.xml (app/sitemap.xml/route.ts) pointing to one file per
+ * language at /sitemaps/{lang}.xml (app/sitemaps/[file]/route.ts).
+ * Generated from config/countries.ts, so new cities appear automatically.
  */
-export default function sitemap(): MetadataRoute.Sitemap {
+export type SitemapGroup = "en" | (typeof CONTENT_LOCALES)[number];
+export const SITEMAP_GROUPS: SitemapGroup[] = ["en", ...CONTENT_LOCALES];
+
+export interface Entry {
+  url: string;
+  lastModified?: Date;
+  changeFrequency?: "always" | "hourly" | "daily" | "weekly" | "monthly" | "yearly" | "never";
+  priority?: number;
+}
+
+const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+export function urlsetXml(entries: Entry[]): string {
+  const rows = entries.map((e) =>
+    [
+      "<url>",
+      `<loc>${esc(e.url)}</loc>`,
+      e.lastModified ? `<lastmod>${e.lastModified.toISOString()}</lastmod>` : "",
+      e.changeFrequency ? `<changefreq>${e.changeFrequency}</changefreq>` : "",
+      e.priority !== undefined ? `<priority>${e.priority}</priority>` : "",
+      "</url>",
+    ].join("")
+  );
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join("\n")}\n</urlset>\n`;
+}
+
+export function sitemapGroups(): Record<SitemapGroup, Entry[]> {
   const staticPages = [
     "",
     "/about",
@@ -81,10 +105,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       : [];
 
   // Translated versions (/it, /de, /fr, /es, /pt, /nl, /pl) of every page
-  // type that exists in all languages. Each page also declares its
+  // type that exists in all languages — one sitemap per language, so Search
+  // Console reports indexing per language. Each page also declares its
   // hreflang alternates in <head>.
   const url = (path: string) => `${siteConfig.url}${path}`;
-  const localizedPages = CONTENT_LOCALES.flatMap((l) => [
+  const localized = (l: (typeof CONTENT_LOCALES)[number]): Entry[] => [
     { url: url(paths.home(l)), changeFrequency: "daily" as const, priority: 0.9 },
     { url: url(paths.today(l)), changeFrequency: "hourly" as const, priority: 0.8 },
     { url: url(paths.tripFinder(l)), changeFrequency: "monthly" as const, priority: 0.5 },
@@ -96,16 +121,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...climateCities.flatMap(({ country, city }) =>
       MONTHS.map((_, i) => ({ url: url(paths.month(l, country.slug, city.slug, i)), changeFrequency: "yearly" as const, priority: 0.6 }))
     ),
-  ]);
-
-  return [
-    ...staticPages,
-    ...countryPages,
-    ...cityPages,
-    ...guidePages,
-    ...bestTimeToVisitPages,
-    ...whereToGoPages,
-    ...monthPages,
-    ...localizedPages,
   ];
+
+  const groups = {
+    en: [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeToVisitPages, ...whereToGoPages, ...monthPages],
+  } as Record<SitemapGroup, Entry[]>;
+  for (const l of CONTENT_LOCALES) groups[l] = localized(l);
+  return groups;
 }
