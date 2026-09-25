@@ -28,17 +28,18 @@ import { ErrorState } from "@/components/ErrorState";
  */
 
 interface SearchPageProps {
-  searchParams: {
+  searchParams: Promise<{
     lat?: string;
     lon?: string;
     name?: string;
     region?: string;
     country?: string;
     countryCode?: string;
-  };
+  }>;
 }
 
-export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
+export async function generateMetadata(props: SearchPageProps): Promise<Metadata> {
+  const searchParams = await props.searchParams;
   const name = searchParams.name || "Weather";
   return {
     title: `${name} Weather Forecast`,
@@ -47,7 +48,8 @@ export function generateMetadata({ searchParams }: SearchPageProps): Metadata {
   };
 }
 
-export default async function SearchResultWeatherPage({ searchParams }: SearchPageProps) {
+export default async function SearchResultWeatherPage(props: SearchPageProps) {
+  const searchParams = await props.searchParams;
   const lat = parseFloat(searchParams.lat ?? "");
   const lon = parseFloat(searchParams.lon ?? "");
   const name = searchParams.name || "This location";

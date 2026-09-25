@@ -41,7 +41,7 @@ import { hreflang } from "@/lib/i18n/pageMeta";
 export const revalidate = 43200; // 12h literal (must be static for Next.js); matches siteConfig.weatherCacheSeconds
 
 interface PageProps {
-  params: { country: string; city: string };
+  params: Promise<{ country: string; city: string }>;
 }
 
 export async function generateStaticParams() {
@@ -78,7 +78,8 @@ const COUNTRY_WEATHER_TERMS: Record<string, string[]> = {
   PK: ["موسم", "موسم کی پیشن گوئی"],
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
@@ -117,7 +118,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
-export default async function CityPage({ params }: PageProps) {
+export default async function CityPage(props: PageProps) {
+  const params = await props.params;
   const found = findCity(params.country, params.city);
   if (!found) notFound();
   const { country, city } = found;

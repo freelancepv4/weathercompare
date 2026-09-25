@@ -32,7 +32,7 @@ export const dynamic = "force-static";
 export const dynamicParams = false;
 
 interface PageProps {
-  params: { country: string; city: string; month: string };
+  params: Promise<{ country: string; city: string; month: string }>;
 }
 
 export function generateStaticParams() {
@@ -44,7 +44,7 @@ export function generateStaticParams() {
 const toF = (c: number) => Math.round((c * 9) / 5 + 32);
 const r = Math.round;
 
-function load(params: PageProps["params"]) {
+function load(params: Awaited<PageProps["params"]>) {
   const found = findCity(params.country, params.city);
   const i = monthIndex(params.month);
   if (!found || i < 0) return null;
@@ -53,7 +53,8 @@ function load(params: PageProps["params"]) {
   return { ...found, climate, i, month: MONTHS[i]! };
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const d = load(params);
   if (!d) return {};
   const { city, climate, i, month } = d;
@@ -102,7 +103,8 @@ function extremes(values: number[]) {
   return { max, min };
 }
 
-export default async function CityMonthPage({ params }: PageProps) {
+export default async function CityMonthPage(props: PageProps) {
+  const params = await props.params;
   const d = load(params);
   if (!d) notFound();
   const { country, city, climate, i, month } = d;

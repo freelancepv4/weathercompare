@@ -3,11 +3,11 @@ import { siteConfig, defaultOgImage } from "@/config/site";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { getCopy } from "@/lib/i18n/copy";
 import { languageAlternates } from "@/lib/i18n/routing";
-import { getDailySnapshot, DAILY_REVALIDATE } from "@/lib/services/dailyWeather";
+import { getDailySnapshot } from "@/lib/services/dailyWeather";
 import { WeatherTodayView } from "@/components/today/WeatherTodayView";
 
 // Rebuilt at most once an hour from a single Open-Meteo request.
-export const revalidate = DAILY_REVALIDATE;
+export const revalidate = 10800; // 3h literal (Next requires a static value); keep in step with DAILY_REVALIDATE
 
 export function generateMetadata(): Metadata {
   const copy = getCopy("en");

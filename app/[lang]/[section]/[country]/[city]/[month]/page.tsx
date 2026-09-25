@@ -31,12 +31,12 @@ export function generateStaticParams() {
 }
 
 interface PageProps {
-  params: { lang: string; section: string; country: string; city: string; month: string };
+  params: Promise<{ lang: string; section: string; country: string; city: string; month: string }>;
 }
 
 const r = Math.round;
 
-function resolve(p: PageProps["params"]) {
+function resolve(p: Awaited<PageProps["params"]>) {
   if (!isContentLocale(p.lang) || p.section !== ROUTING[p.lang].weather) return null;
   const found = findCity(p.country, p.city);
   const i = ROUTING[p.lang].monthSlugs.indexOf(p.month);
@@ -46,7 +46,8 @@ function resolve(p: PageProps["params"]) {
   return { locale: p.lang as ContentLocale, ...found, climate, i };
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) return {};
   const copy = getCopy(x.locale);
@@ -69,7 +70,8 @@ function extremes(values: number[]) {
   return { max, min };
 }
 
-export default async function LocalizedMonthPage({ params }: PageProps) {
+export default async function LocalizedMonthPage(props: PageProps) {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) notFound();
   const { locale, country, city, climate, i } = x;

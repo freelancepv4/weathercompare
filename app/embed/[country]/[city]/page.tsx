@@ -26,14 +26,15 @@ import { WeatherIcon } from "@/components/WeatherIcon";
 export const revalidate = 43200; // 12h literal (must be static for Next.js); matches siteConfig.weatherCacheSeconds
 
 interface PageProps {
-  params: { country: string; city: string };
+  params: Promise<{ country: string; city: string }>;
 }
 
 export async function generateStaticParams() {
   return allCityPaths();
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const found = findCity(params.country, params.city);
   return {
     title: found ? `${found.city.name} weather widget` : "Weather widget",
@@ -43,7 +44,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default async function EmbedPage({ params }: PageProps) {
+export default async function EmbedPage(props: PageProps) {
+  const params = await props.params;
   const found = findCity(params.country, params.city);
   if (!found) notFound();
   const { country, city } = found;

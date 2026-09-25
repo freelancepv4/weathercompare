@@ -13,15 +13,15 @@ import { getCopy, tripUi } from "@/lib/i18n/copy";
 import { CONTENT_LOCALES, ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
-import { getDailySnapshot, DAILY_REVALIDATE } from "@/lib/services/dailyWeather";
+import { getDailySnapshot } from "@/lib/services/dailyWeather";
 
 // The "weather today" page refreshes hourly; the trip finder is static data
 // and simply gets re-rendered alongside it.
-export const revalidate = DAILY_REVALIDATE;
+export const revalidate = 10800; // 3h literal (Next requires a static value); keep in step with DAILY_REVALIDATE
 export const dynamicParams = false;
 
 interface PageProps {
-  params: { lang: string; section: string };
+  params: Promise<{ lang: string; section: string }>;
 }
 
 export function generateStaticParams() {
@@ -31,7 +31,7 @@ export function generateStaticParams() {
   ]);
 }
 
-function resolve(params: PageProps["params"]): { locale: ContentLocale; kind: "tripFinder" | "today" } | null {
+function resolve(params: Awaited<PageProps["params"]>): { locale: ContentLocale; kind: "tripFinder" | "today" } | null {
   if (!isContentLocale(params.lang)) return null;
   const r = ROUTING[params.lang];
   if (params.section === r.tripFinder) return { locale: params.lang, kind: "tripFinder" };
@@ -39,7 +39,8 @@ function resolve(params: PageProps["params"]): { locale: ContentLocale; kind: "t
   return null;
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) return {};
   const copy = getCopy(x.locale);
@@ -48,7 +49,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
     : localizedMetadata(x.locale, { kind: "tripFinder" }, copy.tripTitle, copy.tripDesc);
 }
 
-export default async function SectionPage({ params }: PageProps) {
+export default async function SectionPage(props: PageProps) {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) notFound();
   const { locale } = x;

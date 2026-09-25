@@ -15,14 +15,15 @@ export const dynamic = "force-static";
 export const dynamicParams = false;
 
 interface PageProps {
-  params: { month: string };
+  params: Promise<{ month: string }>;
 }
 
 export function generateStaticParams() {
   return citiesWithClimate().length > 0 ? MONTHS.map((m) => ({ month: m.slug })) : [];
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const i = monthIndex(params.month);
   if (i < 0) return {};
   const m = MONTHS[i]!;
@@ -46,7 +47,8 @@ const TONES: Record<(typeof SECTIONS)[number], string> = {
   cool: "from-indigo-400 to-slate-600",
 };
 
-export default function WhereToGoPage({ params }: PageProps) {
+export default async function WhereToGoPage(props: PageProps) {
+  const params = await props.params;
   const i = monthIndex(params.month);
   if (i < 0) notFound();
   const month = MONTHS[i]!;

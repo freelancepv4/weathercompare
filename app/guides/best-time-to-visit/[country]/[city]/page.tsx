@@ -24,14 +24,15 @@ import { HeroPhoto } from "@/components/HeroPhoto";
 export const dynamic = "force-static";
 
 interface PageProps {
-  params: { country: string; city: string };
+  params: Promise<{ country: string; city: string }>;
 }
 
 export function generateStaticParams() {
   return allCityPaths();
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
@@ -54,7 +55,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default async function BestTimeToVisitCityPage({ params }: PageProps) {
+export default async function BestTimeToVisitCityPage(props: PageProps) {
+  const params = await props.params;
   const found = findCity(params.country, params.city);
   if (!found) notFound();
   const { country, city } = found;

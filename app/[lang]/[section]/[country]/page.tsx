@@ -19,7 +19,7 @@ export const dynamic = "force-static";
 export const dynamicParams = false;
 
 interface PageProps {
-  params: { lang: string; section: string; country: string };
+  params: Promise<{ lang: string; section: string; country: string }>;
 }
 
 export function generateStaticParams() {
@@ -32,7 +32,7 @@ export function generateStaticParams() {
 
 type Resolved = { locale: ContentLocale; kind: "country"; country: CountrySeed } | { locale: ContentLocale; kind: "whereToGo"; month: number };
 
-function resolve(p: PageProps["params"]): Resolved | null {
+function resolve(p: Awaited<PageProps["params"]>): Resolved | null {
   if (!isContentLocale(p.lang)) return null;
   const r = ROUTING[p.lang];
   if (p.section === r.weather) {
@@ -46,7 +46,8 @@ function resolve(p: PageProps["params"]): Resolved | null {
   return null;
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) return {};
   const copy = getCopy(x.locale);
@@ -58,7 +59,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return localizedMetadata(x.locale, { kind: "whereToGo", month: x.month }, copy.whereTitle(x.month), copy.whereDesc(x.month));
 }
 
-export default function SlugPage({ params }: PageProps) {
+export default async function SlugPage(props: PageProps) {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) notFound();
   return x.kind === "country" ? <CountryView locale={x.locale} country={x.country} /> : <WhereToGoView locale={x.locale} month={x.month} />;

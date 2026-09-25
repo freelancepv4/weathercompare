@@ -19,14 +19,15 @@ export const dynamic = "force-static";
 export const dynamicParams = false;
 
 interface PageProps {
-  params: { lang: string };
+  params: Promise<{ lang: string }>;
 }
 
 export function generateStaticParams() {
   return CONTENT_LOCALES.map((lang) => ({ lang }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   if (!isContentLocale(params.lang)) return {};
   const copy = getCopy(params.lang);
   return localizedMetadata(params.lang, { kind: "home" }, copy.homeTitle, copy.homeDesc);
@@ -34,7 +35,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
 
 type Item = { country: CountrySeed; city: CitySeed };
 
-export default function LocalizedHome({ params }: PageProps) {
+export default async function LocalizedHome(props: PageProps) {
+  const params = await props.params;
   if (!isContentLocale(params.lang)) notFound();
   const locale: ContentLocale = params.lang;
   const copy = getCopy(locale);

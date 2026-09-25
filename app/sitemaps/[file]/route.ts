@@ -8,7 +8,8 @@ export function generateStaticParams() {
   return SITEMAP_GROUPS.map((g) => ({ file: `${g}.xml` }));
 }
 
-export function GET(_req: Request, { params }: { params: { file: string } }) {
+export async function GET(_req: Request, props: { params: Promise<{ file: string }> }) {
+  const params = await props.params;
   const group = params.file.replace(/\.xml$/, "") as SitemapGroup;
   if (!SITEMAP_GROUPS.includes(group)) return new Response("Not found", { status: 404 });
   return new Response(urlsetXml(sitemapGroups()[group]), {

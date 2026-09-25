@@ -20,14 +20,15 @@ import { climateHighsFor } from "@/lib/data/climate";
 export const dynamic = "force-static";
 
 interface PageProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
 export function generateStaticParams() {
   return allGuideSlugs().map((slug) => ({ slug }));
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const guide = getGuide(params.slug);
   if (!guide) return {};
   const url = `${siteConfig.url}/guides/${guide.slug}`;
@@ -43,7 +44,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   };
 }
 
-export default async function GuideArticlePage({ params }: PageProps) {
+export default async function GuideArticlePage(props: PageProps) {
+  const params = await props.params;
   const guide = getGuide(params.slug);
   if (!guide) notFound();
   const heroPhoto = await getLandscapePhoto(guide.photoQuery);

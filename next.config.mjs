@@ -1,13 +1,15 @@
+import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
   compress: true,
   images: {
-    // Add remote weather-icon / avatar CDNs here if needed later.
-    formats: ["image/avif", "image/webp"],
-    // Pexels-hosted hero photos (see lib/providers/photos.ts) — Next
-    // blocks unlisted remote image hosts from its optimizer by default.
+    // Cloudflare has no built-in Next.js image optimizer: a custom loader
+    // asks the Pexels CDN for each size instead (see lib/imageLoader.ts).
+    loader: "custom",
+    loaderFile: "./lib/imageLoader.ts",
     remotePatterns: [{ protocol: "https", hostname: "images.pexels.com" }],
   },
   async headers() {
@@ -45,3 +47,6 @@ const nextConfig = {
 };
 
 export default nextConfig;
+
+// Lets `next dev` use the Cloudflare bindings (R2 cache etc.) locally.
+initOpenNextCloudflareForDev();

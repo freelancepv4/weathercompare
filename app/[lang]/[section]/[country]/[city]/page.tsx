@@ -45,16 +45,17 @@ export function generateStaticParams() {
 }
 
 interface PageProps {
-  params: { lang: string; section: string; country: string; city: string };
+  params: Promise<{ lang: string; section: string; country: string; city: string }>;
 }
 
-function resolve(p: PageProps["params"]) {
+function resolve(p: Awaited<PageProps["params"]>) {
   if (!isContentLocale(p.lang) || p.section !== ROUTING[p.lang].weather) return null;
   const found = findCity(p.country, p.city);
   return found ? { locale: p.lang as ContentLocale, ...found } : null;
 }
 
-export function generateMetadata({ params }: PageProps): Metadata {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) return {};
   const copy = getCopy(x.locale);
@@ -62,7 +63,8 @@ export function generateMetadata({ params }: PageProps): Metadata {
   return localizedMetadata(x.locale, { kind: "city", country: x.country.slug, city: x.city.slug }, copy.cityTitle(c), copy.cityDesc(c));
 }
 
-export default async function LocalizedCityPage({ params }: PageProps) {
+export default async function LocalizedCityPage(props: PageProps) {
+  const params = await props.params;
   const x = resolve(params);
   if (!x) notFound();
   const { locale, country, city } = x;

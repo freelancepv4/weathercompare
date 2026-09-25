@@ -20,7 +20,7 @@ import { hreflang } from "@/lib/i18n/pageMeta";
 export const revalidate = 86400; // country listings change rarely — daily is plenty
 
 interface PageProps {
-  params: { country: string };
+  params: Promise<{ country: string }>;
 }
 
 export async function generateStaticParams() {
@@ -49,7 +49,8 @@ const COUNTRY_WEATHER_TERMS: Record<string, string[]> = {
   MA: ["طقس المغرب"],
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata(props: PageProps): Promise<Metadata> {
+  const params = await props.params;
   const country = countries.find((c) => c.slug === params.country);
   if (!country) return {};
   const title = `${country.name} Weather: 10-Day Forecast for Every City`;
@@ -85,7 +86,8 @@ function seasonColor(t: number) {
   return "#fecdd3";
 }
 
-export default function CountryPage({ params }: PageProps) {
+export default async function CountryPage(props: PageProps) {
+  const params = await props.params;
   const country = countries.find((c) => c.slug === params.country);
   if (!country) notFound();
 

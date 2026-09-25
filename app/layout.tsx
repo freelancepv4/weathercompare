@@ -6,8 +6,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { AssistantWidget } from "@/components/AssistantWidget";
-import { Analytics } from "@vercel/analytics/next";
-import { SpeedInsights } from "@vercel/speed-insights/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
@@ -113,8 +111,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <CookieConsent />
           {/* Chat assistant appears only once a Gemini key is configured (see app/api/assistant/route.ts). */}
           {process.env.GEMINI_API_KEY ? <AssistantWidget /> : null}
-          <Analytics />
-          <SpeedInsights />
         </Providers>
       </body>
     </html>
