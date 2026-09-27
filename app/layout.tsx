@@ -5,6 +5,7 @@ import { Providers } from "@/components/Providers";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
+import { AdSlot } from "@/components/AdSlot";
 import { AssistantWidget } from "@/components/AssistantWidget";
 
 const GA_ID = "G-1H565EMS0S";
@@ -118,6 +119,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main-content" className="flex-1">
             {children}
           </main>
+          <AdSlot variant="bottom" />
+          <AdSlot variant="side" />
           <Footer />
           <CookieConsent />
           {/* Chat assistant appears only once a Gemini key is configured (see app/api/assistant/route.ts). */}

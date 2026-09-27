@@ -29,10 +29,10 @@ function adDoc(key: string, w: number, h: number) {
   return `<!doctype html><html><head><meta charset="utf-8"><style>html,body{margin:0;padding:0;overflow:hidden;background:transparent}</style></head><body><script>atOptions={'key':'${key}','format':'iframe','height':${h},'width':${w},'params':{}};</script><script src="https://www.highrevenueformat.com/${key}/invoke.js"></script></body></html>`;
 }
 
-export function AdSlot({ variant = "banner" }: { variant?: "banner" | "square" | "inline" }) {
+export function AdSlot({ variant = "banner" }: { variant?: "banner" | "square" | "inline" | "side" | "bottom" }) {
   const t = useTranslations();
   const pathname = usePathname();
-  const unit = variant === "banner" ? UNITS.banner : UNITS.box;
+  const unit = variant === "banner" || variant === "bottom" ? UNITS.banner : UNITS.box;
   const ref = useRef<HTMLDivElement>(null);
   const [allowed, setAllowed] = useState(false);
   const [visible, setVisible] = useState(false);
@@ -59,10 +59,21 @@ export function AdSlot({ variant = "banner" }: { variant?: "banner" | "square" |
     return () => io.disconnect();
   }, [allowed, visible]);
 
+  // Mid-content strips are retired: the 320×50 now sits once at the bottom
+  // of every page (layout), so articles aren't broken up by ads.
+  if (variant === "banner") return null;
   if (!allowed || pathname?.startsWith("/embed")) return null;
 
+  const wrap =
+    variant === "side"
+      ? // Right-hand margin, only on screens wide enough that it never covers content.
+      "fixed right-4 top-28 z-30 hidden min-[1960px]:flex flex-col items-center"
+      : variant === "bottom"
+        ? "container-page mt-10 mb-2 flex flex-col items-center"
+        : "my-2 flex flex-col items-center";
+
   return (
-    <aside ref={ref} className="my-2 flex flex-col items-center" aria-label={t("ad.label")}>
+    <aside ref={ref} className={wrap} aria-label={t("ad.label")}>
       <span className="mb-1 text-[10px] font-medium uppercase tracking-widest text-slate-400">{t("ad.label")}</span>
       <div style={{ width: unit.w, height: unit.h, maxWidth: "100%" }} className="overflow-hidden rounded-lg">
         {visible && (
@@ -71,7 +82,7 @@ export function AdSlot({ variant = "banner" }: { variant?: "banner" | "square" |
             width={unit.w}
             height={unit.h}
             srcDoc={adDoc(unit.key, unit.w, unit.h)}
-            sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox"
+            sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"
             loading="lazy"
             referrerPolicy="strict-origin-when-cross-origin"
             style={{ border: 0, display: "block" }}
