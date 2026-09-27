@@ -64,7 +64,7 @@ const config: Config = {
       },
       backgroundImage: {
         "hero-gradient":
-          "radial-gradient(120% 120% at 50% -10%, #1a4fd6 0%, #123a9e 35%, #0b1f49 100%)",
+          "radial-gradient(130% 120% at 50% -20%, #38bdf8 0%, #0284c7 30%, #1d4ed8 65%, #1e3a8a 100%)",
         "mesh-light":
           "radial-gradient(60% 50% at 10% 0%, rgba(36,120,255,0.10) 0%, rgba(36,120,255,0) 60%), radial-gradient(50% 40% at 90% 10%, rgba(125,211,252,0.18) 0%, rgba(125,211,252,0) 60%)",
       },

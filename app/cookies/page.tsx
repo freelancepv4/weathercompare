@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
@@ -59,9 +60,9 @@ export default function CookiesPage() {
         configured) OpenWeatherMap. This is an ordinary web request, not a cookie, and isn't gated by the banner above — declining
         non-essential cookies doesn't stop map tiles from loading, since the map is core content, not tracking. Each provider may log
         that request the way any web server does; see their own privacy policies for details. See our{" "}
-        <a className="font-medium text-brand-600 hover:underline" href="/privacy">
+        <Link className="font-medium text-brand-600 hover:underline" href="/privacy">
           Privacy Policy
-        </a>{" "}
+        </Link>{" "}
         for more.
       </p>
 

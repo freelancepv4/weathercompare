@@ -17,6 +17,12 @@ import { MONTHS, getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { HeroPhoto } from "@/components/HeroPhoto";
+import { CityFaq } from "@/components/CityFaq";
+import { BestTimeContent } from "@/components/BestTimeContent";
+import { analyseClimate, bestTimeFaq, bestTimeCopy } from "@/lib/i18n/bestTime";
+import { joinList } from "@/lib/i18n/copy";
+import { hreflang } from "@/lib/i18n/pageMeta";
+import { keywordsFor } from "@/lib/i18n/keywords";
 
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
 // data — so this stays fully static rather than ISR-revalidated like the
@@ -41,12 +47,17 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   // whenever it fits.
   const long = `Best Time to Visit ${city.name}: Weather by Month`;
   const title = long.length <= 60 ? long : `Best Time to Visit ${city.name}, ${country.name}`;
-  const description = `When to visit ${city.name}: ${city.name} weather by month (average highs, lows and rainfall), the mild-weather, lower-crowd window, and what's worth planning your trip around.`;
+  const climate = getCityClimate(country.slug, city.slug);
+  const best = climate ? joinList("en", analyseClimate(climate).best.map((m) => MONTHS[m]!.name)) : null;
+  const description = best
+    ? bestTimeCopy("en").desc(city.name, best)
+    : `When to visit ${city.name}: ${city.name} weather by month (average highs, lows and rainfall), the mild-weather, lower-crowd window, and what's worth planning your trip around.`;
   const url = `${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}`;
   return {
     title: seoTitle(title),
     description: seoDescription(description),
-    alternates: { canonical: url },
+    keywords: keywordsFor("en").best(city.name),
+    alternates: { canonical: url, ...hreflang({ kind: "bestTime", country: country.slug, city: city.slug }) },
     // No `images` here on purpose — the sibling opengraph-image.tsx (a
     // portrait image, sized for Pinterest's Save-from-URL requirement)
     // auto-attaches as og:image whenever a route doesn't set one explicitly.
@@ -70,7 +81,20 @@ export default async function BestTimeToVisitCityPage(props: PageProps) {
     .slice(0, 4)
     .map((c) => ({ country, city: c }));
 
+  const climateData = getCityClimate(country.slug, city.slug);
+  const facts = climateData ? analyseClimate(climateData) : null;
+  const faq = climateData && facts ? bestTimeFaq("en", city.name, climateData, facts) : [];
+
   const jsonLd = [
+    ...(faq.length > 0
+      ? [
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: faq.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
+          },
+        ]
+      : []),
     {
       "@context": "https://schema.org",
       "@type": "BreadcrumbList",
@@ -246,6 +270,26 @@ export default async function BestTimeToVisitCityPage(props: PageProps) {
             </>
           );
         })()}
+
+        {climateData && facts && (
+          <div className="mt-10">
+            <BestTimeContent
+              locale="en"
+              cityLabel={city.name}
+              countrySlug={country.slug}
+              citySlug={city.slug}
+              climate={climateData}
+              facts={facts}
+              showTable={false}
+            />
+          </div>
+        )}
+
+        {faq.length > 0 && (
+          <div className="mt-10">
+            <CityFaq title="Frequently asked questions" items={faq} />
+          </div>
+        )}
 
         <CiteBox
           className="mt-8"

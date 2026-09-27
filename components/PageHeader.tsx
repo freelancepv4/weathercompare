@@ -6,7 +6,7 @@ import type { LucideIcon } from "lucide-react";
  * the /guides and /trip-finder headers.
  */
 const TONES = {
-  brand: "from-brand-950 via-brand-800 to-brand-600",
+  brand: "from-blue-900 via-blue-700 to-sky-600",
   sky: "from-sky-500 via-brand-600 to-indigo-700",
   teal: "from-emerald-500 via-teal-600 to-cyan-700",
   sunset: "from-orange-500 via-rose-500 to-fuchsia-600",

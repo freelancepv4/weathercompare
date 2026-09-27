@@ -18,6 +18,8 @@ import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { getCopy, describeIdx, packingKeys, bestMonths, joinList, toF } from "@/lib/i18n/copy";
 import { ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
+import { bestTimeCopy, goodMonthFaq } from "@/lib/i18n/bestTime";
+import { keywordsFor } from "@/lib/i18n/keywords";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
 
 // Built from long-term averages only. Rendered on first visit and then
@@ -56,7 +58,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     x.locale,
     { kind: "month", country: x.country.slug, city: x.city.slug, month: x.i },
     copy.monthTitle(c, x.i),
-    copy.monthDesc(c, x.i, r(x.climate.tMax[x.i]!), r(x.climate.tMin[x.i]!), x.climate.precipMm[x.i]!)
+    copy.monthDesc(c, x.i, r(x.climate.tMax[x.i]!), r(x.climate.tMin[x.i]!), x.climate.precipMm[x.i]!),
+    { keywords: keywordsFor(x.locale).month(c, monthInfo(x.locale).monthNames[x.i]!) }
   );
 }
 
@@ -125,7 +128,9 @@ export default async function LocalizedMonthPage(props: PageProps) {
     .filter((c) => c.country.slug === country.slug && c.city.slug !== city.slug)
     .slice(0, 6);
 
+  const good = goodMonthFaq(locale, cn, climate, i);
   const faq = [
+    { q: good.question, a: good.answer },
     { q: copy.faqWarmQ(cn, i), a: copy.faqWarmA(r(hi), toF(hi), r(lo), toF(lo)) },
     {
       q: copy.faqWetQ(cn, i),
@@ -216,6 +221,12 @@ export default async function LocalizedMonthPage(props: PageProps) {
             className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:border-brand-300 hover:text-brand-700 dark:border-white/10 dark:bg-surface-dark-subtle dark:text-slate-200"
           >
             <Compass size={16} aria-hidden="true" /> {copy.whereElse(i)}
+          </Link>
+          <Link
+            href={paths.bestTime(locale, country.slug, city.slug)}
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-5 py-2.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200"
+          >
+            <CalendarDays size={16} aria-hidden="true" /> {bestTimeCopy(locale).h1(cn)}
           </Link>
         </div>
 

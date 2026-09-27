@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="container-page max-w-2xl py-8 sm:py-10">
-      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-600 px-6 py-8 text-white sm:px-10">
+      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-blue-900 via-blue-700 to-sky-600 px-6 py-8 text-white sm:px-10">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-sky-glow/20 blur-3xl" aria-hidden="true" />
         <h1 className="relative text-3xl font-bold tracking-tight sm:text-4xl">Contact</h1>
         <p className="relative mt-3 text-sm text-white/80">

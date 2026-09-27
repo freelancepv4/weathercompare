@@ -7,11 +7,14 @@
  */
 
 export const siteConfig = {
-  name: process.env.NEXT_PUBLIC_SITE_NAME || "WeatherCompare",
-  shortName: (process.env.NEXT_PUBLIC_SITE_NAME || "WeatherCompare").slice(0, 12),
+  // Fixed brand name. (It used to come from NEXT_PUBLIC_SITE_NAME, but on
+  // Cloudflare a stray runtime setting with a placeholder value replaced the
+  // name in page titles, so the brand is no longer configurable by env.)
+  name: "WeatherCompare",
+  shortName: "WeatherCompa",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.weathercompare.example",
   description:
-    "Compare weather forecasts from multiple trusted sources for cities worldwide, in one clean dashboard.",
+    "Compare 3 weather forecasts for 120+ cities: today, tomorrow and 14 days. Plus climate by month, the best time to visit and where to go for sun.",
   demoMode: (process.env.DEMO_MODE ?? "true") !== "false",
   defaultLocale: "en" as const,
   locales: ["en", "it", "de", "fr", "es", "pt", "nl", "pl"] as const,

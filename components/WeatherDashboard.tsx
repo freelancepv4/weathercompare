@@ -19,6 +19,35 @@ interface WeatherDashboardProps {
   headingAs?: "h1" | "h2";
 }
 
+/** The card's colour follows the sky: bright blue for sun, grey for cloud,
+ * slate-blue for rain, deep indigo at night. Every gradient keeps white text
+ * above WCAG AA contrast. */
+const SKY: Partial<Record<string, string>> = {
+  clear: "from-sky-500 via-blue-600 to-blue-800",
+  "mostly-clear": "from-sky-500 via-blue-600 to-blue-800",
+  "partly-cloudy": "from-sky-600 via-blue-700 to-indigo-800",
+  cloudy: "from-slate-500 via-slate-600 to-slate-800",
+  fog: "from-slate-500 via-slate-600 to-slate-800",
+  drizzle: "from-slate-600 via-blue-800 to-slate-900",
+  rain: "from-slate-600 via-blue-800 to-slate-900",
+  "heavy-rain": "from-slate-700 via-blue-900 to-slate-950",
+  sleet: "from-slate-600 via-sky-800 to-slate-900",
+  snow: "from-slate-500 via-sky-700 to-slate-800",
+  thunderstorm: "from-slate-700 via-indigo-900 to-slate-950",
+  windy: "from-cyan-600 via-sky-700 to-blue-900",
+};
+const NIGHT = "from-indigo-950 via-blue-950 to-slate-900";
+
+function skyGradient(c: CurrentConditions): string {
+  const now = Date.parse(c.observedAt);
+  const rise = Date.parse(c.sunrise);
+  const set = Date.parse(c.sunset);
+  const isNight = [now, rise, set].every(Number.isFinite) && (now < rise || now > set);
+  const clearish = c.condition === "clear" || c.condition === "mostly-clear" || c.condition === "partly-cloudy";
+  if (isNight && clearish) return NIGHT;
+  return SKY[c.condition] ?? "from-sky-500 via-blue-600 to-blue-800";
+}
+
 export function WeatherDashboard({ location, current, timezone, countrySlug, citySlug, headingAs = "h1" }: WeatherDashboardProps) {
   const Heading = headingAs;
   const t = useTranslations();
@@ -37,7 +66,7 @@ export function WeatherDashboard({ location, current, timezone, countrySlug, cit
   ];
 
   return (
-    <section aria-labelledby="current-weather-heading" className="overflow-hidden rounded-xl3 bg-hero-gradient text-white shadow-soft-lg">
+    <section aria-labelledby="current-weather-heading" className={`overflow-hidden rounded-xl3 bg-gradient-to-br ${skyGradient(current)} text-white shadow-soft-lg`}>
       <div className="relative overflow-hidden px-6 py-8 sm:px-10 sm:py-10">
         <div className="pointer-events-none absolute inset-0 bg-mesh-light opacity-60" aria-hidden="true" />
         <div className="relative flex flex-col justify-between gap-6 sm:flex-row sm:items-center">

@@ -162,7 +162,7 @@ export function SearchBar({ size = "md", autoFocus = false, compact = false }: S
   return (
     <div ref={containerRef} className="relative w-full">
       <div
-        className={`relative flex items-center rounded-2xl border border-slate-200 bg-white shadow-soft transition-shadow focus-within:shadow-soft-lg focus-within:border-brand-400 dark:border-white/10 dark:bg-surface-dark-subtle ${
+        className={`relative flex items-center rounded-2xl border border-slate-200 bg-white shadow-soft transition-shadow focus-within:shadow-soft-lg focus-within:border-brand-400 focus-within:ring-4 focus-within:ring-sky-300/40 dark:border-white/10 dark:bg-surface-dark-subtle ${
           size === "lg" ? "shadow-soft-lg" : ""
         }`}
       >
@@ -183,7 +183,7 @@ export function SearchBar({ size = "md", autoFocus = false, compact = false }: S
           onFocus={() => results.length > 0 && setOpen(true)}
           onKeyDown={handleKeyDown}
           placeholder={t("hero.searchPlaceholder")}
-          className={`w-full rounded-2xl bg-transparent text-slate-900 placeholder:text-slate-400 outline-none dark:text-white ${inputSize}`}
+          className={`search-input w-full rounded-2xl bg-transparent text-slate-900 placeholder:text-slate-400 outline-none dark:text-white ${inputSize}`}
           style={{ paddingLeft: size === "lg" ? "3.25rem" : "2.75rem" }}
         />
         <button

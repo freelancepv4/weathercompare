@@ -4,7 +4,7 @@ const M = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August
 const IN = M.map((m) => `im ${m}`);
 /** Islands take "auf" ("auf Kreta"), the Algarve "an der". */
 const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista"]);
-const inC = (c: string) => (c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
+export const inC = (c: string) => (c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `ähnlich wie im ${M[m]}` : `${Math.abs(d)}°C ${d > 0 ? "wärmer" : "kühler"} als im ${M[m]}`;
@@ -19,8 +19,8 @@ export const de: Copy = {
   viewForecast: "Zur Vorhersage →",
   inCity: inC,
 
-  homeTitle: "Wetter heute und morgen: Vorhersagen im Vergleich",
-  homeDesc: "Wettervorhersagen mehrerer Quellen im Vergleich für über 75 Städte, dazu Klima nach Monat und Reiseziele für gutes Wetter.",
+  homeTitle: "Wetter 14 Tage im Vergleich: Vorhersage & beste Reisezeit",
+  homeDesc: "3 Wettervorhersagen für über 120 Städte im Vergleich: heute, morgen, 14 Tage. Dazu Klimatabellen, beste Reisezeit und wo es jetzt warm ist.",
   homeH1: "Wettervorhersagen im Vergleich",
   homeIntro: "Mehrere Wetterdienste nebeneinander, das Klima jedes Monats und Reiseziele für das Wetter, das du suchst.",
   homeLocal: (k) => `Wetter ${k}: die wichtigsten Städte`,
@@ -175,7 +175,7 @@ export const de: Copy = {
   todayDesc: "Das Wetter heute und morgen auf einen Blick: die heißesten, kältesten, nassesten und windigsten Städte, dazu Tipps für den Tag. Mehrmals täglich aktualisiert.",
   todayH1: "Wetter heute und morgen",
   todayKicker: "Wettertrends des Tages",
-  todayIntro: (d) => `${d}: Wo es heiß ist, wo es regnet und was morgen kommt – für über 75 Städte, laufend aktualisiert.`,
+  todayIntro: (d) => `${d}: Wo es heiß ist, wo es regnet und was morgen kommt – für über 120 Städte, laufend aktualisiert.`,
   todayUpdated: (t) => `Aktualisiert um ${t} UTC`,
   todayFallback: "Live-Daten sind gerade nicht verfügbar – angezeigt werden typische Werte für diese Jahreszeit.",
   hottest: "Am heißesten heute",

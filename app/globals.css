@@ -39,6 +39,10 @@ body {
   outline-offset: 2px;
   border-radius: 4px;
 }
+/* The search box shows focus on its whole pill (ring), not a box inside it. */
+.search-input:focus-visible {
+  outline: none;
+}
 
 /* Hide scrollbar for horizontally-scrolling forecast rails, keep it usable */
 .scroll-rail {

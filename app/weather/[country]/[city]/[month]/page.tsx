@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { goodMonthFaq } from "@/lib/i18n/bestTime";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CloudRain, Droplets, Sun, Thermometer, Luggage, CalendarDays, Compass } from "lucide-react";
@@ -158,7 +159,9 @@ export default async function CityMonthPage(props: PageProps) {
     .filter((c) => c.country.slug === country.slug && c.city.slug !== city.slug)
     .slice(0, 6);
 
+  const good = goodMonthFaq("en", city.name, climate, i);
   const faq = [
+    { q: good.question, a: good.answer },
     {
       q: `How warm is ${city.name} in ${month.name}?`,
       a: `Average highs are about ${r(hi)}°C (${toF(hi)}°F) and average lows about ${r(lo)}°C (${toF(lo)}°F), based on 10 years of daily data.`,

@@ -14,3 +14,5 @@ npm-debug.log*
 .open-next
 .wrangler
 .dev.vars*
+
+.env*

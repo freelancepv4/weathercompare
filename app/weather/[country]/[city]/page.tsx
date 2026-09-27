@@ -262,6 +262,7 @@ export default async function CityPage(props: PageProps) {
 
           <WeatherAlerts alerts={primary.alerts} />
           <WeatherMap location={location} current={primary.current} />
+          <AdSlot variant="square" />
 
           {guide && (
             <>

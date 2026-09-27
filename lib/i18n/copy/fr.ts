@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 const IN = M.map((m) => `en ${m}`);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const a = (c: string) => (c === "Crète" || c === "Algarve" || c === "Céphalonie" || c === "Chalcidique" ? `en ${c}` : c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
+export const a = (c: string) => (c === "Crète" || c === "Algarve" || c === "Céphalonie" || c === "Chalcidique" ? `en ${c}` : c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
 const de = (m: number) => (/^[aeiouéè]/i.test(M[m]!) ? `d'${M[m]}` : `de ${M[m]}`);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `proches de celles ${de(m)}` : `${Math.abs(d)}°C plus ${d > 0 ? "élevées" : "basses"} qu'en ${M[m]}`;
@@ -18,8 +18,8 @@ export const fr: Copy = {
   viewForecast: "Voir la météo →",
   inCity: a,
 
-  homeTitle: "Météo aujourd'hui et demain : prévisions comparées",
-  homeDesc: "Les prévisions météo de plusieurs sources comparées pour plus de 75 villes, le climat mois par mois et où partir au soleil.",
+  homeTitle: "Météo 14 jours comparée : prévisions et quand partir",
+  homeDesc: "Comparez 3 prévisions météo pour plus de 120 villes : aujourd'hui, demain, 14 jours. Climat mois par mois, quand partir et où trouver le soleil.",
   homeH1: "Prévisions météo comparées",
   homeIntro: "Plusieurs sources météo côte à côte, le climat de chaque mois et les destinations idéales pour le temps que vous cherchez.",
   homeLocal: (k) => `Météo ${k} : les grandes villes`,
@@ -174,7 +174,7 @@ export const fr: Copy = {
   todayDesc: "La météo du jour et de demain : les villes les plus chaudes, froides, pluvieuses et venteuses, avec nos conseils du jour. Mise à jour plusieurs fois par jour.",
   todayH1: "Météo aujourd'hui et demain",
   todayKicker: "Tendances météo du jour",
-  todayIntro: (d) => `${cap(d)} : où il fait chaud, où il pleut et ce que demain nous réserve, dans plus de 75 villes, mis à jour tout au long de la journée.`,
+  todayIntro: (d) => `${cap(d)} : où il fait chaud, où il pleut et ce que demain nous réserve, dans plus de 120 villes, mis à jour tout au long de la journée.`,
   todayUpdated: (t) => `Mis à jour à ${t} UTC`,
   todayFallback: "Les données en direct sont momentanément indisponibles : nous affichons les valeurs habituelles de la saison.",
   hottest: "Le plus chaud aujourd'hui",

@@ -10,7 +10,7 @@ import { GuideCard } from "@/components/GuideCard";
 import { hreflang } from "@/lib/i18n/pageMeta";
 
 export const metadata: Metadata = {
-  title: { absolute: `Weather Forecasts Compared | ${siteConfig.name}` },
+  title: { absolute: `Weather Forecast Compared: 14 Days & Climate | ${siteConfig.name}` },
   description: siteConfig.description,
   alternates: { canonical: "/", ...hreflang({ kind: "home" }) },
   openGraph: {

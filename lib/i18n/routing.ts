@@ -53,6 +53,8 @@ interface LocaleRouting {
   whereToGo: string;
   tripFinder: string;
   today: string;
+  /** "Best time to visit" guides, e.g. /de/beste-reisezeit/spain/tenerife */
+  bestTime: string;
   /** Month URL slugs, January..December */
   monthSlugs: string[];
   /** Month display names, January..December */
@@ -69,6 +71,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "dove-andare",
     tripFinder: "trova-meta",
     today: "meteo-oggi",
+    bestTime: "quando-andare",
     monthSlugs: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
     monthNames: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
     inMonth: ["a gennaio", "a febbraio", "a marzo", "ad aprile", "a maggio", "a giugno", "a luglio", "ad agosto", "a settembre", "a ottobre", "a novembre", "a dicembre"],
@@ -80,6 +83,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "wohin-reisen",
     tripFinder: "reiseziel-finder",
     today: "wetter-heute",
+    bestTime: "beste-reisezeit",
     monthSlugs: ["januar", "februar", "maerz", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "dezember"],
     monthNames: ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"],
     inMonth: ["im Januar", "im Februar", "im März", "im April", "im Mai", "im Juni", "im Juli", "im August", "im September", "im Oktober", "im November", "im Dezember"],
@@ -91,6 +95,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "ou-partir",
     tripFinder: "trouver-destination",
     today: "meteo-aujourdhui",
+    bestTime: "quand-partir",
     monthSlugs: ["janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "decembre"],
     monthNames: ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"],
     inMonth: ["en janvier", "en février", "en mars", "en avril", "en mai", "en juin", "en juillet", "en août", "en septembre", "en octobre", "en novembre", "en décembre"],
@@ -102,6 +107,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "donde-viajar",
     tripFinder: "buscador-destinos",
     today: "tiempo-hoy",
+    bestTime: "mejor-epoca",
     monthSlugs: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
     monthNames: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
     inMonth: ["en enero", "en febrero", "en marzo", "en abril", "en mayo", "en junio", "en julio", "en agosto", "en septiembre", "en octubre", "en noviembre", "en diciembre"],
@@ -113,6 +119,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "para-onde-viajar",
     tripFinder: "encontrar-destino",
     today: "tempo-hoje",
+    bestTime: "melhor-epoca",
     monthSlugs: ["janeiro", "fevereiro", "marco", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"],
     monthNames: ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"],
     inMonth: ["em janeiro", "em fevereiro", "em março", "em abril", "em maio", "em junho", "em julho", "em agosto", "em setembro", "em outubro", "em novembro", "em dezembro"],
@@ -124,6 +131,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "waar-naartoe",
     tripFinder: "bestemming-zoeker",
     today: "weer-vandaag",
+    bestTime: "beste-reistijd",
     monthSlugs: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
     monthNames: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
     inMonth: ["in januari", "in februari", "in maart", "in april", "in mei", "in juni", "in juli", "in augustus", "in september", "in oktober", "in november", "in december"],
@@ -135,6 +143,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "gdzie-jechac",
     tripFinder: "wyszukiwarka-kierunkow",
     today: "pogoda-dzisiaj",
+    bestTime: "kiedy-jechac",
     monthSlugs: ["styczen", "luty", "marzec", "kwiecien", "maj", "czerwiec", "lipiec", "sierpien", "wrzesien", "pazdziernik", "listopad", "grudzien"],
     monthNames: ["styczeń", "luty", "marzec", "kwiecień", "maj", "czerwiec", "lipiec", "sierpień", "wrzesień", "październik", "listopad", "grudzień"],
     inMonth: ["w styczniu", "w lutym", "w marcu", "w kwietniu", "w maju", "w czerwcu", "w lipcu", "w sierpniu", "we wrześniu", "w październiku", "w listopadzie", "w grudniu"],
@@ -175,6 +184,8 @@ export const paths = {
     l === "en" ? `/where-to-go/${EN_MONTHS.monthSlugs[month]}` : `/${l}/${ROUTING[l].whereToGo}/${ROUTING[l].monthSlugs[month]}`,
   tripFinder: (l: AnyLocale) => (l === "en" ? "/trip-finder" : `/${l}/${ROUTING[l].tripFinder}`),
   today: (l: AnyLocale) => (l === "en" ? "/weather-today" : `/${l}/${ROUTING[l].today}`),
+  bestTime: (l: AnyLocale, country: string, city: string) =>
+    l === "en" ? `/guides/best-time-to-visit/${country}/${city}` : `/${l}/${ROUTING[l].bestTime}/${country}/${city}`,
   prefix,
 };
 
@@ -185,7 +196,8 @@ export type PageRef =
   | { kind: "month"; country: string; city: string; month: number }
   | { kind: "whereToGo"; month: number }
   | { kind: "tripFinder" }
-  | { kind: "today" };
+  | { kind: "today" }
+  | { kind: "bestTime"; country: string; city: string };
 
 export function pathFor(l: AnyLocale, ref: PageRef): string {
   switch (ref.kind) {
@@ -203,6 +215,8 @@ export function pathFor(l: AnyLocale, ref: PageRef): string {
       return paths.tripFinder(l);
     case "today":
       return paths.today(l);
+    case "bestTime":
+      return paths.bestTime(l, ref.country, ref.city);
   }
 }
 
@@ -229,6 +243,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
     if (a === "where-to-go" && b && mi.monthSlugs.includes(b)) return { locale, ref: { kind: "whereToGo", month: mi.monthSlugs.indexOf(b) } };
     if (a === "trip-finder" && !b) return { locale, ref: { kind: "tripFinder" } };
     if (a === "weather-today" && !b) return { locale, ref: { kind: "today" } };
+    if (a === "guides" && b === "best-time-to-visit" && c && d && !parts[4]) return { locale, ref: { kind: "bestTime", country: c, city: d } };
     return null;
   }
   const r = ROUTING[locale];
@@ -240,6 +255,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
   if (a === r.whereToGo && b && r.monthSlugs.includes(b)) return { locale, ref: { kind: "whereToGo", month: r.monthSlugs.indexOf(b) } };
   if (a === r.tripFinder && !b) return { locale, ref: { kind: "tripFinder" } };
   if (a === r.today && !b) return { locale, ref: { kind: "today" } };
+  if (a === r.bestTime && b && c && !d) return { locale, ref: { kind: "bestTime", country: b, city: c } };
   return { locale, ref: { kind: "home" } };
 }
 

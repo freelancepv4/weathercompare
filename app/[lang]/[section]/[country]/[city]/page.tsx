@@ -6,7 +6,6 @@ import { siteConfig } from "@/config/site";
 import { findCity, countries, type CountrySeed, type CitySeed } from "@/config/countries";
 import { locationFromSeed } from "@/lib/providers/geocoding";
 import { getForecastBundles } from "@/lib/services/weatherService";
-import { getCityGuide } from "@/lib/data/cityGuides";
 import { getLandscapePhoto } from "@/lib/providers/photos";
 import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -32,6 +31,9 @@ import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
 import { ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
+import { LocalizedBestTime, bestTimeMetadata } from "@/components/LocalizedBestTime";
+import { bestTimeCopy } from "@/lib/i18n/bestTime";
+import { keywordsFor } from "@/lib/i18n/keywords";
 
 // Same cache window as the English city pages (and the providers' own fetch
 // cache) — see siteConfig.weatherCacheSeconds for the rate-limit maths.
@@ -49,24 +51,28 @@ interface PageProps {
 }
 
 function resolve(p: Awaited<PageProps["params"]>) {
-  if (!isContentLocale(p.lang) || p.section !== ROUTING[p.lang].weather) return null;
+  if (!isContentLocale(p.lang)) return null;
+  const kind = p.section === ROUTING[p.lang].weather ? "city" : p.section === ROUTING[p.lang].bestTime ? "bestTime" : null;
+  if (!kind) return null;
   const found = findCity(p.country, p.city);
-  return found ? { locale: p.lang as ContentLocale, ...found } : null;
+  return found ? { kind, locale: p.lang as ContentLocale, ...found } : null;
 }
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const params = await props.params;
   const x = resolve(params);
   if (!x) return {};
+  if (x.kind === "bestTime") return bestTimeMetadata(x.locale, x.country, x.city);
   const copy = getCopy(x.locale);
   const c = cityName(x.city.slug, x.city.name, x.locale);
-  return localizedMetadata(x.locale, { kind: "city", country: x.country.slug, city: x.city.slug }, copy.cityTitle(c), copy.cityDesc(c));
+  return localizedMetadata(x.locale, { kind: "city", country: x.country.slug, city: x.city.slug }, copy.cityTitle(c), copy.cityDesc(c), { keywords: keywordsFor(x.locale).city(c) });
 }
 
 export default async function LocalizedCityPage(props: PageProps) {
   const params = await props.params;
   const x = resolve(params);
   if (!x) notFound();
+  if (x.kind === "bestTime") return <LocalizedBestTime locale={x.locale} country={x.country} city={x.city} />;
   const { locale, country, city } = x;
   const copy = getCopy(locale);
   const cn = cityName(city.slug, city.name, locale);
@@ -78,7 +84,6 @@ export default async function LocalizedCityPage(props: PageProps) {
   const primary = bundles[0];
   const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} landmark`);
   const climate = getCityClimate(country.slug, city.slug);
-  const guide = getCityGuide(country.slug, city.slug);
   const mi = monthInfo(locale);
   const best = climate ? joinList(locale, bestMonths(climate).map((m) => mi.monthNames[m]!)) : null;
 
@@ -173,6 +178,7 @@ export default async function LocalizedCityPage(props: PageProps) {
 
           <WeatherAlerts alerts={primary.alerts} />
           <WeatherMap location={location} current={primary.current} />
+          <AdSlot variant="square" />
 
           {climate && (
             <>
@@ -195,12 +201,14 @@ export default async function LocalizedCityPage(props: PageProps) {
             </>
           )}
 
-          {guide && (
-            <p className="text-sm">
-              <Link href={`/guides/best-time-to-visit/${country.slug}/${city.slug}`} className="font-medium text-brand-600 hover:underline" hrefLang="en">
-                {copy.englishGuide(cn)}
-              </Link>
-            </p>
+          {climate && (
+            <Link
+              href={paths.bestTime(locale, country.slug, city.slug)}
+              className="flex items-center gap-2.5 rounded-xl2 border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-semibold text-emerald-800 transition-colors hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200"
+            >
+              <CalendarDays size={18} className="shrink-0" aria-hidden="true" />
+              {bestTimeCopy(locale).h1(cn)}
+            </Link>
           )}
 
           <div className="rounded-xl3 border border-slate-200 bg-white p-5 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle">

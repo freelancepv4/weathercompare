@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
@@ -24,9 +25,9 @@ export default function TermsPage() {
         {siteConfig.name} aggregates and displays weather forecast data from third-party providers, alongside destination information
         and news headlines, for informational purposes only. It does not produce its own weather forecasts, does not employ
         meteorologists, and is not a meteorological authority. See{" "}
-        <a className="font-medium text-brand-600 hover:underline" href="/data-sources">
+        <Link className="font-medium text-brand-600 hover:underline" href="/data-sources">
           Data Sources
-        </a>{" "}
+        </Link>{" "}
         for exactly where each type of content comes from.
       </p>
 
@@ -37,9 +38,9 @@ export default function TermsPage() {
         site. <strong>Do not rely on this site as your sole source of information for safety-critical decisions</strong> — always consult
         your national meteorological service for official warnings and advisories. The site itself is provided "as is": we don't
         guarantee uninterrupted or error-free availability, though we do monitor and work to keep it running (see our{" "}
-        <a className="font-medium text-brand-600 hover:underline" href="/status">
+        <Link className="font-medium text-brand-600 hover:underline" href="/status">
           status page
-        </a>
+        </Link>
         ).
       </p>
 
@@ -65,9 +66,9 @@ export default function TermsPage() {
         The {siteConfig.name} name, logo, design and original codebase belong to their respective owners. Third-party weather data,
         city-guide facts, and news content remain the property of their respective providers/publishers and are used under attribution as
         described on the{" "}
-        <a className="font-medium text-brand-600 hover:underline" href="/data-sources">
+        <Link className="font-medium text-brand-600 hover:underline" href="/data-sources">
           Data Sources
-        </a>{" "}
+        </Link>{" "}
         page.
       </p>
 
@@ -98,9 +99,9 @@ export default function TermsPage() {
           {CONTACT_EMAIL}
         </a>{" "}
         or via the{" "}
-        <a className="font-medium text-brand-600 hover:underline" href="/contact">
+        <Link className="font-medium text-brand-600 hover:underline" href="/contact">
           Contact page
-        </a>
+        </Link>
         .
       </p>
     </LegalLayout>

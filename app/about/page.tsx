@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
@@ -28,7 +29,7 @@ export default function AboutPage() {
       <p>
         {siteConfig.name} is not a meteorological authority and does not produce its own forecasts or issue official weather warnings.
         We aggregate and visually compare data licensed from third-party providers, each of which is clearly credited throughout the
-        site — see our <a className="font-medium text-brand-600 hover:underline" href="/data-sources">Data Sources</a> page for details.
+        site — see our <Link className="font-medium text-brand-600 hover:underline" href="/data-sources">Data Sources</Link> page for details.
         For official warnings and alerts, always consult your national meteorological service.
       </p>
 

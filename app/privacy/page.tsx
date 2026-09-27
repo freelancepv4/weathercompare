@@ -1,3 +1,4 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
 import { LegalLayout, LegalHeading } from "@/components/LegalLayout";
@@ -60,9 +61,9 @@ export default function PrivacyPage() {
         <li>
           <strong>Analytics:</strong> Vercel Analytics and Vercel Speed Insights run only if you accept the "Analytics" cookie category
           in the cookie banner — nothing loads before that. See our{" "}
-          <a className="font-medium text-brand-600 hover:underline" href="/cookies">
+          <Link className="font-medium text-brand-600 hover:underline" href="/cookies">
             Cookie Policy
-          </a>{" "}
+          </Link>{" "}
           for what they measure.
         </li>
         <li>
@@ -95,9 +96,9 @@ export default function PrivacyPage() {
       <ul className="list-disc space-y-2 pl-5">
         <li>
           <strong>Weather providers</strong> — OpenWeatherMap, WeatherAPI.com and Open-Meteo (see{" "}
-          <a className="font-medium text-brand-600 hover:underline" href="/data-sources">
+          <Link className="font-medium text-brand-600 hover:underline" href="/data-sources">
             Data Sources
-          </a>{" "}
+          </Link>{" "}
           for which is active) receive coordinates or a place name from our server, never your name or contact details.
         </li>
         <li>
@@ -141,9 +142,9 @@ export default function PrivacyPage() {
           {CONTACT_EMAIL}
         </a>{" "}
         or use the{" "}
-        <a className="font-medium text-brand-600 hover:underline" href="/contact">
+        <Link className="font-medium text-brand-600 hover:underline" href="/contact">
           Contact page
-        </a>
+        </Link>
         . Given how little we actually store, most requests can be resolved immediately by confirming there's nothing on file beyond
         what's described above.
       </p>

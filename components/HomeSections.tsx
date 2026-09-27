@@ -39,7 +39,7 @@ export function HomeSections({ climate, guides }: HomeSectionsProps) {
           <p className="text-xs font-semibold uppercase tracking-widest text-white/80">New</p>
           <h2 id="plan-heading" className="mt-2 text-2xl font-bold">Trip weather finder</h2>
           <p className="mt-2 max-w-sm text-sm text-white/85">
-            Pick a month and the weather you want — hot and sunny, mild, or cool — and see which of our 71 cities match best.
+            Pick a month and the weather you want — hot and sunny, mild, or cool — and see which of our 120+ cities match best.
           </p>
           <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-teal-700">
             Find my destination <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
@@ -80,7 +80,7 @@ export function HomeSections({ climate, guides }: HomeSectionsProps) {
         </section>
       )}
 
-      <section className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-600 p-8 text-white sm:p-10">
+      <section className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-blue-900 via-blue-700 to-sky-600 p-8 text-white sm:p-10">
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-sky-glow/20 blur-3xl" aria-hidden="true" />
         <div className="relative mx-auto max-w-3xl text-center">
           <h2 className="text-2xl font-bold">{t("home.whyCompareTitle")}</h2>

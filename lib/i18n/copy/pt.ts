@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** "em Lisboa", but "no Porto", "no Cairo", "na Cidade do Cabo"… */
-const em = (c: string) => {
+export const em = (c: string) => {
   if (/^(Porto|Cairo|Rio de Janeiro|Dubai|Algarve)$/.test(c)) return `no ${c}`;
   if (c === "Madeira" || c === "Calcídica") return `na ${c}`;
   if (/^Cidade /.test(c)) return `na ${c}`;
@@ -22,8 +22,8 @@ export const pt: Copy = {
   viewForecast: "Ver previsão →",
   inCity: em,
 
-  homeTitle: "Tempo hoje e amanhã: previsões comparadas",
-  homeDesc: "Compare a previsão do tempo de várias fontes para mais de 75 cidades, o clima mês a mês e para onde viajar com bom tempo.",
+  homeTitle: "Tempo 14 dias comparado: previsão e melhor época",
+  homeDesc: "Compare 3 previsões do tempo para mais de 120 cidades: hoje, amanhã e 14 dias. Clima mês a mês, melhor época para viajar e onde há sol.",
   homeH1: "Previsão do tempo, comparada",
   homeIntro: "Várias fontes meteorológicas lado a lado, o clima de cada mês e ideias de destinos para o tempo que procura.",
   homeLocal: (k) => `Tempo ${k}: principais cidades`,
@@ -178,7 +178,7 @@ export const pt: Copy = {
   todayDesc: "O tempo de hoje e a previsão para amanhã: as cidades mais quentes, frias, chuvosas e ventosas, com dicas para o dia. Atualizado várias vezes ao dia.",
   todayH1: "Tempo hoje e amanhã",
   todayKicker: "Tendências do tempo de hoje",
-  todayIntro: (d) => `${cap(d)}: onde está calor, onde chove e o que traz o dia de amanhã em mais de 75 cidades, atualizado ao longo do dia.`,
+  todayIntro: (d) => `${cap(d)}: onde está calor, onde chove e o que traz o dia de amanhã em mais de 120 cidades, atualizado ao longo do dia.`,
   todayUpdated: (t) => `Atualizado às ${t} UTC`,
   todayFallback: "Os dados em direto não estão disponíveis de momento: mostramos os valores típicos desta altura do ano.",
   hottest: "Mais calor hoje",

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 
 import { Thermometer, CloudRain, Wind, Cloud, Satellite } from "lucide-react";
 import { useState } from "react";
@@ -77,9 +78,9 @@ export function WeatherMap({ location, current }: { location: GeoLocation; curre
         <p className="mt-2 text-xs text-slate-400">
           Showing location only. Live temperature/precipitation/wind/cloud overlays require{" "}
           <code className="rounded bg-slate-100 px-1 py-0.5 dark:bg-white/10">NEXT_PUBLIC_OWM_MAP_KEY</code> — see{" "}
-          <a href="/data-sources" className="underline hover:text-slate-600 dark:hover:text-slate-300">
+          <Link href="/data-sources" className="underline hover:text-slate-600 dark:hover:text-slate-300">
             Data Sources
-          </a>
+          </Link>
           .
         </p>
       )}

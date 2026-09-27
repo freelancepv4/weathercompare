@@ -8,6 +8,7 @@ import { citiesWithClimate, climateHighsFor, getCityClimate } from "@/lib/data/c
 import { STYLES, scoreMonth } from "@/lib/tripScore";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
+import { bestTimeCopy } from "@/lib/i18n/bestTime";
 import { ShareBar } from "@/components/ShareBar";
 import { AdSlot } from "@/components/AdSlot";
 import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
@@ -136,8 +137,8 @@ function CountryView({ locale, country }: { locale: ContentLocale; country: Coun
               const months = bestMonths(climate);
               return (
                 <li key={city.slug} className="flex flex-wrap items-center justify-between gap-2 py-2.5 text-sm">
-                  <Link href={paths.city(locale, country.slug, city.slug)} className="font-semibold text-slate-900 hover:text-brand-700 dark:text-white">
-                    {n}
+                  <Link href={paths.bestTime(locale, country.slug, city.slug)} className="font-semibold text-slate-900 hover:text-brand-700 dark:text-white">
+                    {bestTimeCopy(locale).h1(n)}
                   </Link>
                   <span className="flex flex-wrap gap-1.5">
                     {months.map((m) => (

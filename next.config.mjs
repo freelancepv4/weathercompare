@@ -4,6 +4,9 @@ import { initOpenNextCloudflareForDev } from "@opennextjs/cloudflare";
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  // Lint separately with `npm run lint`: on Windows the Next ESLint plugin can
+  // misread app-router paths and fail the production build.
+  eslint: { ignoreDuringBuilds: true },
   compress: true,
   images: {
     // Cloudflare has no built-in Next.js image optimizer: a custom loader

@@ -26,7 +26,7 @@ const NA: Record<string, string> = {
   Dżerba: "Dżerbie", Cypr: "Cyprze", Malta: "Malcie", "Curaçao": "Curaçao",
   Minorka: "Minorce", Kos: "Kos", Zakintos: "Zakintos", Kefalonia: "Kefalonii", Chalkidiki: "Chalkidiki", Sal: "Sal", "Boa Vista": "Boa Vista",
 };
-const w = (c: string) => {
+export const w = (c: string) => {
   if (NA[c]) return `na ${NA[c]}`;
   const l = LOC[c] ?? c;
   // "we" before w/f + consonant (we Florencji, we Frankfurcie), otherwise "w".
@@ -45,8 +45,8 @@ export const pl: Copy = {
   viewForecast: "Zobacz prognozę →",
   inCity: w,
 
-  homeTitle: "Pogoda dziś i jutro: porównanie prognoz",
-  homeDesc: "Porównaj prognozy pogody z kilku źródeł dla ponad 75 miast, klimat miesiąc po miesiącu i kierunki na udany urlop.",
+  homeTitle: "Pogoda na 14 dni – porównanie prognoz i kiedy jechać",
+  homeDesc: "Porównaj 3 prognozy pogody dla ponad 120 miast: dziś, jutro i 14 dni. Klimat miesiąc po miesiącu, kiedy jechać i gdzie jest słońce.",
   homeH1: "Prognozy pogody w jednym miejscu",
   homeIntro: "Kilka serwisów pogodowych obok siebie, klimat każdego miesiąca i pomysły, gdzie jechać po dobrą pogodę.",
   homeLocal: (k) => `Pogoda ${k}: największe miasta`,
@@ -201,7 +201,7 @@ export const pl: Copy = {
   todayDesc: "Pogoda na dziś i jutro w skrócie: najcieplejsze, najzimniejsze, najbardziej deszczowe i wietrzne miasta oraz porady na dzień. Aktualizowane kilka razy dziennie.",
   todayH1: "Pogoda dziś i jutro",
   todayKicker: "Pogodowe trendy dnia",
-  todayIntro: (d) => `${cap(d)}: gdzie jest ciepło, gdzie pada i co przyniesie jutro – dla ponad 75 miast, aktualizowane w ciągu dnia.`,
+  todayIntro: (d) => `${cap(d)}: gdzie jest ciepło, gdzie pada i co przyniesie jutro – dla ponad 120 miast, aktualizowane w ciągu dnia.`,
   todayUpdated: (t) => `Aktualizacja: ${t} UTC`,
   todayFallback: "Dane na żywo są chwilowo niedostępne – pokazujemy wartości typowe dla tej pory roku.",
   hottest: "Najgoręcej dziś",

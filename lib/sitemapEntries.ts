@@ -115,6 +115,7 @@ export function sitemapGroups(): Record<SitemapGroup, Entry[]> {
     { url: url(paths.tripFinder(l)), changeFrequency: "monthly" as const, priority: 0.5 },
     ...countries.map((c) => ({ url: url(paths.country(l, c.slug)), changeFrequency: "daily" as const, priority: 0.6 })),
     ...allCityPaths().map(({ country, city }) => ({ url: url(paths.city(l, country, city)), changeFrequency: "hourly" as const, priority: 0.8 })),
+    ...climateCities.map(({ country, city }) => ({ url: url(paths.bestTime(l, country.slug, city.slug)), changeFrequency: "monthly" as const, priority: 0.8 })),
     ...(climateCities.length > 0
       ? MONTHS.map((_, i) => ({ url: url(paths.whereToGo(l, i)), changeFrequency: "monthly" as const, priority: 0.7 }))
       : []),

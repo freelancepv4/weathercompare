@@ -7,6 +7,8 @@ import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { AssistantWidget } from "@/components/AssistantWidget";
 
+const GA_ID = "G-1H565EMS0S";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
@@ -92,6 +94,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           // eslint-disable-next-line react/no-danger
           dangerouslySetInnerHTML={{
             __html: `(function(){var m=location.pathname.match(/^\\/(it|de|fr|es|pt|nl|pl)(\\/|$)/);if(m)document.documentElement.lang=m[1];})();`,
+          }}
+        />
+        {/* Google Analytics 4 with Consent Mode v2: everything starts "denied"
+            (no cookies, anonymous pings only) and is upgraded only when the
+            visitor accepts analytics in the cookie banner (see CookieConsent). */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(/^\\/embed/.test(location.pathname))return;window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});try{var c=JSON.parse(localStorage.getItem('wc_cookie_consent')||'null');if(c){gtag('consent','update',{analytics_storage:c.analytics?'granted':'denied',ad_storage:c.advertising?'granted':'denied',ad_user_data:c.advertising?'granted':'denied',ad_personalization:c.advertising?'granted':'denied'});}}catch(e){}gtag('js',new Date());gtag('config','${GA_ID}');var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${GA_ID}';document.head.appendChild(s);})();`,
           }}
         />
       </head>

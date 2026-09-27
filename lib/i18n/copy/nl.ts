@@ -5,7 +5,7 @@ const M = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augu
 const inK = (k: string) => (k === "Verenigd Koninkrijk" ? `in het ${k}` : k.startsWith("Verenigde ") ? `in de ${k}` : `in ${k}`);
 /** Islands take "op" ("op Tenerife"), the Algarve "in de". */
 const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista"]);
-const inC = (c: string) => (c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
+export const inC = (c: string) => (c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const cmp = (d: number, m: number) =>
@@ -21,8 +21,8 @@ export const nl: Copy = {
   viewForecast: "Bekijk het weer →",
   inCity: inC,
 
-  homeTitle: "Weer vandaag en morgen: weerberichten vergeleken",
-  homeDesc: "Vergelijk weersverwachtingen van meerdere bronnen voor 75+ steden, het klimaat per maand en waar het warm is op vakantie.",
+  homeTitle: "Weer 14 dagen vergeleken: weerbericht en beste reistijd",
+  homeDesc: "Vergelijk 3 weersverwachtingen voor 120+ steden: vandaag, morgen en 14 dagen. Plus klimaat per maand, beste reistijd en waar de zon schijnt.",
   homeH1: "Weersverwachtingen vergeleken",
   homeIntro: "Meerdere weerbronnen naast elkaar, het klimaat per maand en bestemmingen voor het weer dat jij zoekt.",
   homeLocal: (k) => `Weer ${k}: de grootste steden`,
@@ -177,7 +177,7 @@ export const nl: Copy = {
   todayDesc: "Het weer vandaag en morgen in één oogopslag: de warmste, koudste, natste en winderigste steden, met tips voor de dag. Meerdere keren per dag bijgewerkt.",
   todayH1: "Weer vandaag en morgen",
   todayKicker: "Weertrends van de dag",
-  todayIntro: (d) => `${cap(d)}: waar het warm is, waar het regent en wat morgen brengt – voor 75+ steden, de hele dag bijgewerkt.`,
+  todayIntro: (d) => `${cap(d)}: waar het warm is, waar het regent en wat morgen brengt – voor 120+ steden, de hele dag bijgewerkt.`,
   todayUpdated: (t) => `Bijgewerkt om ${t} UTC`,
   todayFallback: "Live gegevens zijn tijdelijk niet beschikbaar; we tonen typische waarden voor deze tijd van het jaar.",
   hottest: "Warmst vandaag",

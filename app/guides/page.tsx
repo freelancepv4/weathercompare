@@ -59,7 +59,7 @@ export default async function GuidesIndexPage() {
       <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Guides" }]} />
 
       {/* Header band */}
-      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-600 px-6 py-10 text-white sm:px-10 sm:py-14">
+      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-blue-900 via-blue-700 to-sky-600 px-6 py-10 text-white sm:px-10 sm:py-14">
         <div className="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-sky-glow/20 blur-3xl" aria-hidden="true" />
         <div className="pointer-events-none absolute -bottom-20 left-1/3 h-56 w-56 rounded-full bg-brand-400/30 blur-3xl" aria-hidden="true" />
         <div className="relative max-w-2xl">

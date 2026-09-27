@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import { Menu, X, Search as SearchIcon, Heart, ChevronDown, ArrowRight } from "lucide-react";
@@ -33,7 +33,7 @@ const navItems = (l: AnyLocale) =>
     { key: "tripFinder", href: paths.tripFinder(l) },
     { key: "compare", wideOnly: true, href: l === "en" ? `${FLAGSHIP_CITY_PATH}#compare` : `${paths.city(l, "italy", "rome")}#compare` },
     { key: "news", wideOnly: true, href: "/news" },
-    { key: "favorites", href: "/favorites" },
+    { key: "favorites", wideOnly: true, href: "/favorites" },
   ] as Array<{ key: string; href: string; wideOnly?: boolean }>;
 
 // A handful of well-known destinations across different countries, for the
@@ -58,6 +58,11 @@ export function Header() {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
   const [mobileWeatherOpen, setMobileWeatherOpen] = useState(false);
   const [mobileGuidesOpen, setMobileGuidesOpen] = useState(false);
+
+  // Close the search panel after a result is picked (the route changes).
+  useEffect(() => {
+    setMobileSearchOpen(false);
+  }, [pathname]);
 
   // /embed/* pages are meant to be pasted into OTHER sites as a small
   // widget (see app/embed/[country]/[city]/page.tsx) — the full site nav
@@ -168,22 +173,23 @@ export function Header() {
           ))}
         </nav>
 
-        <div className="hidden flex-1 max-w-xs xl:block">
-          <SearchBar size="md" compact />
-        </div>
-
         <div className="flex items-center gap-1">
           <button
             type="button"
             onClick={() => setMobileSearchOpen((o) => !o)}
-            className="rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 xl:hidden"
+            // Phones/tablets: a plain icon. Desktop: a wide "search" pill that
+            // opens a full-width search panel under the header, so the input
+            // is never squeezed between the nav links.
+            className="flex items-center gap-2 rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 xl:mr-1 xl:w-52 xl:rounded-full xl:border xl:border-slate-200 xl:bg-white xl:px-4 xl:py-2 xl:text-sm xl:text-slate-500 xl:shadow-soft xl:hover:border-brand-300 xl:hover:bg-white dark:xl:border-white/10 dark:xl:bg-surface-dark-subtle 2xl:w-64"
             aria-label={t("hero.searchPlaceholder")}
+            aria-expanded={mobileSearchOpen}
           >
-            <SearchIcon size={18} aria-hidden="true" />
+            <SearchIcon size={18} aria-hidden="true" className="shrink-0 xl:text-brand-600 dark:xl:text-brand-300" />
+            <span className="hidden truncate xl:inline">{t("hero.searchPlaceholder")}</span>
           </button>
           <Link
             href="/favorites"
-            className="hidden rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 lg:block xl:hidden"
+            className="hidden rounded-lg p-2 text-slate-600 hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-white/10 lg:block 2xl:hidden"
             aria-label={t("nav.favorites")}
           >
             <Heart size={18} aria-hidden="true" />
@@ -206,8 +212,15 @@ export function Header() {
       </div>
 
       {mobileSearchOpen && (
-        <div className="border-t border-slate-200 px-5 py-3 dark:border-white/10 xl:hidden">
-          <SearchBar size="md" autoFocus />
+        <div
+          className="border-t border-slate-200 bg-white/95 px-5 py-3 dark:border-white/10 dark:bg-surface-dark/95 xl:py-5"
+          onKeyDown={(e) => {
+            if (e.key === "Escape") setMobileSearchOpen(false);
+          }}
+        >
+          <div className="mx-auto max-w-2xl">
+            <SearchBar size="lg" autoFocus />
+          </div>
         </div>
       )}
 

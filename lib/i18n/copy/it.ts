@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
 const IN = ["a gennaio", "a febbraio", "a marzo", "ad aprile", "a maggio", "a giugno", "a luglio", "ad agosto", "a settembre", "a ottobre", "a novembre", "a dicembre"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-const a = (c: string) => (c === "Algarve" ? "in Algarve" : c === "Calcidica" ? "in Calcidica" : c.startsWith("Il ") ? `al ${c.slice(3)}` : `a ${c}`);
+export const a = (c: string) => (c === "Algarve" ? "in Algarve" : c === "Calcidica" ? "in Calcidica" : c.startsWith("Il ") ? `al ${c.slice(3)}` : `a ${c}`);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `simili a quelle di ${M[m]}` : `${Math.abs(d)}°C più ${d > 0 ? "alte" : "basse"} rispetto a ${M[m]}`;
 const TEMP = ["molto caldo", "caldo", "piacevolmente caldo", "mite", "fresco", "freddo", "gelido"];
@@ -17,8 +17,8 @@ export const it: Copy = {
   viewForecast: "Vedi previsioni →",
   inCity: a,
 
-  homeTitle: "Meteo oggi e domani: previsioni a confronto",
-  homeDesc: "Previsioni meteo di più fonti a confronto per oltre 75 città, clima mese per mese e idee su dove andare con il bel tempo.",
+  homeTitle: "Meteo 15 giorni a confronto: previsioni e quando partire",
+  homeDesc: "Confronta 3 previsioni meteo per oltre 120 città: oggi, domani e 15 giorni. Più clima mese per mese, quando andare e dove trovare il sole.",
   homeH1: "Previsioni meteo a confronto",
   homeIntro: "Più fonti meteo fianco a fianco, il clima di ogni mese e le mete migliori per il tempo che cerchi.",
   homeLocal: (k) => `Meteo ${k}: le città principali`,
@@ -173,7 +173,7 @@ export const it: Copy = {
   todayDesc: "Meteo di oggi e previsioni per domani: le città più calde, più fredde, più piovose e ventose, con consigli per la giornata. Aggiornato più volte al giorno.",
   todayH1: "Meteo oggi e domani",
   todayKicker: "Tendenze meteo del giorno",
-  todayIntro: (d) => `${cap(d)}: dove fa caldo, dove piove e cosa ci aspetta domani in oltre 75 città, aggiornato durante la giornata.`,
+  todayIntro: (d) => `${cap(d)}: dove fa caldo, dove piove e cosa ci aspetta domani in oltre 120 città, aggiornato durante la giornata.`,
   todayUpdated: (t) => `Aggiornato alle ${t} UTC`,
   todayFallback: "I dati in tempo reale non sono disponibili al momento: mostriamo i valori tipici del periodo.",
   hottest: "Più caldo oggi",

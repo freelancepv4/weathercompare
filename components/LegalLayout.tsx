@@ -8,7 +8,7 @@ import type { ReactNode } from "react";
 export function LegalLayout({ title, updated, children }: { title: string; updated?: string; children: ReactNode }) {
   return (
     <div className="container-page max-w-4xl py-8 sm:py-10">
-      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-brand-950 via-brand-800 to-brand-600 px-6 py-8 text-white sm:px-10 sm:py-10">
+      <header className="relative overflow-hidden rounded-xl3 bg-gradient-to-br from-blue-900 via-blue-700 to-sky-600 px-6 py-8 text-white sm:px-10 sm:py-10">
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-sky-glow/20 blur-3xl" aria-hidden="true" />
         <h1 className="relative text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>
         {updated && <p className="relative mt-2 text-sm text-white/70">Last updated: {updated}</p>}

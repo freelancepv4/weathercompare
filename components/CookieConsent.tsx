@@ -9,8 +9,8 @@ import { useTranslations } from "@/lib/i18n/I18nProvider";
  *
  * - No pre-ticked non-essential categories (no deceptive design).
  * - Analytics/advertising stay off until explicitly accepted.
- * - Choice is stored locally and re-readable by lib/analytics.ts before any
- *   analytics script loads.
+ * - Choice is stored locally; app/layout.tsx reads it on load and this
+ *   component pushes changes to Google Analytics Consent Mode.
  */
 
 export interface ConsentState {
@@ -36,6 +36,17 @@ function saveConsent(state: ConsentState) {
   try {
     window.localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
     window.dispatchEvent(new CustomEvent("wc-consent-updated", { detail: state }));
+    // Tell Google Analytics (Consent Mode v2, set up in app/layout.tsx).
+    const gtag = (window as unknown as { gtag?: (...a: unknown[]) => void }).gtag;
+    if (gtag) {
+      const ads = state.advertising ? "granted" : "denied";
+      gtag("consent", "update", {
+        analytics_storage: state.analytics ? "granted" : "denied",
+        ad_storage: ads,
+        ad_user_data: ads,
+        ad_personalization: ads,
+      });
+    }
   } catch {
     // ignore
   }
