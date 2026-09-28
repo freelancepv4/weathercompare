@@ -2016,6 +2016,91 @@ export const cityGuides: Record<string, CityGuide> = {
     goodToKnow:
       "Islamabad sits right next to Rawalpindi, its older twin city, which has a denser bazaar atmosphere worth a short trip if time allows.",
   },
+  "indonesia:bali": {
+    intro:
+      "Indonesia's best-known island mixes Hindu temples, green rice terraces and surf beaches. The busy south coast has most of the resorts, while the cooler hills around Ubud are the island's cultural heart.",
+    bestTimeToVisit:
+      "April to October, the dry season. July and August are the busiest months; November to March is the wet season, with heavy showers that usually come in the afternoon.",
+    landmarks: [
+      { name: "Tanah Lot", description: "A sea temple on a rock outcrop that is cut off from the shore at high tide, best known at sunset." },
+      { name: "Uluwatu Temple", description: "A clifftop temple on the Bukit peninsula, with Kecak fire-dance performances at sunset." },
+      { name: "Tegallalang Rice Terraces", description: "Stepped rice paddies in a valley north of Ubud." },
+      { name: "Sacred Monkey Forest Sanctuary", description: "A forest temple complex in Ubud, home to hundreds of long-tailed macaques." },
+    ],
+    localTip: "Temples ask visitors to wear a sarong and sash; most lend or rent them at the entrance, but bringing your own saves time.",
+    gettingAround:
+      "There is no public transport that is useful for visitors. Most people hire a driver for the day or use ride-hailing apps; traffic in the south can be very slow.",
+    goodToKnow:
+      "On Nyepi, the Balinese Day of Silence in March, the whole island shuts down for 24 hours, including the airport, so check the date before you book.",
+  },
+  "maldives:maldives": {
+    intro:
+      "About 1,200 coral islands in 26 atolls in the Indian Ocean, most of them home to a single resort with overwater villas, reefs and shallow lagoons. The weather data here is for Malé, the capital.",
+    bestTimeToVisit:
+      "December to April, the dry northeast monsoon, has the most sunshine and calm seas. May to November brings more rain and wind, but lower prices and the manta season in some atolls.",
+    landmarks: [
+      { name: "Hukuru Miskiy (Old Friday Mosque)", description: "A 17th-century mosque in Malé built from carved coral stone." },
+      { name: "Hanifaru Bay", description: "A small bay in the Baa Atoll UNESCO biosphere reserve, famous for gatherings of manta rays in the southwest monsoon." },
+      { name: "Banana Reef", description: "One of the first dive sites in the Maldives, with caves, overhangs and plenty of reef fish." },
+      { name: "Malé Fish Market", description: "The capital's busy market where the day's tuna catch is landed and sold." },
+    ],
+    localTip: "Seaplanes only fly in daylight, so if you land late you may need a night near the airport before the transfer to your resort.",
+    gettingAround:
+      "Resorts arrange transfers by speedboat, seaplane or domestic flight. Malé itself is small enough to walk, with taxis for longer trips.",
+    goodToKnow:
+      "The Maldives is a Muslim country: alcohol is served only at resorts and on liveaboard boats, and on local islands swimwear belongs on the marked bikini beaches.",
+  },
+  "sri-lanka:colombo": {
+    intro:
+      "Sri Lanka's biggest city and commercial capital on the west coast, with colonial buildings, a busy port and a long seafront. Most trips around the island start or end here.",
+    bestTimeToVisit:
+      "December to March for Colombo and the west and south coasts. The east coast has its dry season from about May to September, so part of the island has good weather in most months.",
+    landmarks: [
+      { name: "Galle Face Green", description: "A seafront promenade that fills with families and street-food stalls in the evening." },
+      { name: "Gangaramaya Temple", description: "A busy Buddhist temple mixing Sri Lankan, Thai and Chinese styles, with a small museum." },
+      { name: "Pettah Market", description: "Crowded bazaar streets near the Fort district, each known for its own goods." },
+      { name: "Colombo National Museum", description: "Sri Lanka's largest museum, in a colonial building with royal regalia and ancient art." },
+    ],
+    localTip: "Go to Galle Face Green around sunset and try isso wade (prawn fritters) from the stalls.",
+    gettingAround:
+      "Tuk-tuks are everywhere; use one with a meter or book through a ride-hailing app. Trains from Colombo Fort to Kandy and Galle are slow but scenic.",
+    goodToKnow:
+      "At temples, take off shoes and hats and cover shoulders and knees, and don't take photos with your back to a Buddha statue.",
+  },
+  "mauritius:mauritius": {
+    intro:
+      "A volcanic island east of Madagascar ringed by reefs and lagoons, with green mountains inland and a mix of Indian, African, French and Chinese culture. The weather data here is for Port Louis on the drier west coast.",
+    bestTimeToVisit:
+      "May to December, the cooler and drier season; April–June and September–November are often the most pleasant. January to March is hot and humid and the main cyclone season.",
+    landmarks: [
+      { name: "Le Morne Brabant", description: "A basalt mountain on the southwest tip, a UNESCO World Heritage Site above one of the island's best lagoons." },
+      { name: "Seven Coloured Earth, Chamarel", description: "Small dunes of red, purple and yellow volcanic soil in the southwest hills." },
+      { name: "Pamplemousses Botanical Garden", description: "One of the oldest botanical gardens in the southern hemisphere, known for its giant water lilies." },
+      { name: "Grand Bassin (Ganga Talao)", description: "A crater lake in the highlands that is a sacred Hindu pilgrimage site." },
+    ],
+    localTip: "In the southern winter the trade winds make the east coast breezy — good for kitesurfing — while the west coast stays calmer and sunnier.",
+    gettingAround:
+      "Buses are cheap but slow. Most visitors use taxis, hire a driver, or rent a car (traffic drives on the left).",
+    goodToKnow:
+      "Try dholl puri, a thin flatbread filled with split peas and curry, from the stalls around Port Louis' Central Market.",
+  },
+  "tanzania:zanzibar": {
+    intro:
+      "A semi-autonomous archipelago off the coast of Tanzania. The main island has the historic Stone Town, spice farms and white-sand beaches on the east and north coasts, and it is often combined with a safari.",
+    bestTimeToVisit:
+      "June to October (dry and a little cooler) and December to February (hot and mostly dry). The long rains fall from March to May, with shorter rains in November.",
+    landmarks: [
+      { name: "Stone Town", description: "The old trading town, a UNESCO World Heritage Site of narrow lanes, carved doors and Swahili, Arab and Indian buildings." },
+      { name: "Jozani Chwaka Bay National Park", description: "Forest and mangroves that are home to the rare Zanzibar red colobus monkey." },
+      { name: "Nungwi Beach", description: "A beach on the northern tip, known for swimming at all tides and dhow sunset cruises." },
+      { name: "Prison Island (Changuu)", description: "A small island off Stone Town with a colony of giant Aldabra tortoises." },
+    ],
+    localTip: "East-coast beaches such as Paje and Jambiani have very large tides; for swimming at any time of day, the north coast around Nungwi and Kendwa is better.",
+    gettingAround:
+      "Taxis and hotel transfers are the easiest option; dala-dala minibuses are cheap. Fast ferries link Stone Town with Dar es Salaam in about two hours.",
+    goodToKnow:
+      "Zanzibar is mostly Muslim: dress modestly in Stone Town and villages, and expect some restaurants to close during the day in Ramadan.",
+  },
 };
 
 export function getCityGuide(countrySlug: string, citySlug: string): CityGuide | null {

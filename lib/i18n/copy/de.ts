@@ -3,8 +3,8 @@ import type { Copy } from "./types";
 const M = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 const IN = M.map((m) => `im ${m}`);
 /** Islands take "auf" ("auf Kreta"), the Algarve "an der". */
-const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista"]);
-export const inC = (c: string) => (c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
+const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Sansibar", "Mauritius"]);
+export const inC = (c: string) => (c === "Malediven" ? "auf den Malediven" : c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `ähnlich wie im ${M[m]}` : `${Math.abs(d)}°C ${d > 0 ? "wärmer" : "kühler"} als im ${M[m]}`;
@@ -42,7 +42,7 @@ export const de: Copy = {
   countryMonthsText: (k) => `In welchen Monaten ist das Wetter am besten (${k})? Wähle einen Monat.`,
 
   cityTitle: (c) => `Wetter ${c} heute, morgen & 14 Tage`,
-  cityDesc: (c) => `Wetter ${c} heute und morgen im Vergleich mehrerer Quellen: Temperatur stündlich, Regen und Wind – Wettervorhersage für 14 Tage und mehr.`,
+  cityDesc: (c) => `Wetter ${c} heute und morgen im Vergleich mehrerer Quellen: Temperatur stündlich, Regen und Wind – Wettervorhersage für 14 bis 16 Tage.`,
   cityH1: (c) => `Wetter ${c} heute und morgen`,
   cityIntro: (c, k) => `Aktuelle Vorhersage für ${c} (${k}), verglichen über mehrere Wetterdienste.`,
   sourcesDown: (n, t) => `${n} von ${t} Quellen waren nicht erreichbar und fehlen in diesem Vergleich.`,

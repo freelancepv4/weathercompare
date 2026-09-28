@@ -360,6 +360,33 @@ export const countries: CountrySeed[] = [
     ],
   },
   {
+    slug: "indonesia",
+    name: "Indonesia",
+    isoCode: "ID",
+    i18nName: { it: "Indonesia", de: "Indonesien", fr: "Indonésie", es: "Indonesia", en: "Indonesia" },
+    cities: [
+      { slug: "bali", name: "Bali", region: "Bali", lat: -8.6705, lon: 115.2126, population: 4362000, timezone: "Asia/Makassar" },
+    ],
+  },
+  {
+    slug: "maldives",
+    name: "Maldives",
+    isoCode: "MV",
+    i18nName: { it: "Maldive", de: "Malediven", fr: "Maldives", es: "Maldivas", en: "Maldives" },
+    cities: [
+      { slug: "maldives", name: "Maldives", region: "Malé", lat: 4.1755, lon: 73.5093, population: 515000, timezone: "Indian/Maldives" },
+    ],
+  },
+  {
+    slug: "sri-lanka",
+    name: "Sri Lanka",
+    isoCode: "LK",
+    i18nName: { it: "Sri Lanka", de: "Sri Lanka", fr: "Sri Lanka", es: "Sri Lanka", en: "Sri Lanka" },
+    cities: [
+      { slug: "colombo", name: "Colombo", region: "Western Province", lat: 6.9271, lon: 79.8612, population: 753000, timezone: "Asia/Colombo" },
+    ],
+  },
+  {
     slug: "india",
     name: "India",
     isoCode: "IN",
@@ -408,6 +435,24 @@ export const countries: CountrySeed[] = [
     i18nName: { it: "Sudafrica", de: "Südafrika", fr: "Afrique du Sud", es: "Sudáfrica", en: "South Africa" },
     cities: [
       { slug: "cape-town", name: "Cape Town", region: "Western Cape", lat: -33.9249, lon: 18.4241, population: 4618000, timezone: "Africa/Johannesburg" },
+    ],
+  },
+  {
+    slug: "mauritius",
+    name: "Mauritius",
+    isoCode: "MU",
+    i18nName: { it: "Mauritius", de: "Mauritius", fr: "Maurice", es: "Mauricio", en: "Mauritius" },
+    cities: [
+      { slug: "mauritius", name: "Mauritius", region: "Port Louis", lat: -20.1609, lon: 57.5012, population: 1262000, timezone: "Indian/Mauritius" },
+    ],
+  },
+  {
+    slug: "tanzania",
+    name: "Tanzania",
+    isoCode: "TZ",
+    i18nName: { it: "Tanzania", de: "Tansania", fr: "Tanzanie", es: "Tanzania", en: "Tanzania" },
+    cities: [
+      { slug: "zanzibar", name: "Zanzibar", region: "Zanzibar", lat: -6.1659, lon: 39.2026, population: 710000, timezone: "Africa/Dar_es_Salaam" },
     ],
   },
   {

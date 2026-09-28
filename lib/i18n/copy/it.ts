@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"];
 const IN = ["a gennaio", "a febbraio", "a marzo", "ad aprile", "a maggio", "a giugno", "a luglio", "ad agosto", "a settembre", "a ottobre", "a novembre", "a dicembre"];
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-export const a = (c: string) => (c === "Algarve" ? "in Algarve" : c === "Calcidica" ? "in Calcidica" : c.startsWith("Il ") ? `al ${c.slice(3)}` : `a ${c}`);
+export const a = (c: string) => (c === "Maldive" ? "alle Maldive" : c === "Algarve" ? "in Algarve" : c === "Calcidica" ? "in Calcidica" : c.startsWith("Il ") ? `al ${c.slice(3)}` : `a ${c}`);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `simili a quelle di ${M[m]}` : `${Math.abs(d)}°C più ${d > 0 ? "alte" : "basse"} rispetto a ${M[m]}`;
 const TEMP = ["molto caldo", "caldo", "piacevolmente caldo", "mite", "fresco", "freddo", "gelido"];
@@ -39,8 +39,8 @@ export const it: Copy = {
   countryMonthsH: "Quando andare, mese per mese",
   countryMonthsText: (k) => `In quali mesi il tempo è migliore (${k})? Scegli un mese.`,
 
-  cityTitle: (c) => `Meteo ${c} oggi, domani e 15 giorni`,
-  cityDesc: (c) => `Meteo ${c} oggi e domani, confrontato tra più fonti: temperatura ora per ora, pioggia e vento: previsioni fino a 15 giorni.`,
+  cityTitle: (c) => `Meteo ${c} oggi, domani, dopodomani e 15 giorni`,
+  cityDesc: (c) => `Meteo ${c} oggi, domani e dopodomani, confrontato tra più fonti: temperatura ora per ora, pioggia e vento, previsioni fino a 15 giorni.`,
   cityH1: (c) => `Meteo ${c} oggi e domani`,
   cityIntro: (c, k) => `Previsioni in tempo reale per ${c} (${k}), confrontate tra più servizi meteo.`,
   sourcesDown: (n, t) => `${n} fonti su ${t} non sono raggiungibili e sono state escluse dal confronto.`,

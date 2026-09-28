@@ -4,8 +4,8 @@ const M = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augu
 /** "in Italië", but "in het Verenigd Koninkrijk", "in de Verenigde Staten". */
 const inK = (k: string) => (k === "Verenigd Koninkrijk" ? `in het ${k}` : k.startsWith("Verenigde ") ? `in de ${k}` : `in ${k}`);
 /** Islands take "op" ("op Tenerife"), the Algarve "in de". */
-const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista"]);
-export const inC = (c: string) => (c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
+const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Zanzibar", "Mauritius"]);
+export const inC = (c: string) => (c === "Malediven" ? "op de Malediven" : c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const cmp = (d: number, m: number) =>
@@ -68,7 +68,10 @@ export const nl: Copy = {
   englishGuide: (c) => `Volledige gids: beste reistijd voor ${c} (Engels) →`,
   moreCountries: (n) => `Alle ${n} landen`,
 
-  monthTitle: (c, m) => `Weer ${c} in ${M[m]}: temperatuur en regen`,
+  monthTitle: (c, m) => {
+    const t = `Weer ${c} in ${M[m]}: klimaat, temperatuur en regen`;
+    return t.length <= 60 ? t : `Weer ${c} in ${M[m]}: klimaat en regen`;
+  },
   monthDesc: (c, m, h, l, mm) => `Hoe is het weer ${inC(c)} in ${M[m]}? Maxima rond ${h}°C, minima rond ${l}°C en zo'n ${mm} mm regen – plus een paklijst.`,
   monthKicker: "Klimaat per maand",
   monthH1: (c, m) => `Weer ${inC(c)} in ${M[m]}`,

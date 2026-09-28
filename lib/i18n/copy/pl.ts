@@ -25,6 +25,7 @@ const NA: Record<string, string> = {
   Majorka: "Majorce", Ibiza: "Ibizie", Kreta: "Krecie", Rodos: "Rodos", Korfu: "Korfu", Madera: "Maderze",
   Dżerba: "Dżerbie", Cypr: "Cyprze", Malta: "Malcie", "Curaçao": "Curaçao",
   Minorka: "Minorce", Kos: "Kos", Zakintos: "Zakintos", Kefalonia: "Kefalonii", Chalkidiki: "Chalkidiki", Sal: "Sal", "Boa Vista": "Boa Vista",
+  Bali: "Bali", Zanzibar: "Zanzibarze", Mauritius: "Mauritiusie", Malediwy: "Malediwach",
 };
 export const w = (c: string) => {
   if (NA[c]) return `na ${NA[c]}`;

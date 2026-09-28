@@ -3,7 +3,7 @@ import type { Copy } from "./types";
 const M = ["janvier", "février", "mars", "avril", "mai", "juin", "juillet", "août", "septembre", "octobre", "novembre", "décembre"];
 const IN = M.map((m) => `en ${m}`);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-export const a = (c: string) => (c === "Crète" || c === "Algarve" || c === "Céphalonie" || c === "Chalcidique" ? `en ${c}` : c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
+export const a = (c: string) => (c === "Maldives" ? "aux Maldives" : c === "Crète" || c === "Algarve" || c === "Céphalonie" || c === "Chalcidique" ? `en ${c}` : c.startsWith("Le ") ? `au ${c.slice(3)}` : `à ${c}`);
 const de = (m: number) => (/^[aeiouéè]/i.test(M[m]!) ? `d'${M[m]}` : `de ${M[m]}`);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `proches de celles ${de(m)}` : `${Math.abs(d)}°C plus ${d > 0 ? "élevées" : "basses"} qu'en ${M[m]}`;

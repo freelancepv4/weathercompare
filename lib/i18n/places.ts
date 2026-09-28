@@ -44,6 +44,11 @@ const COUNTRIES: Record<string, Names> = {
   tunisia: ["Tunisia", "Tunesien", "Tunisie", "Túnez", "Tunísia", "Tunesië", "Tunezja"],
   "dominican-republic": ["Repubblica Dominicana", "Dominikanische Republik", "République dominicaine", "República Dominicana", "República Dominicana", "Dominicaanse Republiek", "Dominikana"],
   curacao: ["Curaçao", "Curaçao", "Curaçao", "Curazao", "Curaçau", "Curaçao", "Curaçao"],
+  indonesia: ["Indonesia", "Indonesien", "Indonésie", "Indonesia", "Indonésia", "Indonesië", "Indonezja"],
+  maldives: ["Maldive", "Malediven", "Maldives", "Maldivas", "Maldivas", "Malediven", "Malediwy"],
+  "sri-lanka": ["Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka"],
+  mauritius: ["Mauritius", "Mauritius", "Maurice", "Mauricio", "Maurícia", "Mauritius", "Mauritius"],
+  tanzania: ["Tanzania", "Tansania", "Tanzanie", "Tanzania", "Tanzânia", "Tanzania", "Tanzania"],
   pakistan: ["Pakistan", "Pakistan", "Pakistan", "Pakistán", "Paquistão", "Pakistan", "Pakistan"],
 };
 
@@ -124,6 +129,11 @@ const CITIES: Record<string, Names> = {
   kefalonia: ["Cefalonia", "Kefalonia", "Céphalonie", "Cefalonia", "Cefalónia", "Kefalonia", "Kefalonia"],
   halkidiki: ["Calcidica", "Chalkidiki", "Chalcidique", "Calcídica", "Calcídica", "Chalkidiki", "Chalkidiki"],
   "boa-vista": ["Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista", "Boa Vista"],
+  bali: ["Bali", "Bali", "Bali", "Bali", "Bali", "Bali", "Bali"],
+  maldives: ["Maldive", "Malediven", "Maldives", "Maldivas", "Maldivas", "Malediven", "Malediwy"],
+  colombo: ["Colombo", "Colombo", "Colombo", "Colombo", "Colombo", "Colombo", "Kolombo"],
+  mauritius: ["Mauritius", "Mauritius", "Maurice", "Mauricio", "Maurícia", "Mauritius", "Mauritius"],
+  zanzibar: ["Zanzibar", "Sansibar", "Zanzibar", "Zanzíbar", "Zanzibar", "Zanzibar", "Zanzibar"],
   karachi: ["Karachi", "Karatschi", "Karachi", "Karachi", "Carachi", "Karachi", "Karaczi"],
 };
 

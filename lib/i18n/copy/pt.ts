@@ -5,7 +5,8 @@ const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 /** "em Lisboa", but "no Porto", "no Cairo", "na Cidade do Cabo"… */
 export const em = (c: string) => {
   if (/^(Porto|Cairo|Rio de Janeiro|Dubai|Algarve)$/.test(c)) return `no ${c}`;
-  if (c === "Madeira" || c === "Calcídica") return `na ${c}`;
+  if (c === "Madeira" || c === "Calcídica" || c === "Maurícia") return `na ${c}`;
+  if (c === "Maldivas") return `nas ${c}`;
   if (/^Cidade /.test(c)) return `na ${c}`;
   return `em ${c}`;
 };
@@ -69,7 +70,7 @@ export const pt: Copy = {
   englishGuide: (c) => `Guia completo: quando visitar ${c} (em inglês) →`,
   moreCountries: (n) => `Ver os ${n} países`,
 
-  monthTitle: (c, m) => `${c} em ${M[m]}: tempo, temperatura e chuva`,
+  monthTitle: (c, m) => `${c} em ${M[m]}: clima, temperatura e chuva`,
   monthDesc: (c, m, h, l, mm) => `Como está o tempo ${em(c)} em ${M[m]}? Máximas de ${h}°C, mínimas de ${l}°C e cerca de ${mm} mm de chuva – e o que levar na mala.`,
   monthKicker: "Clima mês a mês",
   monthH1: (c, m) => `Tempo ${em(c)} em ${M[m]}`,
