@@ -5,7 +5,9 @@ const M = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augu
 const inK = (k: string) => (k === "Verenigd Koninkrijk" ? `in het ${k}` : k.startsWith("Verenigde ") ? `in de ${k}` : `in ${k}`);
 /** Islands take "op" ("op Tenerife"), the Algarve "in de". */
 const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Zanzibar", "Mauritius"]);
-export const inC = (c: string) => (c === "Malediven" ? "op de Malediven" : c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
+/** Plural island nations take "de": "voor de Malediven", "naar de Seychellen". */
+export const deK = (c: string) => (c === "Malediven" || c === "Seychellen" ? `de ${c}` : c);
+export const inC = (c: string) => (c === "Malediven" || c === "Seychellen" ? `op de ${c}` : c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const cmp = (d: number, m: number) =>
@@ -46,12 +48,12 @@ export const nl: Copy = {
   cityTitle: (c) => `Weer ${c} vandaag, morgen en 14 dagen`,
   cityDesc: (c) => `Het weer ${inC(c)} vandaag en morgen, vergeleken tussen meerdere bronnen: temperatuur per uur, regen en wind: de 14-daagse weersverwachting.`,
   cityH1: (c) => `Weer ${c} vandaag en morgen`,
-  cityIntro: (c, k) => `Actuele weersverwachting voor ${c} (${k}), vergeleken tussen meerdere weerdiensten.`,
+  cityIntro: (c, k) => `Actuele weersverwachting voor ${deK(c)} (${k}), vergeleken tussen meerdere weerdiensten.`,
   sourcesDown: (n, t) => `${n} van de ${t} bronnen waren niet bereikbaar en zijn weggelaten.`,
   unavailable: "De weergegevens voor deze plaats zijn tijdelijk niet beschikbaar.",
   byMonthH: (c) => `Weer ${c} per maand`,
   byMonthSub: "Typische temperaturen, regen en wat je meeneemt, per maand.",
-  shareCity: (c) => `Reis naar ${c} gepland? Bewaar of deel deze verwachting.`,
+  shareCity: (c) => `Reis naar ${deK(c)} gepland? Bewaar of deel deze verwachting.`,
   shareCityTitle: (c) => `Weer ${c}: verwachtingen vergeleken`,
   aboutH: (c) => `Over het weer ${inC(c)}`,
   aboutText: (c, k, lat, lon) => `${c} (${k}) ligt op ongeveer ${lat}°, ${lon}°. De verwachtingen hierboven komen van meerdere onafhankelijke aanbieders, zodat je direct ziet waar ze het eens zijn en waar niet.`,
@@ -62,10 +64,10 @@ export const nl: Copy = {
   faqRainA: (c, p, s) => `De kans op regen ${inC(c)} is ongeveer ${p}% volgens ${s}. Bekijk de verwachting per uur voor details.`,
   faqTomorrowQ: (c) => `Wat voor weer wordt het morgen ${inC(c)}?`,
   faqTomorrowA: (c, h, l, p) => `Morgen wordt ${inC(c)} een maximum van ${h}°C en een minimum van ${l}°C verwacht, met ${p}% kans op regen.`,
-  faqTenQ: (c) => `Wat is de 10-daagse weersverwachting voor ${c}?`,
-  faqTenA: (c) => `De 10-daagse verwachting hierboven toont maxima, minima en regenkans voor ${c}; vergelijk de bronnen om te zien hoe zeker die is.`,
+  faqTenQ: (c) => `Wat is de 10-daagse weersverwachting voor ${deK(c)}?`,
+  faqTenA: (c) => `De 10-daagse verwachting hierboven toont maxima, minima en regenkans voor ${deK(c)}; vergelijk de bronnen om te zien hoe zeker die is.`,
   nearby: "Steden in de buurt",
-  englishGuide: (c) => `Volledige gids: beste reistijd voor ${c} (Engels) →`,
+  englishGuide: (c) => `Volledige gids: beste reistijd voor ${deK(c)} (Engels) →`,
   moreCountries: (n) => `Alle ${n} landen`,
 
   monthTitle: (c, m) => {
@@ -109,17 +111,17 @@ export const nl: Copy = {
     quickDry: "Sneldrogende stoffen – het voelt benauwder dan de temperatuur doet vermoeden",
   },
   packGuide: "Volledige paklijst (Engels) →",
-  goodTimeH: (c, m) => `Is ${M[m]} een goede maand voor ${c}?`,
+  goodTimeH: (c, m) => `Is ${M[m]} een goede maand voor ${deK(c)}?`,
   bestMonthsText: (c, ms, good, m) =>
-    good ? `Ja – ${M[m]} is een van de beste maanden voor ${c}. Het aangenaamst is het meestal in ${ms}.` : `Het aangenaamst is het ${inC(c)} meestal in ${ms}. Vergelijk de maanden in de grafiek hierboven.`,
+    good ? `Ja – ${M[m]} is een van de beste maanden voor ${deK(c)}. Het aangenaamst is het meestal in ${ms}.` : `Het aangenaamst is het ${inC(c)} meestal in ${ms}. Vergelijk de maanden in de grafiek hierboven.`,
   otherCitiesH: (k, m) => `Andere steden ${inK(k)} in ${M[m]}`,
   quickAnswersH: (c, m) => `${c} in ${M[m]}: snelle antwoorden`,
   faqWarmQ: (c, m) => `Hoe warm is het ${inC(c)} in ${M[m]}?`,
   faqWarmA: (h, hf, l, lf) => `De gemiddelde maxima liggen rond ${h}°C (${hf}°F) en de minima rond ${l}°C (${lf}°F), op basis van 10 jaar dagelijkse gegevens.`,
   faqWetQ: (c, m) => `Regent het veel ${inC(c)} in ${M[m]}?`,
   faqWetA: (c, m, mm, r) => `${capI(inC(c))} valt in ${M[m]} gemiddeld zo'n ${mm} mm regen – ${r}.`,
-  faqBestQ: (c) => `Wat is de beste reistijd voor ${c}?`,
-  faqBestA: (c, ms) => `Voor aangenaam, vrij droog weer zijn ${ms} meestal de beste maanden voor ${c}.`,
+  faqBestQ: (c) => `Wat is de beste reistijd voor ${deK(c)}?`,
+  faqBestA: (c, ms) => `Voor aangenaam, vrij droog weer zijn ${ms} meestal de beste maanden voor ${deK(c)}.`,
   cityInMonth: (c, m) => `${c} in ${M[m]}`,
   monthFoot: (c) => `De cijfers zijn langjarige gemiddelden voor de regio rond ${c} (NASA POWER, 2011–2020), geen verwachting voor een bepaald jaar.`,
   monthFootLink: "Bekijk de actuele verwachting",

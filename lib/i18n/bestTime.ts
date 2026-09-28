@@ -15,8 +15,8 @@ import { monthInfo, type AnyLocale } from "@/lib/i18n/routing";
 import { a as itA } from "@/lib/i18n/copy/it";
 import { a as frA } from "@/lib/i18n/copy/fr";
 import { em as ptEm } from "@/lib/i18n/copy/pt";
-import { inC as deIn } from "@/lib/i18n/copy/de";
-import { inC as nlIn } from "@/lib/i18n/copy/nl";
+import { inC as deIn, fuer as deFuer, nach as deNach } from "@/lib/i18n/copy/de";
+import { inC as nlIn, deK as nlDe } from "@/lib/i18n/copy/nl";
 import { w as plW } from "@/lib/i18n/copy/pl";
 
 export type Verdict = "ideal" | "good" | "hot" | "rainy" | "cold";
@@ -69,6 +69,9 @@ export interface BestTimeCopy {
 }
 
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+/** "26–29" but just "28" when both ends are equal (avoids "28–28°C"). */
+const rg = (lo: number, hi: number) => (lo === hi ? `${hi}` : `${lo}–${hi}`);
+const frRg = (lo: number, hi: number) => (lo === hi ? `de ${hi}` : `de ${lo} à ${hi}`);
 /** Italian "a maggio" / "ad aprile". */
 const itM = (m: string) => (/^[aeiou]/i.test(m) ? `ad ${m}` : `a ${m}`);
 
@@ -78,7 +81,7 @@ const en: BestTimeCopy = {
   title: (c) => `Best Time to Visit ${c}: Weather by Month`,
   desc: (c, b) => `When is the best time to visit ${c}? Usually ${b}. See ${c} weather by month, the warmest, coldest and rainiest months, and when to avoid.`,
   h1: (c) => `Best Time to Visit ${c}`,
-  answer: (c, b, lo, hi, r) => `The best time to visit ${c} is ${b}, when average highs are ${lo}–${hi}°C and rainfall is around ${r} mm a month.`,
+  answer: (c, b, lo, hi, r) => `The best time to visit ${c} is ${b}, when average highs are ${rg(lo, hi)}°C and rainfall is around ${r} mm a month.`,
   factsH: "At a glance",
   warmest: "Warmest month",
   coolest: "Coolest month",
@@ -99,7 +102,7 @@ const en: BestTimeCopy = {
   },
   faqH: "Frequently asked questions",
   qBest: (c) => `When is the best time to visit ${c}?`,
-  aBest: (c, b, lo, hi) => `For pleasant, fairly dry weather, go to ${c} in ${b}. Average highs are then ${lo}–${hi}°C.`,
+  aBest: (c, b, lo, hi) => `For pleasant, fairly dry weather, go to ${c} in ${b}. Average highs are then ${rg(lo, hi)}°C.`,
   qWarm: (c) => `What is the warmest month in ${c}?`,
   aWarm: (c, m, hi, lo) => `${m} is the warmest month in ${c}, with average highs of ${hi}°C and lows of ${lo}°C.`,
   qCold: (c) => `What is the coldest month in ${c}?`,
@@ -142,7 +145,7 @@ const it: BestTimeCopy = {
   title: (c) => `Quando andare ${itA(c)}: clima e periodo migliore`,
   desc: (c, b) => `Qual è il periodo migliore per andare ${itA(c)}? Di solito ${b}. Clima mese per mese, mese più caldo, più freddo e più piovoso, e quando evitare.`,
   h1: (c) => `Quando andare ${itA(c)}: il periodo migliore`,
-  answer: (c, b, lo, hi, r) => `Il periodo migliore per andare ${itA(c)} sono i mesi di ${b}: le massime medie sono di ${lo}–${hi}°C e cadono circa ${r} mm di pioggia al mese.`,
+  answer: (c, b, lo, hi, r) => `Il periodo migliore per andare ${itA(c)} sono i mesi di ${b}: le massime medie sono di ${rg(lo, hi)}°C e cadono circa ${r} mm di pioggia al mese.`,
   factsH: "In breve",
   warmest: "Mese più caldo",
   coolest: "Mese più freddo",
@@ -163,7 +166,7 @@ const it: BestTimeCopy = {
   },
   faqH: "Domande frequenti",
   qBest: (c) => `Qual è il periodo migliore per andare ${itA(c)}?`,
-  aBest: (c, b, lo, hi) => `Per un clima piacevole e abbastanza asciutto conviene andare ${itA(c)} nei mesi di ${b}, con massime medie di ${lo}–${hi}°C.`,
+  aBest: (c, b, lo, hi) => `Per un clima piacevole e abbastanza asciutto conviene andare ${itA(c)} nei mesi di ${b}, con massime medie di ${rg(lo, hi)}°C.`,
   qWarm: (c) => `Qual è il mese più caldo ${itA(c)}?`,
   aWarm: (c, m, hi, lo) => `Il mese più caldo ${itA(c)} è ${m}, con massime medie di ${hi}°C e minime di ${lo}°C.`,
   qCold: (c) => `Qual è il mese più freddo ${itA(c)}?`,
@@ -204,9 +207,9 @@ const de: BestTimeCopy = {
   slug: "beste-reisezeit",
   eyebrow: "Beste Reisezeit",
   title: (c) => `Beste Reisezeit ${c}: Klimatabelle & Wetter pro Monat`,
-  desc: (c, b) => `Wann ist die beste Reisezeit für ${c}? Meist ${b}. Klimatabelle, wärmster, kältester und regenreichster Monat und wann man lieber nicht reist.`,
+  desc: (c, b) => `Wann ist die beste Reisezeit ${deFuer(c)}? Meist ${b}. Klimatabelle, wärmster, kältester und regenreichster Monat und wann man lieber nicht reist.`,
   h1: (c) => `Beste Reisezeit ${c}`,
-  answer: (c, b, lo, hi, r) => `Die beste Reisezeit für ${c} sind die Monate ${b}: Die Tageshöchstwerte liegen dann im Schnitt bei ${lo}–${hi}°C, und es fallen etwa ${r} mm Regen pro Monat.`,
+  answer: (c, b, lo, hi, r) => `Die beste Reisezeit ${deFuer(c)} sind die Monate ${b}: Die Tageshöchstwerte liegen dann im Schnitt bei ${rg(lo, hi)}°C, und es fallen etwa ${r} mm Regen pro Monat.`,
   factsH: "Auf einen Blick",
   warmest: "Wärmster Monat",
   coolest: "Kältester Monat",
@@ -216,7 +219,7 @@ const de: BestTimeCopy = {
   tableH: (c) => `Klimatabelle ${c}`,
   tableIntro: (c) => `Durchschnittliche Höchst- und Tiefstwerte, Niederschlag und Luftfeuchtigkeit ${deIn(c)} (10-Jahres-Mittel).`,
   cols: ["Monat", "Max", "Min", "Regen", "Feuchte"],
-  periodsH: (c) => `Wann nach ${c}? Die Jahreszeiten im Überblick`,
+  periodsH: (c) => `Wann ${deNach(c)}? Die Jahreszeiten im Überblick`,
   verdict: { ideal: "Beste Reisezeit", good: "Gut", hot: "Heiß", rainy: "Regnerisch", cold: "Kalt" },
   verdictText: {
     ideal: "Angenehme Temperaturen und wenig Regen: die ideale Zeit für Besichtigungen und Aktivitäten im Freien.",
@@ -226,15 +229,15 @@ const de: BestTimeCopy = {
     cold: "Kühle bis kalte Tage: gut für Museen und Städtereisen, weniger für den Strand.",
   },
   faqH: "Häufige Fragen",
-  qBest: (c) => `Wann ist die beste Reisezeit für ${c}?`,
-  aBest: (c, b, lo, hi) => `Für angenehmes, eher trockenes Wetter reist man am besten im ${b} nach ${c}. Die Höchstwerte liegen dann bei ${lo}–${hi}°C.`,
+  qBest: (c) => `Wann ist die beste Reisezeit ${deFuer(c)}?`,
+  aBest: (c, b, lo, hi) => `Für angenehmes, eher trockenes Wetter reist man am besten im ${b} ${deNach(c)}. Die Höchstwerte liegen dann bei ${rg(lo, hi)}°C.`,
   qWarm: (c) => `Welcher ist der wärmste Monat ${deIn(c)}?`,
   aWarm: (c, m, hi, lo) => `Der wärmste Monat ${deIn(c)} ist der ${m} mit durchschnittlich ${hi}°C am Tag und ${lo}°C in der Nacht.`,
   qCold: (c) => `Welcher ist der kälteste Monat ${deIn(c)}?`,
   aCold: (c, m, hi, lo) => `Der kälteste Monat ${deIn(c)} ist der ${m}: im Schnitt ${hi}°C tagsüber und ${lo}°C nachts.`,
   qRain: (c) => `Wann regnet es am meisten ${deIn(c)}?`,
   aRain: (c, wet, wm, dry, dm) => `Am meisten regnet es ${deIn(c)} im ${wet} mit rund ${wm} mm. Am trockensten ist der ${dry} mit etwa ${dm} mm.`,
-  qWorst: (c) => `Wann sollte man nicht nach ${c} reisen?`,
+  qWorst: (c) => `Wann sollte man nicht ${deNach(c)} reisen?`,
   aWorst: (c, m, r, v, v2) =>
     r === "none"
       ? `${cap(deIn(c))} gibt es keinen wirklich schlechten Reisemonat: Die Höchstwerte liegen das ganze Jahr zwischen ${v} und ${v2}°C.`
@@ -243,21 +246,21 @@ const de: BestTimeCopy = {
       : r === "cold"
         ? `Am ungemütlichsten ist es ${deIn(c)} im ${m} mit nur ${v}°C im Schnitt. Für Museen und leere Sehenswürdigkeiten ist das aber kein Problem.`
         : `Am unbeständigsten ist das Wetter ${deIn(c)} im ${m} mit rund ${v} mm Regen. Regenjacke einpacken und flexibel planen.`,
-  qWhy: (c, m) => `Warum ist der ${m} eine gute Reisezeit für ${c}?`,
+  qWhy: (c, m) => `Warum ist der ${m} eine gute Reisezeit ${deFuer(c)}?`,
   aWhy: (c, m, hi, lo, r, cl) => `Im ${m} hat ${c} im Schnitt ${hi}°C am Tag und ${lo}°C in der Nacht, etwa ${r} mm Regen und ${cl} % Bewölkung: warm genug für draußen, aber ohne die größte Hitze und ohne die nasseste Zeit.`,
   qGood: (c, _m, i) => `Lohnt sich ${c} ${i}?`,
   aGood: (c, m, i, k, hi, mm) =>
     k === "yes"
-      ? `Ja. Der ${m} gehört zu den besten Reisemonaten für ${c}, mit Höchstwerten um ${hi}°C und etwa ${mm} mm Regen.`
+      ? `Ja. Der ${m} gehört zu den besten Reisemonaten ${deFuer(c)}, mit Höchstwerten um ${hi}°C und etwa ${mm} mm Regen.`
       : k === "hot"
         ? `Ja, wenn Sie Hitze mögen: ${cap(i)} erreicht ${c} um ${hi}°C. Gut für den Strand; Besichtigungen besser früh morgens und abends.`
         : k === "cold"
           ? `${cap(i)} ist es ${deIn(c)} kühl, mit Höchstwerten um ${hi}°C. Eher etwas für Museen und Stadtbummel als für den Strand, dafür ruhiger.`
           : k === "rainy"
             ? `Der ${m} gehört zu den nasseren Monaten ${deIn(c)}, mit etwa ${mm} mm Regen. Reisen kann man trotzdem: Regenjacke einpacken und flexibel planen.`
-            : `Der ${m} ist eine ordentliche Reisezeit für ${c}: um ${hi}°C und etwa ${mm} mm Regen, auch wenn er nicht zu den drei besten Monaten zählt.`,
+            : `Der ${m} ist eine ordentliche Reisezeit ${deFuer(c)}: um ${hi}°C und etwa ${mm} mm Regen, auch wenn er nicht zu den drei besten Monaten zählt.`,
   qHow: (c) => `Wie prüfe ich das Wetter ${deIn(c)} vor der Reise?`,
-  aHow: (c) => `Auf WeatherCompare vergleichen Sie die Vorhersage für ${c} von drei unabhängigen Wetterdiensten. Stimmen sie überein, ist die Prognose verlässlicher.`,
+  aHow: (c) => `Auf WeatherCompare vergleichen Sie die Vorhersage ${deFuer(c)} von drei unabhängigen Wetterdiensten. Stimmen sie überein, ist die Prognose verlässlicher.`,
   liveCta: (c) => `Aktuelles Wetter ${deIn(c)}: 3 Vorhersagen im Vergleich`,
   monthsH: (c) => `Wetter ${deIn(c)} in jedem Monat`,
   moreH: (k) => `Beste Reisezeit für weitere Ziele: ${k}`,
@@ -270,7 +273,7 @@ const fr: BestTimeCopy = {
   title: (c) => `Quand partir ${frA(c)} ? Climat et météo par mois`,
   desc: (c, b) => `Quelle est la meilleure période pour partir ${frA(c)} ? En général ${b}. Climat mois par mois, mois le plus chaud, le plus froid, le plus pluvieux.`,
   h1: (c) => `Quand partir ${frA(c)} ? La meilleure période`,
-  answer: (c, b, lo, hi, r) => `La meilleure période pour partir ${frA(c)} correspond aux mois de ${b} : les maximales moyennes sont de ${lo} à ${hi} °C, avec environ ${r} mm de pluie par mois.`,
+  answer: (c, b, lo, hi, r) => `La meilleure période pour partir ${frA(c)} correspond aux mois de ${b} : les maximales moyennes sont ${frRg(lo, hi)} °C, avec environ ${r} mm de pluie par mois.`,
   factsH: "En bref",
   warmest: "Mois le plus chaud",
   coolest: "Mois le plus froid",
@@ -291,7 +294,7 @@ const fr: BestTimeCopy = {
   },
   faqH: "Questions fréquentes",
   qBest: (c) => `Quelle est la meilleure période pour partir ${frA(c)} ?`,
-  aBest: (c, b, lo, hi) => `Pour un temps agréable et plutôt sec, partez ${frA(c)} en ${b}. Les maximales tournent alors autour de ${lo} à ${hi} °C.`,
+  aBest: (c, b, lo, hi) => `Pour un temps agréable et plutôt sec, partez ${frA(c)} en ${b}. Les maximales tournent alors autour ${frRg(lo, hi)} °C.`,
   qWarm: (c) => `Quel est le mois le plus chaud ${frA(c)} ?`,
   aWarm: (c, m, hi, lo) => `Le mois le plus chaud ${frA(c)} est ${m}, avec des maximales moyennes de ${hi} °C et des minimales de ${lo} °C.`,
   qCold: (c) => `Quel est le mois le plus froid ${frA(c)} ?`,
@@ -334,7 +337,7 @@ const es: BestTimeCopy = {
   title: (c) => `Mejor época para viajar a ${c}: clima mes a mes`,
   desc: (c, b) => `¿Cuál es la mejor época para viajar a ${c}? Normalmente ${b}. Clima mes a mes, el mes más cálido, más frío y más lluvioso, y cuándo evitarlo.`,
   h1: (c) => `Mejor época para viajar a ${c}`,
-  answer: (c, b, lo, hi, r) => `La mejor época para viajar a ${c} son los meses de ${b}: las máximas medias rondan los ${lo}–${hi} °C y caen unos ${r} mm de lluvia al mes.`,
+  answer: (c, b, lo, hi, r) => `La mejor época para viajar a ${c} son los meses de ${b}: las máximas medias rondan los ${rg(lo, hi)} °C y caen unos ${r} mm de lluvia al mes.`,
   factsH: "En resumen",
   warmest: "Mes más cálido",
   coolest: "Mes más frío",
@@ -355,7 +358,7 @@ const es: BestTimeCopy = {
   },
   faqH: "Preguntas frecuentes",
   qBest: (c) => `¿Cuál es la mejor época para viajar a ${c}?`,
-  aBest: (c, b, lo, hi) => `Para un tiempo agradable y bastante seco, viaja a ${c} en ${b}. Las máximas medias son entonces de ${lo}–${hi} °C.`,
+  aBest: (c, b, lo, hi) => `Para un tiempo agradable y bastante seco, viaja a ${c} en ${b}. Las máximas medias son entonces de ${rg(lo, hi)} °C.`,
   qWarm: (c) => `¿Cuál es el mes más caluroso en ${c}?`,
   aWarm: (c, m, hi, lo) => `El mes más caluroso en ${c} es ${m}, con máximas medias de ${hi} °C y mínimas de ${lo} °C.`,
   qCold: (c) => `¿Cuál es el mes más frío en ${c}?`,
@@ -398,7 +401,7 @@ const pt: BestTimeCopy = {
   title: (c) => `Melhor época para visitar ${c}: clima mês a mês`,
   desc: (c, b) => `Qual é a melhor altura para visitar ${c}? Normalmente ${b}. Clima mês a mês, o mês mais quente, mais frio e mais chuvoso, e quando evitar.`,
   h1: (c) => `Melhor época para visitar ${c}`,
-  answer: (c, b, lo, hi, r) => `A melhor época para visitar ${c} são os meses de ${b}: as máximas médias rondam os ${lo}–${hi} °C e caem cerca de ${r} mm de chuva por mês.`,
+  answer: (c, b, lo, hi, r) => `A melhor época para visitar ${c} são os meses de ${b}: as máximas médias rondam os ${rg(lo, hi)} °C e caem cerca de ${r} mm de chuva por mês.`,
   factsH: "Em resumo",
   warmest: "Mês mais quente",
   coolest: "Mês mais frio",
@@ -419,7 +422,7 @@ const pt: BestTimeCopy = {
   },
   faqH: "Perguntas frequentes",
   qBest: (c) => `Qual é a melhor altura para visitar ${c}?`,
-  aBest: (c, b, lo, hi) => `Para tempo agradável e bastante seco, visite ${c} em ${b}. As máximas médias rondam então os ${lo}–${hi} °C.`,
+  aBest: (c, b, lo, hi) => `Para tempo agradável e bastante seco, visite ${c} em ${b}. As máximas médias rondam então os ${rg(lo, hi)} °C.`,
   qWarm: (c) => `Qual é o mês mais quente ${ptEm(c)}?`,
   aWarm: (c, m, hi, lo) => `O mês mais quente ${ptEm(c)} é ${m}, com máximas médias de ${hi} °C e mínimas de ${lo} °C.`,
   qCold: (c) => `Qual é o mês mais frio ${ptEm(c)}?`,
@@ -460,9 +463,9 @@ const nl: BestTimeCopy = {
   slug: "beste-reistijd",
   eyebrow: "Beste reistijd",
   title: (c) => `Beste reistijd ${c}: klimaat en weer per maand`,
-  desc: (c, b) => `Wat is de beste reistijd voor ${c}? Meestal ${b}. Klimaat per maand, de warmste, koudste en natste maand, en wanneer je beter niet gaat.`,
+  desc: (c, b) => `Wat is de beste reistijd voor ${nlDe(c)}? Meestal ${b}. Klimaat per maand, de warmste, koudste en natste maand, en wanneer je beter niet gaat.`,
   h1: (c) => `Beste reistijd ${c}`,
-  answer: (c, b, lo, hi, r) => `De beste reistijd voor ${c} is ${b}: de gemiddelde maximumtemperatuur ligt dan op ${lo}–${hi}°C en er valt zo'n ${r} mm regen per maand.`,
+  answer: (c, b, lo, hi, r) => `De beste reistijd voor ${nlDe(c)} is ${b}: de gemiddelde maximumtemperatuur ligt dan op ${rg(lo, hi)}°C en er valt zo'n ${r} mm regen per maand.`,
   factsH: "In het kort",
   warmest: "Warmste maand",
   coolest: "Koudste maand",
@@ -472,7 +475,7 @@ const nl: BestTimeCopy = {
   tableH: (c) => `Klimaat ${nlIn(c)} per maand`,
   tableIntro: (c) => `Gemiddelde maximum- en minimumtemperaturen, neerslag en luchtvochtigheid ${nlIn(c)} (10-jarig gemiddelde).`,
   cols: ["Maand", "Max", "Min", "Regen", "Vocht"],
-  periodsH: (c) => `Wanneer naar ${c}? Per seizoen`,
+  periodsH: (c) => `Wanneer naar ${nlDe(c)}? Per seizoen`,
   verdict: { ideal: "Beste reistijd", good: "Goed", hot: "Heet", rainy: "Nat", cold: "Koud" },
   verdictText: {
     ideal: "Aangename temperaturen en weinig regen: de ideale tijd voor bezienswaardigheden en buiten zijn.",
@@ -482,15 +485,15 @@ const nl: BestTimeCopy = {
     cold: "Frisse tot koude dagen: prima voor musea en stedentrips, minder voor het strand.",
   },
   faqH: "Veelgestelde vragen",
-  qBest: (c) => `Wat is de beste reistijd voor ${c}?`,
-  aBest: (c, b, lo, hi) => `Voor aangenaam, vrij droog weer ga je het best in ${b} naar ${c}. De maxima liggen dan rond ${lo}–${hi}°C.`,
+  qBest: (c) => `Wat is de beste reistijd voor ${nlDe(c)}?`,
+  aBest: (c, b, lo, hi) => `Voor aangenaam, vrij droog weer ga je het best in ${b} naar ${nlDe(c)}. De maxima liggen dan rond ${rg(lo, hi)}°C.`,
   qWarm: (c) => `Wat is de warmste maand ${nlIn(c)}?`,
   aWarm: (c, m, hi, lo) => `De warmste maand ${nlIn(c)} is ${m}, met gemiddeld ${hi}°C overdag en ${lo}°C 's nachts.`,
   qCold: (c) => `Wat is de koudste maand ${nlIn(c)}?`,
   aCold: (c, m, hi, lo) => `De koudste maand ${nlIn(c)} is ${m}: gemiddeld ${hi}°C overdag en ${lo}°C 's nachts.`,
   qRain: (c) => `Wanneer regent het het meest ${nlIn(c)}?`,
   aRain: (c, wet, wm, dry, dm) => `Het natst is het ${nlIn(c)} in ${wet}, met zo'n ${wm} mm regen. Het droogst is ${dry}, met ongeveer ${dm} mm.`,
-  qWorst: (c) => `Wanneer kun je beter niet naar ${c}?`,
+  qWorst: (c) => `Wanneer kun je beter niet naar ${nlDe(c)}?`,
   aWorst: (c, m, r, v, v2) =>
     r === "none"
       ? `${cap(nlIn(c))} is er geen echt slechte maand: de gemiddelde maxima liggen het hele jaar tussen ${v} en ${v2}°C.`
@@ -499,21 +502,21 @@ const nl: BestTimeCopy = {
       : r === "cold"
         ? `De minst aangename maand ${nlIn(c)} is ${m}, met gemiddeld maar ${v}°C. Wel prima voor musea en rustige bezienswaardigheden.`
         : `De minst betrouwbare maand ${nlIn(c)} is ${m}, met zo'n ${v} mm regen. Neem een regenjas mee en houd je planning flexibel.`,
-  qWhy: (c, m) => `Waarom is ${m} een goede reistijd voor ${c}?`,
+  qWhy: (c, m) => `Waarom is ${m} een goede reistijd voor ${nlDe(c)}?`,
   aWhy: (c, m, hi, lo, r, cl) => `In ${m} is het ${nlIn(c)} gemiddeld ${hi}°C overdag en ${lo}°C 's nachts, met zo'n ${r} mm regen en ${cl}% bewolking: warm genoeg om buiten te zijn, zonder de grootste hitte of de natste periode.`,
-  qGood: (c, m) => `Is ${m} een goede maand voor ${c}?`,
+  qGood: (c, m) => `Is ${m} een goede maand voor ${nlDe(c)}?`,
   aGood: (c, m, i, k, hi, mm) =>
     k === "yes"
-      ? `Ja. ${cap(m)} is een van de beste maanden voor ${c}, met maxima rond ${hi}°C en zo'n ${mm} mm regen.`
+      ? `Ja. ${cap(m)} is een van de beste maanden voor ${nlDe(c)}, met maxima rond ${hi}°C en zo'n ${mm} mm regen.`
       : k === "hot"
         ? `Ja, als je van warmte houdt: ${i} wordt het ${nlIn(c)} rond ${hi}°C. Prima voor het strand; bezichtig vroeg in de ochtend en 's avonds.`
         : k === "cold"
           ? `${cap(i)} is het fris ${nlIn(c)}, met maxima rond ${hi}°C. Meer iets voor musea en stadswandelingen dan voor het strand, en rustiger.`
           : k === "rainy"
             ? `${cap(m)} is een van de nattere maanden ${nlIn(c)}, met zo'n ${mm} mm regen. Je kunt gerust gaan: neem een regenjas mee en plan flexibel.`
-            : `${cap(m)} is een redelijke reistijd voor ${c}: rond ${hi}°C en ${mm} mm regen, al hoort hij niet bij de drie beste maanden.`,
+            : `${cap(m)} is een redelijke reistijd voor ${nlDe(c)}: rond ${hi}°C en ${mm} mm regen, al hoort hij niet bij de drie beste maanden.`,
   qHow: (c) => `Hoe check je het weer ${nlIn(c)} voor vertrek?`,
-  aHow: (c) => `Op WeatherCompare vergelijk je de verwachting voor ${c} van drie onafhankelijke weerdiensten. Als ze overeenkomen, is de verwachting betrouwbaarder.`,
+  aHow: (c) => `Op WeatherCompare vergelijk je de verwachting voor ${nlDe(c)} van drie onafhankelijke weerdiensten. Als ze overeenkomen, is de verwachting betrouwbaarder.`,
   liveCta: (c) => `Weer ${nlIn(c)}: 3 verwachtingen vergeleken`,
   monthsH: (c) => `Weer ${nlIn(c)} per maand`,
   moreH: (k) => `Beste reistijd voor andere bestemmingen: ${k}`,
@@ -526,7 +529,7 @@ const pl: BestTimeCopy = {
   title: (c) => `${c}: kiedy jechać? Klimat i pogoda w miesiącach`,
   desc: (c, b) => `Kiedy jest najlepsza pogoda ${plW(c)}? Zwykle: ${b}. Klimat miesiąc po miesiącu, najcieplejszy, najzimniejszy i najbardziej deszczowy miesiąc.`,
   h1: (c) => `${c}: kiedy jechać? Najlepszy czas na wyjazd`,
-  answer: (c, b, lo, hi, r) => `Najlepszy czas na wyjazd – ${c} – to ${b}: średnie temperatury maksymalne wynoszą wtedy ${lo}–${hi}°C, a opady to około ${r} mm na miesiąc.`,
+  answer: (c, b, lo, hi, r) => `Najlepszy czas na wyjazd – ${c} – to ${b}: średnie temperatury maksymalne wynoszą wtedy ${rg(lo, hi)}°C, a opady to około ${r} mm na miesiąc.`,
   factsH: "W skrócie",
   warmest: "Najcieplejszy miesiąc",
   coolest: "Najzimniejszy miesiąc",
@@ -547,7 +550,7 @@ const pl: BestTimeCopy = {
   },
   faqH: "Najczęstsze pytania",
   qBest: (c) => `Kiedy jest najlepsza pogoda ${plW(c)}?`,
-  aBest: (c, b, lo, hi) => `Na przyjemną, raczej suchą pogodę ${plW(c)} najlepsze są miesiące: ${b}. Średnie maksima wynoszą wtedy ${lo}–${hi}°C.`,
+  aBest: (c, b, lo, hi) => `Na przyjemną, raczej suchą pogodę ${plW(c)} najlepsze są miesiące: ${b}. Średnie maksima wynoszą wtedy ${rg(lo, hi)}°C.`,
   qWarm: (c) => `Który miesiąc jest najcieplejszy ${plW(c)}?`,
   aWarm: (c, m, hi, lo) => `Najcieplejszy miesiąc ${plW(c)} to ${m}: średnio ${hi}°C w dzień i ${lo}°C w nocy.`,
   qCold: (c) => `Który miesiąc jest najzimniejszy ${plW(c)}?`,

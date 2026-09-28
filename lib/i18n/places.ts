@@ -49,6 +49,9 @@ const COUNTRIES: Record<string, Names> = {
   "sri-lanka": ["Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka", "Sri Lanka"],
   mauritius: ["Mauritius", "Mauritius", "Maurice", "Mauricio", "Maurícia", "Mauritius", "Mauritius"],
   tanzania: ["Tanzania", "Tansania", "Tanzanie", "Tanzania", "Tanzânia", "Tanzania", "Tanzania"],
+  vietnam: ["Vietnam", "Vietnam", "Vietnam", "Vietnam", "Vietname", "Vietnam", "Wietnam"],
+  "hong-kong": ["Hong Kong", "Hongkong", "Hong Kong", "Hong Kong", "Hong Kong", "Hongkong", "Hongkong"],
+  seychelles: ["Seychelles", "Seychellen", "Seychelles", "Seychelles", "Seicheles", "Seychellen", "Seszele"],
   pakistan: ["Pakistan", "Pakistan", "Pakistan", "Pakistán", "Paquistão", "Pakistan", "Pakistan"],
 };
 
@@ -134,6 +137,10 @@ const CITIES: Record<string, Names> = {
   colombo: ["Colombo", "Colombo", "Colombo", "Colombo", "Colombo", "Colombo", "Kolombo"],
   mauritius: ["Mauritius", "Mauritius", "Maurice", "Mauricio", "Maurícia", "Mauritius", "Mauritius"],
   zanzibar: ["Zanzibar", "Sansibar", "Zanzibar", "Zanzíbar", "Zanzibar", "Zanzibar", "Zanzibar"],
+  hanoi: ["Hanoi", "Hanoi", "Hanoï", "Hanói", "Hanói", "Hanoi", "Hanoi"],
+  "ho-chi-minh-city": ["Ho Chi Minh", "Ho-Chi-Minh-Stadt", "Hô Chi Minh-Ville", "Ciudad Ho Chi Minh", "Cidade de Ho Chi Minh", "Ho Chi Minhstad", "Ho Chi Minh"],
+  "hong-kong": ["Hong Kong", "Hongkong", "Hong Kong", "Hong Kong", "Hong Kong", "Hongkong", "Hongkong"],
+  seychelles: ["Seychelles", "Seychellen", "Seychelles", "Seychelles", "Seicheles", "Seychellen", "Seszele"],
   karachi: ["Karachi", "Karatschi", "Karachi", "Karachi", "Carachi", "Karachi", "Karaczi"],
 };
 

@@ -3,8 +3,12 @@ import type { Copy } from "./types";
 const M = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 const IN = M.map((m) => `im ${m}`);
 /** Islands take "auf" ("auf Kreta"), the Algarve "an der". */
-const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Sansibar", "Mauritius"]);
-export const inC = (c: string) => (c === "Malediven" ? "auf den Malediven" : c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
+const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Sansibar", "Mauritius", "Hongkong"]);
+export const inC = (c: string) => (c === "Malediven" ? "auf den Malediven" : c === "Seychellen" ? "auf den Seychellen" : c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
+/** Plural island nations take an article: "für die Malediven", "auf die Seychellen". */
+const PLURAL = new Set(["Malediven", "Seychellen"]);
+export const fuer = (c: string) => (PLURAL.has(c) ? `für die ${c}` : `für ${c}`);
+export const nach = (c: string) => (PLURAL.has(c) ? `auf die ${c}` : `nach ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cmp = (d: number, m: number) =>
   Math.abs(d) < 2 ? `ähnlich wie im ${M[m]}` : `${Math.abs(d)}°C ${d > 0 ? "wärmer" : "kühler"} als im ${M[m]}`;
@@ -44,12 +48,12 @@ export const de: Copy = {
   cityTitle: (c) => `Wetter ${c} heute, morgen & 14 Tage`,
   cityDesc: (c) => `Wetter ${c} heute und morgen im Vergleich mehrerer Quellen: Temperatur stündlich, Regen und Wind – Wettervorhersage für 14 bis 16 Tage.`,
   cityH1: (c) => `Wetter ${c} heute und morgen`,
-  cityIntro: (c, k) => `Aktuelle Vorhersage für ${c} (${k}), verglichen über mehrere Wetterdienste.`,
+  cityIntro: (c, k) => `Aktuelle Vorhersage ${fuer(c)} (${k}), verglichen über mehrere Wetterdienste.`,
   sourcesDown: (n, t) => `${n} von ${t} Quellen waren nicht erreichbar und fehlen in diesem Vergleich.`,
   unavailable: "Die Wetterdaten für diesen Ort sind vorübergehend nicht verfügbar.",
   byMonthH: (c) => `Wetter ${c} nach Monaten`,
   byMonthSub: "Typische Temperaturen, Regen und Packtipps für jeden Monat.",
-  shareCity: (c) => `Reise nach ${c} geplant? Vorhersage speichern oder teilen.`,
+  shareCity: (c) => `Reise ${nach(c)} geplant? Vorhersage speichern oder teilen.`,
   shareCityTitle: (c) => `Wetter ${c}: Vorhersagen im Vergleich`,
   aboutH: (c) => `Über das Wetter ${inC(c)}`,
   aboutText: (c, k, lat, lon) => `${c} (${k}) liegt bei etwa ${lat}°, ${lon}°. Die Vorhersagen oben stammen von mehreren unabhängigen Anbietern – so siehst du sofort, wo sie übereinstimmen und wo nicht.`,
@@ -60,10 +64,10 @@ export const de: Copy = {
   faqRainA: (c, p, s) => `Die Regenwahrscheinlichkeit ${inC(c)} liegt laut ${s} bei etwa ${p} %. Details zeigt die stündliche Vorhersage.`,
   faqTomorrowQ: (c) => `Wie wird das Wetter morgen ${inC(c)}?`,
   faqTomorrowA: (c, h, l, p) => `Morgen werden ${inC(c)} Höchstwerte von ${h}°C und Tiefstwerte von ${l}°C erwartet, bei ${p} % Regenwahrscheinlichkeit.`,
-  faqTenQ: (c) => `Wie ist die 10-Tage-Vorhersage für ${c}?`,
-  faqTenA: (c) => `Die 10-Tage-Vorhersage oben zeigt Höchst- und Tiefstwerte sowie die Regenwahrscheinlichkeit für ${c}; der Quellenvergleich zeigt, wie sicher sie ist.`,
+  faqTenQ: (c) => `Wie ist die 10-Tage-Vorhersage ${fuer(c)}?`,
+  faqTenA: (c) => `Die 10-Tage-Vorhersage oben zeigt Höchst- und Tiefstwerte sowie die Regenwahrscheinlichkeit ${fuer(c)}; der Quellenvergleich zeigt, wie sicher sie ist.`,
   nearby: "Städte in der Nähe",
-  englishGuide: (c) => `Ausführlicher Ratgeber: beste Reisezeit für ${c} (Englisch) →`,
+  englishGuide: (c) => `Ausführlicher Ratgeber: beste Reisezeit ${fuer(c)} (Englisch) →`,
   moreCountries: (n) => `Alle ${n} Länder`,
 
   monthTitle: (c, m) => `Wetter ${c} im ${M[m]}: Temperaturen & Regen`,
@@ -104,16 +108,16 @@ export const de: Copy = {
     quickDry: "Schnell trocknende Stoffe – es fühlt sich schwüler an, als die Temperatur vermuten lässt",
   },
   packGuide: "Ausführliche Packliste (Englisch) →",
-  goodTimeH: (c, m) => `Ist der ${M[m]} eine gute Reisezeit für ${c}?`,
+  goodTimeH: (c, m) => `Ist der ${M[m]} eine gute Reisezeit ${fuer(c)}?`,
   bestMonthsText: (c, ms, good, m) =>
-    good ? `Ja – der ${M[m]} gehört zu den besten Monaten für ${c}. Am angenehmsten ist es meist im ${ms}.` : `Am angenehmsten ist es ${inC(c)} meist im ${ms}. Vergleiche die Monate im Diagramm oben.`,
+    good ? `Ja – der ${M[m]} gehört zu den besten Monaten ${fuer(c)}. Am angenehmsten ist es meist im ${ms}.` : `Am angenehmsten ist es ${inC(c)} meist im ${ms}. Vergleiche die Monate im Diagramm oben.`,
   otherCitiesH: (k, m) => `Weitere Städte (${k}) im ${M[m]}`,
   quickAnswersH: (c, m) => `${c} im ${M[m]}: kurz beantwortet`,
   faqWarmQ: (c, m) => `Wie warm ist es ${inC(c)} im ${M[m]}?`,
   faqWarmA: (h, hf, l, lf) => `Die durchschnittlichen Höchstwerte liegen bei etwa ${h}°C (${hf}°F), die Tiefstwerte bei etwa ${l}°C (${lf}°F) – basierend auf 10 Jahren Tagesdaten.`,
   faqWetQ: (c, m) => `Regnet es viel ${inC(c)} im ${M[m]}?`,
   faqWetA: (c, m, mm, r) => `${capI(inC(c))} fallen im ${M[m]} durchschnittlich etwa ${mm} mm Regen – ${r}.`,
-  faqBestQ: (c) => `Wann ist die beste Reisezeit für ${c}?`,
+  faqBestQ: (c) => `Wann ist die beste Reisezeit ${fuer(c)}?`,
   faqBestA: (c, ms) => `Für angenehmes, eher trockenes Wetter sind ${inC(c)} meist ${ms} die besten Monate.`,
   cityInMonth: (c, m) => `${c} im ${M[m]}`,
   monthFoot: (c) => `Die Werte sind langjährige Mittel für die Region um ${c} (NASA POWER, 2011–2020), keine Vorhersage für ein bestimmtes Jahr.`,

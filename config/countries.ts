@@ -387,6 +387,35 @@ export const countries: CountrySeed[] = [
     ],
   },
   {
+    slug: "vietnam",
+    name: "Vietnam",
+    isoCode: "VN",
+    i18nName: { it: "Vietnam", de: "Vietnam", fr: "Vietnam", es: "Vietnam", en: "Vietnam" },
+    cities: [
+      { slug: "hanoi", name: "Hanoi", region: "Hanoi", lat: 21.0285, lon: 105.8542, population: 8436000, timezone: "Asia/Ho_Chi_Minh" },
+      { slug: "ho-chi-minh-city", name: "Ho Chi Minh City", region: "Ho Chi Minh City", lat: 10.8231, lon: 106.6297, population: 9390000, timezone: "Asia/Ho_Chi_Minh" },
+      { slug: "da-nang", name: "Da Nang", region: "Da Nang", lat: 16.0544, lon: 108.2022, population: 1220000, timezone: "Asia/Ho_Chi_Minh" },
+    ],
+  },
+  {
+    slug: "hong-kong",
+    name: "Hong Kong",
+    isoCode: "HK",
+    i18nName: { it: "Hong Kong", de: "Hongkong", fr: "Hong Kong", es: "Hong Kong", en: "Hong Kong" },
+    cities: [
+      { slug: "hong-kong", name: "Hong Kong", region: "Hong Kong", lat: 22.3193, lon: 114.1694, population: 7500000, timezone: "Asia/Hong_Kong" },
+    ],
+  },
+  {
+    slug: "seychelles",
+    name: "Seychelles",
+    isoCode: "SC",
+    i18nName: { it: "Seychelles", de: "Seychellen", fr: "Seychelles", es: "Seychelles", en: "Seychelles" },
+    cities: [
+      { slug: "seychelles", name: "Seychelles", region: "Mahé", lat: -4.6191, lon: 55.4513, population: 100000, timezone: "Indian/Mahe" },
+    ],
+  },
+  {
     slug: "india",
     name: "India",
     isoCode: "IN",

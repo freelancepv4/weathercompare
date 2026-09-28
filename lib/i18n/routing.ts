@@ -150,6 +150,26 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
   },
 };
 
+/**
+ * Turkish (tr) — WORK IN PROGRESS, not in CONTENT_LOCALES yet, so no /tr/
+ * pages exist. Path words follow Turkish searches ("hava durumu",
+ * "15 günlük hava durumu", "ne zaman gidilir"); URL slugs are ASCII.
+ * Move this into ROUTING and add "tr" to CONTENT_LOCALES once the copy,
+ * places, insights, bestTime and keywords for Turkish are all complete.
+ */
+export const TR_ROUTING: LocaleRouting = {
+  hreflang: "tr",
+  intl: "tr-TR",
+  weather: "hava-durumu",
+  whereToGo: "nereye-gidilir",
+  tripFinder: "seyahat-hava-bulucu",
+  today: "bugun-hava-durumu",
+  bestTime: "ne-zaman-gidilir",
+  monthSlugs: ["ocak", "subat", "mart", "nisan", "mayis", "haziran", "temmuz", "agustos", "eylul", "ekim", "kasim", "aralik"],
+  monthNames: ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"],
+  inMonth: ["Ocak ayında", "Şubat ayında", "Mart ayında", "Nisan ayında", "Mayıs ayında", "Haziran ayında", "Temmuz ayında", "Ağustos ayında", "Eylül ayında", "Ekim ayında", "Kasım ayında", "Aralık ayında"],
+};
+
 /** English month names/phrases, for the shared page components. */
 export const EN_MONTHS = {
   monthSlugs: MONTHS.map((m) => m.slug),

@@ -2101,6 +2101,91 @@ export const cityGuides: Record<string, CityGuide> = {
     goodToKnow:
       "Zanzibar is mostly Muslim: dress modestly in Stone Town and villages, and expect some restaurants to close during the day in Ramadan.",
   },
+  "vietnam:hanoi": {
+    intro:
+      "Vietnam's capital in the north, a city of lakes, tree-lined French-era boulevards and the busy lanes of the Old Quarter. It is the usual base for trips to Ha Long Bay and the northern mountains.",
+    bestTimeToVisit:
+      "October to December and March to April. Winters (December to February) are cool, grey and damp, while May to September is hot and humid with the heaviest rain.",
+    landmarks: [
+      { name: "Hoan Kiem Lake", description: "The lake at the heart of the city, with the red Huc Bridge leading to Ngoc Son Temple." },
+      { name: "Old Quarter", description: "A dense grid of narrow streets, many historically named after the goods once sold there." },
+      { name: "Temple of Literature", description: "An 11th-century temple dedicated to Confucius that housed Vietnam's first university." },
+      { name: "Ho Chi Minh Mausoleum", description: "The marble mausoleum on Ba Dinh Square, with the Presidential Palace grounds and One Pillar Pagoda nearby." },
+    ],
+    localTip: "On weekend evenings the streets around Hoan Kiem Lake close to traffic and fill with families, street games and food stalls.",
+    gettingAround:
+      "The Old Quarter is walkable, but crossing the traffic takes practice: walk at a slow, steady pace. Ride-hailing apps are the easiest way to get further afield.",
+    goodToKnow:
+      "Hanoi's winter can feel colder than the numbers suggest, as many buildings have no heating, so pack a warm layer from December to February.",
+  },
+  "vietnam:ho-chi-minh-city": {
+    intro:
+      "Vietnam's biggest city, still widely called Saigon, is the fast-moving commercial centre of the south, with colonial landmarks, rooftop bars and huge street-food markets. It is the gateway to the Mekong Delta.",
+    bestTimeToVisit:
+      "December to April, the dry season. March and April are the hottest months; from May to November short, heavy afternoon downpours are common.",
+    landmarks: [
+      { name: "War Remnants Museum", description: "A museum documenting the Vietnam War, with aircraft and tanks in its courtyard." },
+      { name: "Ben Thanh Market", description: "The city's best-known market hall, selling food, fabrics and souvenirs." },
+      { name: "Saigon Central Post Office", description: "A late-19th-century French colonial post office with an iron-framed hall." },
+      { name: "Independence Palace", description: "The former presidential palace of South Vietnam, preserved much as it was in 1975." },
+    ],
+    localTip: "The Cu Chi Tunnels, a network used during the war, make an easy half-day trip from the city; go early to avoid the heat.",
+    gettingAround:
+      "Traffic is dominated by motorbikes. Ride-hailing apps (car or motorbike) are cheap and simple, and the city's first metro line opened in late 2024.",
+    goodToKnow:
+      "In the wet season, rain usually comes as a short, heavy afternoon storm, so plan outdoor sightseeing for the morning.",
+  },
+  "vietnam:da-nang": {
+    intro:
+      "A coastal city in central Vietnam with a long sandy beach, modern bridges and the Marble Mountains, and the usual base for historic Hoi An and the old imperial city of Hue.",
+    bestTimeToVisit:
+      "February to August, when it is dry and sunny; May to August is hot and best for the beach. September to December is the rainy season, with the risk of typhoons and flooding.",
+    landmarks: [
+      { name: "My Khe Beach", description: "A long, wide city beach lined with seafood restaurants." },
+      { name: "Marble Mountains", description: "Five limestone hills with caves, pagodas and viewpoints south of the city." },
+      { name: "Dragon Bridge", description: "A bridge over the Han River shaped like a dragon, which breathes fire and water on weekend nights." },
+      { name: "Hoi An Ancient Town", description: "A well-preserved trading port about 45 minutes south, a UNESCO World Heritage Site known for its lanterns." },
+    ],
+    localTip: "Drive the Hai Van Pass north towards Hue for one of the most scenic coastal roads in Vietnam.",
+    gettingAround:
+      "Taxis and ride-hailing apps are cheap; Hoi An is easy to reach by car or on a hotel shuttle.",
+    goodToKnow:
+      "Central Vietnam's rainy season runs later than in the north and south, peaking in October and November, so check the forecast closely in autumn.",
+  },
+  "hong-kong:hong-kong": {
+    intro:
+      "A dense, vertical city on the south coast of China, where skyscrapers on Hong Kong Island and Kowloon face each other across Victoria Harbour, with green hiking trails and beaches a short ride away.",
+    bestTimeToVisit:
+      "October to December, when days are sunny, dry and pleasantly warm. Summer (June to September) is hot, humid and the main typhoon season.",
+    landmarks: [
+      { name: "Victoria Peak", description: "The city's highest point on Hong Kong Island, reached by the historic Peak Tram, with views over the harbour." },
+      { name: "Star Ferry", description: "Green-and-white ferries that have crossed Victoria Harbour between Central and Tsim Sha Tsui since the 1880s." },
+      { name: "Tian Tan Buddha", description: "A giant bronze Buddha on Lantau Island, reached by the Ngong Ping cable car." },
+      { name: "Temple Street Night Market", description: "A lively evening market in Kowloon with street food and stalls." },
+    ],
+    localTip: "The Dragon's Back trail on Hong Kong Island is a short, well-marked hike that ends near the beach at Big Wave Bay.",
+    gettingAround:
+      "The MTR metro, trams, buses and ferries are fast, cheap and cover almost everywhere; an Octopus card works on all of them.",
+    goodToKnow:
+      "When a typhoon signal 8 or higher is raised, public transport slows and most shops and attractions close, so keep an eye on warnings in summer.",
+  },
+  "seychelles:seychelles": {
+    intro:
+      "An archipelago of 115 islands in the Indian Ocean, famous for granite boulders on white-sand beaches and lush national parks. Most visitors stay on Mahé, Praslin or La Digue.",
+    bestTimeToVisit:
+      "Warm all year. May to September is the driest and least humid stretch, with steady southeast trade winds; April–May and October–November, between the wind seasons, have the calmest, clearest sea. December to February is the wettest period.",
+    landmarks: [
+      { name: "Anse Source d'Argent", description: "A beach on La Digue framed by huge granite boulders, one of the most photographed in the world." },
+      { name: "Vallée de Mai", description: "A palm forest on Praslin, a UNESCO World Heritage Site and home of the coco de mer." },
+      { name: "Morne Seychellois National Park", description: "Mountain forest covering much of Mahé, with hiking trails and viewpoints." },
+      { name: "Victoria", description: "One of the world's smallest capitals, with a market hall and a small clock tower." },
+    ],
+    localTip: "Rent a bicycle on La Digue — there are very few cars and most beaches are a short ride apart.",
+    gettingAround:
+      "Rental cars and buses cover Mahé and Praslin (traffic drives on the left); ferries and short flights link the main islands.",
+    goodToKnow:
+      "From May to September the southeast trade winds make some beaches choppy and seaweed can wash up, so pick a beach sheltered from the wind.",
+  },
 };
 
 export function getCityGuide(countrySlug: string, citySlug: string): CityGuide | null {
