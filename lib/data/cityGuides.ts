@@ -2186,6 +2186,91 @@ export const cityGuides: Record<string, CityGuide> = {
     goodToKnow:
       "From May to September the southeast trade winds make some beaches choppy and seaweed can wash up, so pick a beach sheltered from the wind.",
   },
+  "usa:honolulu": {
+    intro:
+      "Hawaii's capital on the south shore of Oʻahu, where Waikiki's hotel-lined beach sits beside Diamond Head crater and the city's historic downtown. It is the gateway to the rest of the Hawaiian islands.",
+    bestTimeToVisit:
+      "Warm all year, with highs in the upper 20s °C. April to May and September to October combine dry weather, fewer visitors and lower prices; summer is the driest and warmest period. November to March brings more showers and big surf on the North Shore.",
+    landmarks: [
+      { name: "Waikiki Beach", description: "Honolulu's famous resort beach, with gentle waves that suit beginner surfers." },
+      { name: "Diamond Head", description: "A volcanic crater with a short, steep trail to the rim and views over Waikiki." },
+      { name: "Pearl Harbor", description: "The site of the 1941 attack, with the USS Arizona Memorial and museums." },
+      { name: "ʻIolani Palace", description: "The former royal residence of the Hawaiian monarchy in downtown Honolulu." },
+    ],
+    localTip: "Hike Diamond Head early in the morning, before the heat and the crowds; out-of-state visitors need to book an entry slot online.",
+    gettingAround:
+      "TheBus covers Honolulu and most of Oʻahu; a rental car helps for the North Shore and the east coast.",
+    goodToKnow:
+      "The windward (northeast) side of the island is noticeably wetter than Waikiki, so a rainy forecast there often means sunshine in Honolulu.",
+  },
+  "portugal:azores": {
+    intro:
+      "A group of nine volcanic islands in the middle of the Atlantic, known for crater lakes, hot springs, green pastures and whale watching. Most visitors arrive in Ponta Delgada on São Miguel, the largest island.",
+    bestTimeToVisit:
+      "June to September, when days are mild to warm and rain is least frequent. The islands are never very hot or cold, but the weather changes quickly all year, and winter is wet and windy.",
+    landmarks: [
+      { name: "Sete Cidades", description: "Twin crater lakes, one green and one blue, on the west of São Miguel." },
+      { name: "Furnas", description: "A volcanic valley with hot springs, thermal pools and cozido stew cooked in the ground." },
+      { name: "Lagoa do Fogo", description: "A crater lake in the mountains of central São Miguel, reached by a hiking trail." },
+      { name: "Ponta Delgada", description: "São Miguel's main town, with black-and-white cobbled streets and the Portas da Cidade gate." },
+    ],
+    localTip: "Check the viewpoint webcams before driving up to the crater lakes — they are often hidden in cloud while the coast is sunny.",
+    gettingAround:
+      "A rental car is the easiest way to explore São Miguel; flights and, in summer, ferries link the islands.",
+    goodToKnow:
+      "Whale watching runs most of the year, and spring is a good time to see migrating blue and fin whales.",
+  },
+  "thailand:koh-samui": {
+    intro:
+      "Thailand's second-largest island, in the Gulf of Thailand, with palm-fringed beaches, resorts and a lively strip at Chaweng. It is a hub for trips to Ang Thong Marine Park, Koh Phangan and Koh Tao.",
+    bestTimeToVisit:
+      "January to August. Koh Samui follows a different pattern from Phuket and the Andaman coast: its main rainy season runs from October to December, while the summer months are usually drier than on the west coast.",
+    landmarks: [
+      { name: "Chaweng Beach", description: "The island's longest and busiest beach, with restaurants and nightlife." },
+      { name: "Big Buddha (Wat Phra Yai)", description: "A 12-metre golden Buddha on a small island joined to the north-east coast." },
+      { name: "Ang Thong National Marine Park", description: "An archipelago of limestone islands, reached on day trips by boat." },
+      { name: "Fisherman's Village, Bophut", description: "An old Chinese-Thai quarter with a walking-street market on Friday evenings." },
+    ],
+    localTip: "If your dates fall in the Andaman rainy season (May–October), Koh Samui is often the better choice for beach weather in Thailand.",
+    gettingAround:
+      "Songthaews (shared pick-up taxis) and taxis run around the ring road; many visitors rent a car or scooter.",
+    goodToKnow:
+      "Boats to Ang Thong and the neighbouring islands can be cancelled in rough seas during the November monsoon.",
+  },
+  "costa-rica:san-jose": {
+    intro:
+      "Costa Rica's capital sits in the Central Valley at about 1,150 metres, so it is milder than the coasts. Most travellers pass through on the way to the cloud forests, volcanoes and the Pacific and Caribbean beaches.",
+    bestTimeToVisit:
+      "December to April, the dry season, when San José and the Pacific coast get the most sunshine. May to November is the green season, with afternoon showers; the Caribbean coast has its own pattern and is often drier in September and October.",
+    landmarks: [
+      { name: "National Theatre", description: "An ornate 19th-century theatre in the city centre, with a café inside." },
+      { name: "Pre-Columbian Gold Museum", description: "Gold objects made by the region's Indigenous cultures, under the Plaza de la Cultura." },
+      { name: "Mercado Central", description: "A covered market with sodas (small eateries), spices and coffee." },
+      { name: "Poás Volcano", description: "An active volcano with a steaming crater, a day trip from the city." },
+    ],
+    localTip: "Go up the volcanoes early in the morning — clouds often roll in and hide the craters by late morning.",
+    gettingAround:
+      "The centre is walkable; buses and shuttles connect San José with most destinations, and a 4x4 helps on rural roads in the green season.",
+    goodToKnow:
+      "In the green season, mornings are usually sunny and the rain tends to come in the afternoon, so plan outdoor activities early.",
+  },
+  "iceland:reykjavik": {
+    intro:
+      "The world's northernmost capital, a compact, colourful city on the sea, and the base for the Golden Circle, the south coast's waterfalls and the Blue Lagoon.",
+    bestTimeToVisit:
+      "June to August for the mildest weather and very long days, with near-midnight sun in June. September to March brings dark nights for the northern lights, but short days and frequent storms.",
+    landmarks: [
+      { name: "Hallgrímskirkja", description: "The city's landmark church, with a tower that looks out over the rooftops." },
+      { name: "Harpa", description: "A concert hall on the harbour with a glass façade inspired by basalt columns." },
+      { name: "Sun Voyager", description: "A steel sculpture of a Viking-style ship on the seafront path." },
+      { name: "Golden Circle", description: "A day route to Þingvellir National Park, the Geysir area and Gullfoss waterfall." },
+    ],
+    localTip: "Check the aurora forecast and the cloud cover before heading out — clear skies matter as much as solar activity.",
+    gettingAround:
+      "The centre is small and walkable; tours or a rental car are the usual way to reach sights outside the city.",
+    goodToKnow:
+      "Wind is the bigger factor than temperature in Iceland; check road and weather warnings (road.is, vedur.is) before driving in winter.",
+  },
 };
 
 export function getCityGuide(countrySlug: string, citySlug: string): CityGuide | null {

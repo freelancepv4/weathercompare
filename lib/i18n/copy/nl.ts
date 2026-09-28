@@ -4,10 +4,10 @@ const M = ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augu
 /** "in Italië", but "in het Verenigd Koninkrijk", "in de Verenigde Staten". */
 const inK = (k: string) => (k === "Verenigd Koninkrijk" ? `in het ${k}` : k.startsWith("Verenigde ") ? `in de ${k}` : `in ${k}`);
 /** Islands take "op" ("op Tenerife"), the Algarve "in de". */
-const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Zanzibar", "Mauritius"]);
+const OP = new Set(["Tenerife", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Corfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Zanzibar", "Mauritius", "Koh Samui"]);
 /** Plural island nations take "de": "voor de Malediven", "naar de Seychellen". */
-export const deK = (c: string) => (c === "Malediven" || c === "Seychellen" ? `de ${c}` : c);
-export const inC = (c: string) => (c === "Malediven" || c === "Seychellen" ? `op de ${c}` : c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
+export const deK = (c: string) => (c === "Malediven" || c === "Seychellen" || c === "Azoren" ? `de ${c}` : c);
+export const inC = (c: string) => (c === "Malediven" || c === "Seychellen" || c === "Azoren" ? `op de ${c}` : c === "Algarve" ? "in de Algarve" : OP.has(c) ? `op ${c}` : `in ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 const cap = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
 const cmp = (d: number, m: number) =>

@@ -7,6 +7,7 @@ export const em = (c: string) => {
   if (/^(Porto|Cairo|Rio de Janeiro|Dubai|Algarve)$/.test(c)) return `no ${c}`;
   if (c === "Madeira" || c === "Calcídica" || c === "Maurícia") return `na ${c}`;
   if (c === "Maldivas" || c === "Seicheles") return `nas ${c}`;
+  if (c === "Açores") return `nos ${c}`;
   if (/^Cidade /.test(c)) return `na ${c}`;
   return `em ${c}`;
 };

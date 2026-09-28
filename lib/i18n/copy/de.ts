@@ -3,10 +3,10 @@ import type { Copy } from "./types";
 const M = ["Januar", "Februar", "März", "April", "Mai", "Juni", "Juli", "August", "September", "Oktober", "November", "Dezember"];
 const IN = M.map((m) => `im ${m}`);
 /** Islands take "auf" ("auf Kreta"), the Algarve "an der". */
-const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Sansibar", "Mauritius", "Hongkong"]);
-export const inC = (c: string) => (c === "Malediven" ? "auf den Malediven" : c === "Seychellen" ? "auf den Seychellen" : c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
+const AUF = new Set(["Teneriffa", "Gran Canaria", "Lanzarote", "Fuerteventura", "Mallorca", "Ibiza", "Kreta", "Rhodos", "Korfu", "Madeira", "Djerba", "Curaçao", "Menorca", "Kos", "Zakynthos", "Kefalonia", "Chalkidiki", "Sal", "Boa Vista", "Bali", "Sansibar", "Mauritius", "Koh Samui"]);
+export const inC = (c: string) => (c === "Malediven" ? "auf den Malediven" : c === "Seychellen" || c === "Azoren" ? `auf den ${c}` : c === "Algarve" ? "an der Algarve" : AUF.has(c) ? `auf ${c}` : `in ${c}`);
 /** Plural island nations take an article: "für die Malediven", "auf die Seychellen". */
-const PLURAL = new Set(["Malediven", "Seychellen"]);
+const PLURAL = new Set(["Malediven", "Seychellen", "Azoren"]);
 export const fuer = (c: string) => (PLURAL.has(c) ? `für die ${c}` : `für ${c}`);
 export const nach = (c: string) => (PLURAL.has(c) ? `auf die ${c}` : `nach ${c}`);
 const capI = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);

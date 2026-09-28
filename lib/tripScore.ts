@@ -20,10 +20,10 @@ export const STYLES: Array<{ id: WeatherStyle; label: string; emoji: string; blu
 
 export const COUNTRY_REGIONS: Record<string, string> = {
   italy: "Europe", germany: "Europe", france: "Europe", spain: "Europe", uk: "Europe", netherlands: "Europe",
-  portugal: "Europe", austria: "Europe", greece: "Europe", switzerland: "Europe", ireland: "Europe", turkey: "Europe", poland: "Europe", belgium: "Europe", malta: "Europe", cyprus: "Europe",
+  portugal: "Europe", austria: "Europe", greece: "Europe", switzerland: "Europe", ireland: "Europe", turkey: "Europe", poland: "Europe", belgium: "Europe", malta: "Europe", cyprus: "Europe", iceland: "Europe",
   japan: "Asia", thailand: "Asia", singapore: "Asia", india: "Asia", "south-korea": "Asia", pakistan: "Asia", indonesia: "Asia", maldives: "Asia", "sri-lanka": "Asia", vietnam: "Asia", "hong-kong": "Asia",
   uae: "Middle East & Africa", egypt: "Middle East & Africa", morocco: "Middle East & Africa", "south-africa": "Middle East & Africa", tunisia: "Middle East & Africa", "cape-verde": "Middle East & Africa", mauritius: "Middle East & Africa", tanzania: "Middle East & Africa", seychelles: "Middle East & Africa",
-  usa: "Americas", canada: "Americas", mexico: "Americas", brazil: "Americas", "dominican-republic": "Americas", curacao: "Americas",
+  usa: "Americas", canada: "Americas", mexico: "Americas", brazil: "Americas", "dominican-republic": "Americas", curacao: "Americas", "costa-rica": "Americas",
   australia: "Oceania",
 };
 

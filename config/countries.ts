@@ -130,6 +130,7 @@ export const countries: CountrySeed[] = [
       { slug: "chicago", name: "Chicago", region: "Illinois", lat: 41.8781, lon: -87.6298, population: 2746000, timezone: "America/Chicago" },
       { slug: "miami", name: "Miami", region: "Florida", lat: 25.7617, lon: -80.1918, population: 442000, timezone: "America/New_York" },
       { slug: "san-francisco", name: "San Francisco", region: "California", lat: 37.7749, lon: -122.4194, population: 873000, timezone: "America/Los_Angeles" },
+      { slug: "honolulu", name: "Honolulu", region: "Hawaii", lat: 21.3069, lon: -157.8583, population: 350000, timezone: "Pacific/Honolulu" },
     ],
   },
   {
@@ -184,6 +185,7 @@ export const countries: CountrySeed[] = [
       { slug: "madeira", name: "Madeira", i18nName: { fr: "Madère" }, region: "Madeira (Funchal)", lat: 32.6669, lon: -16.9241, population: 250000, timezone: "Atlantic/Madeira" },
       { slug: "algarve", name: "Algarve", region: "Algarve (Faro)", lat: 37.0194, lon: -7.9322, population: 467000, timezone: "Europe/Lisbon" },
       { slug: "albufeira", name: "Albufeira", region: "Algarve", lat: 37.089, lon: -8.25, population: 41000, timezone: "Europe/Lisbon" },
+      { slug: "azores", name: "Azores", i18nName: { it: "Azzorre", de: "Azoren", fr: "Açores", es: "Azores" }, region: "Azores (Ponta Delgada)", lat: 37.7412, lon: -25.6756, population: 68000, timezone: "Atlantic/Azores" },
     ],
   },
   {
@@ -348,6 +350,7 @@ export const countries: CountrySeed[] = [
     cities: [
       { slug: "bangkok", name: "Bangkok", region: "Bangkok", lat: 13.7563, lon: 100.5018, population: 10539000, timezone: "Asia/Bangkok" },
       { slug: "phuket", name: "Phuket", region: "Phuket", lat: 7.8804, lon: 98.3923, population: 85000, timezone: "Asia/Bangkok" },
+      { slug: "koh-samui", name: "Koh Samui", region: "Surat Thani", lat: 9.512, lon: 100.0136, population: 70000, timezone: "Asia/Bangkok" },
     ],
   },
   {
@@ -413,6 +416,24 @@ export const countries: CountrySeed[] = [
     i18nName: { it: "Seychelles", de: "Seychellen", fr: "Seychelles", es: "Seychelles", en: "Seychelles" },
     cities: [
       { slug: "seychelles", name: "Seychelles", region: "Mahé", lat: -4.6191, lon: 55.4513, population: 100000, timezone: "Indian/Mahe" },
+    ],
+  },
+  {
+    slug: "costa-rica",
+    name: "Costa Rica",
+    isoCode: "CR",
+    i18nName: { it: "Costa Rica", de: "Costa Rica", fr: "Costa Rica", es: "Costa Rica", en: "Costa Rica" },
+    cities: [
+      { slug: "san-jose", name: "San José", region: "San José", lat: 9.9281, lon: -84.0907, population: 350000, timezone: "America/Costa_Rica" },
+    ],
+  },
+  {
+    slug: "iceland",
+    name: "Iceland",
+    isoCode: "IS",
+    i18nName: { it: "Islanda", de: "Island", fr: "Islande", es: "Islandia", en: "Iceland" },
+    cities: [
+      { slug: "reykjavik", name: "Reykjavik", i18nName: { it: "Reykjavík", de: "Reykjavík", es: "Reikiavik" }, region: "Capital Region", lat: 64.1466, lon: -21.9426, population: 140000, timezone: "Atlantic/Reykjavik" },
     ],
   },
   {

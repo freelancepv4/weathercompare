@@ -11,7 +11,7 @@ export const en: Copy = {
   home: "Home",
   highsRange: (a, b) => `Highs ${a}° – ${b}°C`,
   viewForecast: "View forecast →",
-  inCity: (c) => (c === "Algarve" ? "in the Algarve" : c === "Maldives" || c === "Seychelles" ? `in the ${c}` : `in ${c}`),
+  inCity: (c) => (c === "Algarve" ? "in the Algarve" : c === "Maldives" || c === "Seychelles" || c === "Azores" ? `in the ${c}` : `in ${c}`),
 
   homeTitle: "Weather Forecast Compared: 14 Days, Climate & Travel",
   homeDesc: "Compare 3 weather forecasts for 120+ cities: today, tomorrow and 14 days. Plus climate by month, the best time to visit and where to go for sun.",
