@@ -113,8 +113,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     description: seoDescription(description),
     keywords,
     alternates: { canonical: url, ...hreflang({ kind: "city", country: country.slug, city: city.slug }) },
-    openGraph: { title, description, url, images: [defaultOgImage] },
-    twitter: { title, description, images: [defaultOgImage] },
+    openGraph: { type: "website", siteName: siteConfig.name, title, description, url, images: [defaultOgImage] },
+    twitter: { card: "summary_large_image", title, description, images: [defaultOgImage] },
   };
 }
 
@@ -248,19 +248,19 @@ export default async function CityPage(props: PageProps) {
             </p>
           )}
 
-          <ForecastComparison bundles={bundles} />
+          <ForecastComparison bundles={bundles} timeZone={city.timezone} />
 
           <AdSlot variant="banner" />
 
-          <HourlyForecast hourly={primary.hourly} />
+          <HourlyForecast hourly={primary.hourly} timeZone={city.timezone} />
           <DailyForecast daily={bundles.reduce((best, b) => (b.daily.length > best.length ? b.daily : best), primary.daily)} />
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <RainSection hourly={primary.hourly} />
-            <WindSection current={primary.current} hourly={primary.hourly} daily={primary.daily} />
+            <RainSection hourly={primary.hourly} timeZone={city.timezone} />
+            <WindSection current={primary.current} hourly={primary.hourly} daily={primary.daily} timeZone={city.timezone} />
           </div>
 
-          <WeatherAlerts alerts={primary.alerts} />
+          <WeatherAlerts alerts={primary.alerts} timeZone={city.timezone} />
           <WeatherMap location={location} current={primary.current} />
           <AdSlot variant="square" />
 

@@ -156,7 +156,8 @@
     "rights": "Alle rechten voorbehouden.",
     "notMeteorologicalAuthority": "WeatherCompare verzamelt en vergelijkt gegevens van externe weerdiensten en is geen meteorologische instantie. Raadpleeg voor officiële waarschuwingen altijd je nationale weerdienst.",
     "byCountry": "Weer per land",
-    "whereByMonth": "Waar naartoe, per maand"
+    "whereByMonth": "Waar naartoe, per maand",
+    "contactUs": "Contact"
   },
   "cookieConsent": {
     "title": "Wij respecteren je privacy",
@@ -190,5 +191,13 @@
     "copy": "Link kopiëren",
     "copied": "Gekopieerd",
     "more": "Meer deelopties"
+  },
+  "locate": {
+    "title": "Het weer zien waar je bent?",
+    "text": "Geef toegang tot je locatie en we openen meteen de verwachting voor jouw omgeving. We gebruiken die alleen om je plaats te vinden.",
+    "allow": "Toon mijn weer",
+    "later": "Niet nu",
+    "finding": "Je locatie wordt gezocht…",
+    "denied": "We konden je locatie niet ophalen. Je kunt ook een stad zoeken."
   }
 }

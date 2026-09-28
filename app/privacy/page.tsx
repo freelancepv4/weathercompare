@@ -34,9 +34,11 @@ export default function PrivacyPage() {
       <LegalHeading>Data we collect, and why</LegalHeading>
       <ul className="list-disc space-y-2 pl-5">
         <li>
-          <strong>Location (optional, on request only):</strong> if you use "Use my location", your browser's geolocation API is invoked
-          only after you explicitly trigger it and your browser's own permission prompt. Coordinates are sent to our server solely to
-          look up the nearest city and are discarded immediately after — not stored, not logged, not linked to you.
+          <strong>Location (optional, on request only):</strong> if you tap "Use my location" or "Show my weather" in the location prompt, your browser's
+          geolocation API is invoked only after that tap and your browser's own permission prompt. If you are near one of our cities,
+          the match is made in your browser and nothing is sent; otherwise the coordinates are sent to our server solely to look up the
+          nearest place and are discarded immediately after — not stored, not logged, not linked to you. Your answer to the prompt
+          ("Not now" or done) is remembered in your browser's local storage so we don't ask again.
         </li>
         <li>
           <strong>Search and location lookups:</strong> when you search for a city or view a weather page, the coordinates involved are

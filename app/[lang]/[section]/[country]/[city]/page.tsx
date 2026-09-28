@@ -166,17 +166,17 @@ export default async function LocalizedCityPage(props: PageProps) {
             </p>
           )}
 
-          <ForecastComparison bundles={bundles} />
+          <ForecastComparison bundles={bundles} timeZone={city.timezone} />
           <AdSlot variant="banner" />
-          <HourlyForecast hourly={primary.hourly} />
+          <HourlyForecast hourly={primary.hourly} timeZone={city.timezone} />
           <DailyForecast daily={longestDaily} />
 
           <div className="grid gap-6 lg:grid-cols-2">
-            <RainSection hourly={primary.hourly} />
-            <WindSection current={primary.current} hourly={primary.hourly} daily={primary.daily} />
+            <RainSection hourly={primary.hourly} timeZone={city.timezone} />
+            <WindSection current={primary.current} hourly={primary.hourly} daily={primary.daily} timeZone={city.timezone} />
           </div>
 
-          <WeatherAlerts alerts={primary.alerts} />
+          <WeatherAlerts alerts={primary.alerts} timeZone={city.timezone} />
           <WeatherMap location={location} current={primary.current} />
           <AdSlot variant="square" />
 

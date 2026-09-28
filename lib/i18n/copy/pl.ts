@@ -143,7 +143,7 @@ export const pl: Copy = {
   faqBestQ: (c) => `Kiedy najlepiej jechać – ${c}?`,
   faqBestA: (c, ms) => `Na przyjemną, raczej suchą pogodę ${w(c)} najlepsze są zwykle miesiące: ${ms}.`,
   cityInMonth: (c, m) => `${c} ${IN[m]}`,
-  monthFoot: (c) => `Dane to wieloletnie średnie dla okolic (${c}) z NASA POWER, 2011–2020 – nie prognoza na konkretny rok.`,
+  monthFoot: (c) => `Dane to wieloletnie średnie dla okolic (${c}) z NASA POWER / ERA5, 2011–2020 – nie prognoza na konkretny rok.`,
   monthFootLink: "Zobacz aktualną prognozę",
 
   chartH: (c) => `Pogoda ${c} – miesiąc po miesiącu`,

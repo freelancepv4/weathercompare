@@ -308,7 +308,7 @@ export default async function LocalizedMonthPage(props: PageProps) {
           className="mt-10"
           url={url}
           title={copy.monthH1(cn, i)}
-          source="NASA POWER 2011–2020"
+          source="NASA POWER / ERA5, 2011–2020"
           embedUrl={`${siteConfig.url}/embed/${country.slug}/${city.slug}`}
         />
 

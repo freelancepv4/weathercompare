@@ -19,7 +19,7 @@ export function GET() {
     `> ${siteConfig.name} compares weather forecasts from several independent providers for ${countries.reduce(
       (n, c) => n + c.cities.length,
       0
-    )} cities worldwide, and publishes travel-weather guides: best time to visit, month-by-month climate averages (NASA POWER, 2011–2020), packing advice and a trip weather finder.`,
+    )} cities worldwide, and publishes travel-weather guides: best time to visit, month-by-month climate averages (NASA POWER and ERA5, 2011–2020), packing advice and a trip weather finder.`,
     "",
     "## Key pages",
     `- [Weather today](${base}/weather-today): daily hottest, coldest, wettest and windiest places, tomorrow's outlook and tips (updated hourly)`,

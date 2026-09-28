@@ -156,7 +156,8 @@
     "rights": "Alle Rechte vorbehalten.",
     "notMeteorologicalAuthority": "WeatherCompare aggregiert und vergleicht Daten von Wetterdienstleistern Dritter und ist keine meteorologische Behörde. Für amtliche Warnungen konsultieren Sie stets Ihren nationalen Wetterdienst.",
     "byCountry": "Wetter nach Land",
-    "whereByMonth": "Wohin reisen – Monat für Monat"
+    "whereByMonth": "Wohin reisen – Monat für Monat",
+    "contactUs": "Kontakt"
   },
   "cookieConsent": {
     "title": "Ihre Privatsphäre ist uns wichtig",
@@ -190,5 +191,13 @@
     "copy": "Link kopieren",
     "copied": "Kopiert",
     "more": "Weitere Teilen-Optionen"
+  },
+  "locate": {
+    "title": "Wetter für Ihren Standort anzeigen?",
+    "text": "Erlauben Sie den Standortzugriff, und wir öffnen direkt die Vorhersage für Ihre Region. Wir nutzen ihn nur, um Ihren Ort zu finden.",
+    "allow": "Mein Wetter anzeigen",
+    "later": "Nicht jetzt",
+    "finding": "Standort wird ermittelt…",
+    "denied": "Wir konnten Ihren Standort nicht ermitteln. Sie können stattdessen eine Stadt suchen."
   }
 }

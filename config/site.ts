@@ -20,6 +20,11 @@ export const siteConfig = {
   locales: ["en", "it", "de", "fr", "es", "pt", "nl", "pl"] as const,
   themeColor: "#0b1f49",
   twitterHandle: "@weathercompare",
+  /** Public contact details (footer, contact page, schema.org Organization). */
+  contactEmail: "contact@weathercompare.eu",
+  /** WhatsApp / phone in E.164 digits (no "+") for wa.me links, plus a display form. */
+  whatsapp: "393881990342",
+  phoneDisplay: "+39 388 199 0342",
   /**
    * Official social profiles. Leave a value empty until the account exists —
    * empty ones are hidden everywhere (footer icons, schema.org sameAs).

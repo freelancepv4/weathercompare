@@ -156,7 +156,8 @@
     "rights": "All rights reserved.",
     "notMeteorologicalAuthority": "WeatherCompare aggregates and compares data from third-party weather providers and is not a meteorological authority. For official warnings, always check your national weather service.",
     "byCountry": "Weather by country",
-    "whereByMonth": "Where to go by month"
+    "whereByMonth": "Where to go by month",
+    "contactUs": "Contact"
   },
   "cookieConsent": {
     "title": "We value your privacy",
@@ -190,5 +191,13 @@
     "copy": "Copy link",
     "copied": "Copied",
     "more": "More sharing options"
+  },
+  "locate": {
+    "title": "See the weather where you are?",
+    "text": "Allow location access and we'll open the forecast for your area straight away. We only use it to find your city.",
+    "allow": "Show my weather",
+    "later": "Not now",
+    "finding": "Finding your location…",
+    "denied": "We couldn't get your location. You can search for a city instead."
   }
 }

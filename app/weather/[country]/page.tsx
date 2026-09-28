@@ -69,8 +69,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     description: seoDescription(description),
     keywords,
     alternates: { canonical: url, ...hreflang({ kind: "country", country: country.slug }) },
-    openGraph: { title, description, url, images: [defaultOgImage] },
-    twitter: { title, description, images: [defaultOgImage] },
+    openGraph: { type: "website", siteName: siteConfig.name, title, description, url, images: [defaultOgImage] },
+    twitter: { card: "summary_large_image", title, description, images: [defaultOgImage] },
   };
 }
 

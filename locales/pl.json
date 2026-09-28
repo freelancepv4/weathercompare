@@ -156,7 +156,8 @@
     "rights": "Wszelkie prawa zastrzeżone.",
     "notMeteorologicalAuthority": "WeatherCompare zbiera i porównuje dane od zewnętrznych dostawców prognoz i nie jest instytucją meteorologiczną. Oficjalne ostrzeżenia sprawdzaj zawsze w krajowej służbie meteorologicznej.",
     "byCountry": "Pogoda według kraju",
-    "whereByMonth": "Gdzie jechać – miesiąc po miesiącu"
+    "whereByMonth": "Gdzie jechać – miesiąc po miesiącu",
+    "contactUs": "Kontakt"
   },
   "cookieConsent": {
     "title": "Dbamy o Twoją prywatność",
@@ -190,5 +191,13 @@
     "copy": "Kopiuj link",
     "copied": "Skopiowano",
     "more": "Więcej opcji udostępniania"
+  },
+  "locate": {
+    "title": "Pokazać pogodę tam, gdzie jesteś?",
+    "text": "Zezwól na dostęp do lokalizacji, a od razu otworzymy prognozę dla Twojej okolicy. Używamy jej tylko, by znaleźć Twoją miejscowość.",
+    "allow": "Pokaż moją pogodę",
+    "later": "Nie teraz",
+    "finding": "Szukam Twojej lokalizacji…",
+    "denied": "Nie udało się ustalić lokalizacji. Możesz wyszukać miasto."
   }
 }

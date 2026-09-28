@@ -120,7 +120,7 @@ export const de: Copy = {
   faqBestQ: (c) => `Wann ist die beste Reisezeit ${fuer(c)}?`,
   faqBestA: (c, ms) => `Für angenehmes, eher trockenes Wetter sind ${inC(c)} meist ${ms} die besten Monate.`,
   cityInMonth: (c, m) => `${c} im ${M[m]}`,
-  monthFoot: (c) => `Die Werte sind langjährige Mittel für die Region um ${c} (NASA POWER, 2011–2020), keine Vorhersage für ein bestimmtes Jahr.`,
+  monthFoot: (c) => `Die Werte sind langjährige Mittel für die Region um ${c} (NASA POWER / ERA5, 2011–2020), keine Vorhersage für ein bestimmtes Jahr.`,
   monthFootLink: "Zur aktuellen Vorhersage",
 
   chartH: (c) => `Wetter ${c} nach Monaten`,

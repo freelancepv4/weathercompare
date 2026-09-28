@@ -60,6 +60,9 @@ export interface BestTimeCopy {
   /** "Is {month} a good time to visit {city}?" — m = month name, inM = "in May" phrase. */
   qGood: (c: string, m: string, inM: string) => string;
   aGood: (c: string, m: string, inM: string, kind: GoodKind, hi: number, mm: number) => string;
+  /** Shoulder season: months just outside the best window that are still comfortable. n = number of months (for verb agreement). */
+  qShoulder: (c: string) => string;
+  aShoulder: (c: string, months: string, n: number, lo: number, hi: number, rain: number) => string;
   qHow: (c: string) => string;
   aHow: (c: string) => string;
   liveCta: (c: string) => string;
@@ -88,7 +91,7 @@ const en: BestTimeCopy = {
   wettest: "Wettest month",
   driest: "Driest month",
   sunniest: "Sunniest month",
-  tableH: (c) => `${c} weather by month`,
+  tableH: (c) => `${c} climate table: temperature and rain by month`,
   tableIntro: (c) => `Average highs, lows, rainfall and humidity in ${c} (10-year averages).`,
   cols: ["Month", "High", "Low", "Rain", "Humidity"],
   periodsH: (c) => `When to go to ${c}, season by season`,
@@ -131,12 +134,14 @@ const en: BestTimeCopy = {
           : k === "rainy"
             ? `${m} is one of the wetter months in ${c}, with about ${mm} mm of rain. You can still go: pack a rain jacket and keep plans flexible.`
             : `${m} is a reasonable time for ${c}: highs around ${hi}°C and about ${mm} mm of rain, though not one of the three best months.`,
+  qShoulder: (c) => `Is the shoulder season a good time to visit ${c}?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Yes. ${ms} ${n > 1 ? "sit" : "sits"} just outside the best months for ${c}, with average highs of ${rg(lo, hi)}°C and about ${r} mm of rain a month. Weather-wise, ${n > 1 ? "they are" : "it is"} a good alternative to the peak months.`,
   qHow: (c) => `How can I check the weather in ${c} before I travel?`,
   aHow: (c) => `Compare the live forecast for ${c} from three independent weather services on WeatherCompare. When they agree, the forecast is more reliable.`,
   liveCta: (c) => `Check the live ${c} forecast from 3 weather services`,
   monthsH: (c) => `${c} weather in every month`,
   moreH: (k) => `Best time to visit other places in ${k}`,
-  source: "Climate averages: NASA POWER, 10-year averages.",
+  source: "Climate averages: NASA POWER / ERA5 (2011–2020), 10-year averages.",
 };
 
 const it: BestTimeCopy = {
@@ -195,12 +200,14 @@ const it: BestTimeCopy = {
           : k === "rainy"
             ? `${cap(m)} è uno dei mesi più piovosi ${itA(c)}, con circa ${mm} mm di pioggia. Si può andare comunque: porta un impermeabile.`
             : `${cap(m)} è un periodo discreto per andare ${itA(c)}: massime di circa ${hi}°C e circa ${mm} mm di pioggia, anche se non è tra i tre mesi migliori.`,
+  qShoulder: (c) => `La mezza stagione è un buon periodo per andare ${itA(c)}?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Sì. ${cap(ms)} ${n > 1 ? "sono" : "è"} appena fuori dai mesi migliori, con massime medie di ${rg(lo, hi)}°C e circa ${r} mm di pioggia al mese: dal punto di vista del meteo, un'ottima alternativa ai mesi di punta.`,
   qHow: (c) => `Come controllare il meteo ${itA(c)} prima di partire?`,
   aHow: (c) => `Su WeatherCompare puoi confrontare le previsioni per ${c} di tre servizi meteo indipendenti. Quando concordano, la previsione è più affidabile.`,
   liveCta: (c) => `Previsioni meteo ${itA(c)} a confronto (3 fonti)`,
   monthsH: (c) => `Meteo ${itA(c)} mese per mese`,
   moreH: (k) => `Quando andare in altre località: ${k}`,
-  source: "Medie climatiche: NASA POWER, medie su 10 anni.",
+  source: "Medie climatiche: NASA POWER / ERA5 (2011–2020), medie su 10 anni.",
 };
 
 const de: BestTimeCopy = {
@@ -259,12 +266,14 @@ const de: BestTimeCopy = {
           : k === "rainy"
             ? `Der ${m} gehört zu den nasseren Monaten ${deIn(c)}, mit etwa ${mm} mm Regen. Reisen kann man trotzdem: Regenjacke einpacken und flexibel planen.`
             : `Der ${m} ist eine ordentliche Reisezeit ${deFuer(c)}: um ${hi}°C und etwa ${mm} mm Regen, auch wenn er nicht zu den drei besten Monaten zählt.`,
+  qShoulder: (c) => `Lohnt sich die Nebensaison ${deFuer(c)}?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Ja. ${ms} ${n > 1 ? "liegen" : "liegt"} knapp außerhalb der besten Reisezeit, mit Höchstwerten um ${rg(lo, hi)}°C und etwa ${r} mm Regen pro Monat – vom Wetter her eine gute Alternative zu den Spitzenmonaten.`,
   qHow: (c) => `Wie prüfe ich das Wetter ${deIn(c)} vor der Reise?`,
   aHow: (c) => `Auf WeatherCompare vergleichen Sie die Vorhersage ${deFuer(c)} von drei unabhängigen Wetterdiensten. Stimmen sie überein, ist die Prognose verlässlicher.`,
   liveCta: (c) => `Aktuelles Wetter ${deIn(c)}: 3 Vorhersagen im Vergleich`,
   monthsH: (c) => `Wetter ${deIn(c)} in jedem Monat`,
   moreH: (k) => `Beste Reisezeit für weitere Ziele: ${k}`,
-  source: "Klimadaten: NASA POWER, 10-Jahres-Mittel.",
+  source: "Klimadaten: NASA POWER / ERA5 (2011–2020), 10-Jahres-Mittel.",
 };
 
 const fr: BestTimeCopy = {
@@ -323,12 +332,14 @@ const fr: BestTimeCopy = {
           : k === "rainy"
             ? `${cap(m)} est l'un des mois les plus pluvieux ${frA(c)}, avec environ ${mm} mm de pluie. On peut y aller, mais prévoyez un imperméable.`
             : `${cap(m)} est une période correcte pour partir ${frA(c)} : environ ${hi} °C et ${mm} mm de pluie, même si ce n'est pas l'un des trois meilleurs mois.`,
+  qShoulder: (c) => `L'intersaison est-elle une bonne période pour partir ${frA(c)} ?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Oui. ${cap(ms)} ${n > 1 ? "se situent" : "se situe"} juste en dehors des meilleurs mois, avec des maximales moyennes ${frRg(lo, hi)} °C et environ ${r} mm de pluie par mois : côté météo, une bonne alternative aux mois les plus prisés.`,
   qHow: (c) => `Comment vérifier la météo ${frA(c)} avant de partir ?`,
   aHow: (c) => `Sur WeatherCompare, comparez les prévisions pour ${c} de trois services météo indépendants. Quand elles concordent, la prévision est plus fiable.`,
   liveCta: (c) => `Météo ${frA(c)} : 3 prévisions comparées`,
   monthsH: (c) => `Météo ${frA(c)} mois par mois`,
   moreH: (k) => `Quand partir ailleurs : ${k}`,
-  source: "Moyennes climatiques : NASA POWER, moyennes sur 10 ans.",
+  source: "Moyennes climatiques : NASA POWER / ERA5 (2011–2020), moyennes sur 10 ans.",
 };
 
 const es: BestTimeCopy = {
@@ -387,12 +398,14 @@ const es: BestTimeCopy = {
           : k === "rainy"
             ? `${cap(m)} es uno de los meses más lluviosos en ${c}, con unos ${mm} mm. Se puede ir igualmente: lleva chubasquero y un plan flexible.`
             : `${cap(m)} es una época aceptable para viajar a ${c}: unos ${hi} °C y ${mm} mm de lluvia, aunque no está entre los tres mejores meses.`,
+  qShoulder: (c) => `¿Merece la pena viajar a ${c} en temporada media?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Sí. ${cap(ms)} ${n > 1 ? "quedan" : "queda"} justo fuera de los mejores meses, con máximas medias de ${rg(lo, hi)} °C y unos ${r} mm de lluvia al mes: en cuanto al tiempo, una buena alternativa a los meses punta.`,
   qHow: (c) => `¿Cómo consultar el tiempo en ${c} antes de viajar?`,
   aHow: (c) => `En WeatherCompare puedes comparar la previsión para ${c} de tres servicios meteorológicos independientes. Cuando coinciden, la previsión es más fiable.`,
   liveCta: (c) => `El tiempo en ${c}: 3 previsiones comparadas`,
   monthsH: (c) => `El tiempo en ${c} mes a mes`,
   moreH: (k) => `Mejor época para otros destinos: ${k}`,
-  source: "Promedios climáticos: NASA POWER, promedios de 10 años.",
+  source: "Promedios climáticos: NASA POWER / ERA5 (2011–2020), promedios de 10 años.",
 };
 
 const pt: BestTimeCopy = {
@@ -451,12 +464,14 @@ const pt: BestTimeCopy = {
           : k === "rainy"
             ? `${cap(m)} é um dos meses mais chuvosos ${ptEm(c)}, com cerca de ${mm} mm. Pode ir na mesma: leve um impermeável e um plano flexível.`
             : `${cap(m)} é uma altura razoável para visitar ${c}: cerca de ${hi} °C e ${mm} mm de chuva, embora não esteja entre os três melhores meses.`,
+  qShoulder: (c) => `Vale a pena visitar ${c} na época intermédia?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Sim. ${cap(ms)} ${n > 1 ? "ficam" : "fica"} logo fora dos melhores meses, com máximas médias de ${rg(lo, hi)} °C e cerca de ${r} mm de chuva por mês: em termos de tempo, uma boa alternativa aos meses mais concorridos.`,
   qHow: (c) => `Como ver o tempo ${ptEm(c)} antes de viajar?`,
   aHow: (c) => `No WeatherCompare pode comparar a previsão para ${c} de três serviços meteorológicos independentes. Quando coincidem, a previsão é mais fiável.`,
   liveCta: (c) => `Tempo ${ptEm(c)}: 3 previsões comparadas`,
   monthsH: (c) => `Tempo ${ptEm(c)} mês a mês`,
   moreH: (k) => `Melhor época para outros destinos: ${k}`,
-  source: "Médias climáticas: NASA POWER, médias de 10 anos.",
+  source: "Médias climáticas: NASA POWER / ERA5 (2011–2020), médias de 10 anos.",
 };
 
 const nl: BestTimeCopy = {
@@ -515,12 +530,14 @@ const nl: BestTimeCopy = {
           : k === "rainy"
             ? `${cap(m)} is een van de nattere maanden ${nlIn(c)}, met zo'n ${mm} mm regen. Je kunt gerust gaan: neem een regenjas mee en plan flexibel.`
             : `${cap(m)} is een redelijke reistijd voor ${nlDe(c)}: rond ${hi}°C en ${mm} mm regen, al hoort hij niet bij de drie beste maanden.`,
+  qShoulder: (c) => `Is het tussenseizoen een goede tijd voor ${nlDe(c)}?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Ja. ${cap(ms)} ${n > 1 ? "liggen" : "ligt"} net buiten de beste maanden, met maxima rond ${rg(lo, hi)}°C en zo'n ${r} mm regen per maand: qua weer een goed alternatief voor de piekmaanden.`,
   qHow: (c) => `Hoe check je het weer ${nlIn(c)} voor vertrek?`,
   aHow: (c) => `Op WeatherCompare vergelijk je de verwachting voor ${nlDe(c)} van drie onafhankelijke weerdiensten. Als ze overeenkomen, is de verwachting betrouwbaarder.`,
   liveCta: (c) => `Weer ${nlIn(c)}: 3 verwachtingen vergeleken`,
   monthsH: (c) => `Weer ${nlIn(c)} per maand`,
   moreH: (k) => `Beste reistijd voor andere bestemmingen: ${k}`,
-  source: "Klimaatgemiddelden: NASA POWER, 10-jarig gemiddelde.",
+  source: "Klimaatgemiddelden: NASA POWER / ERA5 (2011–2020), 10-jarig gemiddelde.",
 };
 
 const pl: BestTimeCopy = {
@@ -579,12 +596,14 @@ const pl: BestTimeCopy = {
           : k === "rainy"
             ? `${cap(m)} to jeden z bardziej deszczowych miesięcy ${plW(c)} (ok. ${mm} mm). Można jechać, ale zabierz kurtkę przeciwdeszczową.`
             : `${cap(m)} to niezły czas na wyjazd: ${plW(c)} jest ok. ${hi}°C i ${mm} mm opadów, choć to nie jeden z trzech najlepszych miesięcy.`,
+  qShoulder: (c) => `${c} poza szczytem sezonu: czy warto jechać?`,
+  aShoulder: (c, ms, n, lo, hi, r) => `Tak. ${cap(ms)} ${n > 1 ? "to miesiące" : "to miesiąc"} tuż poza najlepszym okresem – średnie maksima ${rg(lo, hi)}°C i ok. ${r} mm opadów miesięcznie – pod względem pogody to dobra alternatywa dla miesięcy szczytu.`,
   qHow: (c) => `Jak sprawdzić pogodę ${plW(c)} przed wyjazdem?`,
   aHow: (c) => `Na WeatherCompare porównasz prognozy pogody ${plW(c)} z trzech niezależnych serwisów pogodowych. Gdy są zgodne, prognoza jest bardziej wiarygodna.`,
   liveCta: (c) => `Pogoda ${plW(c)}: porównanie 3 prognoz`,
   monthsH: (c) => `Pogoda ${plW(c)} w każdym miesiącu`,
   moreH: (k) => `Kiedy jechać – inne miejsca: ${k}`,
-  source: "Średnie klimatyczne: NASA POWER, średnie z 10 lat.",
+  source: "Średnie klimatyczne: NASA POWER / ERA5 (2011–2020), średnie z 10 lat.",
 };
 
 const ALL: Record<AnyLocale, BestTimeCopy> = { en, it, de, fr, es, pt, nl, pl };
@@ -624,6 +643,8 @@ export interface BestTimeFacts {
   worstValue: number;
   worstValue2: number;
   periods: Period[];
+  /** Comfortable months just before/after the best window (may be empty). */
+  shoulder: number[];
 }
 
 export function analyseClimate(c: CityClimate): BestTimeFacts {
@@ -675,7 +696,21 @@ export function analyseClimate(c: CityClimate): BestTimeFacts {
     worstValue,
     worstValue2,
     periods,
+    shoulder: shoulderMonths(c, best),
   };
+}
+
+/** Months next to the best window that are still comfortable (not hot, cold or rainy). */
+function shoulderMonths(c: CityClimate, best: number[]): number[] {
+  if (best.length === 0) return [];
+  const near = new Set<number>();
+  for (const b of best) {
+    near.add((b + 11) % 12);
+    near.add((b + 1) % 12);
+  }
+  // The two warmest months are usually peak season, so they never count as "shoulder".
+  const warmest = [...c.tMax.keys()].sort((a, b) => c.tMax[b]! - c.tMax[a]!).slice(0, 2);
+  return [...near].filter((m) => !best.includes(m) && !warmest.includes(m) && goodKind(c, best, m) === "ok").sort((a, b) => a - b);
 }
 
 export function goodKind(c: CityClimate, best: number[], m: number): GoodKind {
@@ -712,6 +747,19 @@ export function bestTimeFaq(locale: AnyLocale, cityLabel: string, c: CityClimate
     { question: t.qCold(cityLabel), answer: t.aCold(cityLabel, mn[f.coolest]!, r0(c.tMax[f.coolest]!), r0(c.tMin[f.coolest]!)) },
     { question: t.qRain(cityLabel), answer: t.aRain(cityLabel, mn[f.wettest]!, r0(c.precipMm[f.wettest]!), mn[f.driest]!, r0(c.precipMm[f.driest]!)) },
     { question: t.qWorst(cityLabel), answer: t.aWorst(cityLabel, mn[f.worst]!, f.worstReason, f.worstValue, f.worstValue2) },
+    ...(f.shoulder.length
+      ? [{
+          question: t.qShoulder(cityLabel),
+          answer: t.aShoulder(
+            cityLabel,
+            joinList(locale, f.shoulder.map((m) => mn[m]!)),
+            f.shoulder.length,
+            r0(Math.min(...f.shoulder.map((m) => c.tMax[m]!))),
+            r0(Math.max(...f.shoulder.map((m) => c.tMax[m]!))),
+            r0(f.shoulder.reduce((s, m) => s + c.precipMm[m]!, 0) / f.shoulder.length)
+          ),
+        }]
+      : []),
     { question: t.qHow(cityLabel), answer: t.aHow(cityLabel) },
   ].map((x) => ({ question: x.question, answer: cap(x.answer) }));
 }

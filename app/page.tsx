@@ -14,12 +14,15 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   alternates: { canonical: "/", ...hreflang({ kind: "home" }) },
   openGraph: {
+    type: "website",
+    siteName: siteConfig.name,
     title: `${siteConfig.name} — Weather forecasts, compared in one place`,
     description: siteConfig.description,
     url: siteConfig.url,
     images: [defaultOgImage],
   },
   twitter: {
+    card: "summary_large_image",
     title: `${siteConfig.name} — Weather forecasts, compared in one place`,
     description: siteConfig.description,
     images: [defaultOgImage],
@@ -51,6 +54,15 @@ export default async function HomePage() {
       url: siteConfig.url,
       logo: `${siteConfig.url}/icon-512.png`,
       sameAs: Object.values(siteConfig.social).filter(Boolean),
+      email: siteConfig.contactEmail,
+      telephone: `+${siteConfig.whatsapp}`,
+      contactPoint: {
+        "@type": "ContactPoint",
+        contactType: "customer support",
+        email: siteConfig.contactEmail,
+        telephone: `+${siteConfig.whatsapp}`,
+        availableLanguage: ["English", "Italian"],
+      },
     },
   ];
 

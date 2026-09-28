@@ -16,8 +16,8 @@ export function generateMetadata(): Metadata {
     title: seoTitle(copy.todayTitle),
     description: seoDescription(copy.todayDesc),
     alternates: { canonical: url, languages: languageAlternates(siteConfig.url, { kind: "today" }) },
-    openGraph: { title: copy.todayTitle, description: copy.todayDesc, url, images: [defaultOgImage] },
-    twitter: { title: copy.todayTitle, description: copy.todayDesc, images: [defaultOgImage] },
+    openGraph: { type: "website", siteName: siteConfig.name, title: copy.todayTitle, description: copy.todayDesc, url, images: [defaultOgImage] },
+    twitter: { card: "summary_large_image", title: copy.todayTitle, description: copy.todayDesc, images: [defaultOgImage] },
   };
 }
 

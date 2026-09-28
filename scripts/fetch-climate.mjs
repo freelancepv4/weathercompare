@@ -10,6 +10,15 @@
  * describe the typical climate of the area around each city, not a
  * specific weather station.
  *
+ * Coastal and island destinations are different: NASA's ~50 km grid cell is
+ * mostly sea there, which flattens the day/night range (highs too low, lows
+ * too high). Cities listed under "era5" in climate.json are therefore fetched
+ * from the ERA5 reanalysis (Copernicus/ECMWF) via Open-Meteo's historical
+ * API instead, optionally at a fixed elevation (the resort's height). Add a
+ * new coastal city to that map (e.g. "greece/kos": { "elevation": null }) and
+ * run the script with --missing. Open-Meteo counts a 10-year request as ~260
+ * API calls, so those requests are spaced about a minute apart.
+ *
  * Run it once (and again whenever you add cities to config/countries.ts):
  *   node scripts/fetch-climate.mjs            (all cities)
  *   node scripts/fetch-climate.mjs --missing  (only cities not in climate.json yet — fast)
@@ -96,22 +105,67 @@ async function fetchCity(city) {
   }
 }
 
+/** Same monthly aggregation, from ERA5 via Open-Meteo's archive API. */
+async function fetchCityEra5(city, elevation) {
+  const url =
+    "https://archive-api.open-meteo.com/v1/archive" +
+    `?latitude=${city.lat}&longitude=${city.lon}` +
+    `&start_date=${START_YEAR}-01-01&end_date=${END_YEAR}-12-31` +
+    "&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,relative_humidity_2m_mean,cloud_cover_mean&timezone=UTC" +
+    (elevation != null ? `&elevation=${elevation}` : "");
+  for (let attempt = 1; attempt <= 4; attempt++) {
+    try {
+      const res = await fetch(url);
+      if (res.status === 429) throw new Error("rate limited");
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const d = (await res.json()).daily;
+      const monthlyMean = (key) => {
+        const sums = new Array(12).fill(0);
+        const counts = new Array(12).fill(0);
+        d.time.forEach((t, i) => {
+          const v = d[key][i];
+          if (v == null) return;
+          const m = Number(t.slice(5, 7)) - 1;
+          sums[m] += v;
+          counts[m] += 1;
+        });
+        return sums.map((s, m) => {
+          if (counts[m] < 100) throw new Error(`too little ${key} data for month ${m + 1}`);
+          return s / counts[m];
+        });
+      };
+      return {
+        tMax: monthlyMean("temperature_2m_max").map(round1),
+        tMin: monthlyMean("temperature_2m_min").map(round1),
+        precipMm: monthlyMean("precipitation_sum").map((v, i) => Math.round(v * DAYS_IN_MONTH[i])),
+        humidity: monthlyMean("relative_humidity_2m_mean").map((v) => Math.round(v)),
+        cloud: monthlyMean("cloud_cover_mean").map((v) => Math.round(v)),
+      };
+    } catch (err) {
+      if (attempt === 4) throw err;
+      await sleep(65000 * attempt);
+    }
+  }
+}
+
 const onlyMissing = process.argv.includes("--missing");
 const outPath = join(root, "lib", "data", "climate.json");
 let existing = {};
-if (onlyMissing) {
-  try {
-    existing = JSON.parse(readFileSync(outPath, "utf8")).cities ?? {};
-  } catch {
-    existing = {};
-  }
+let era5 = {};
+try {
+  const file = JSON.parse(readFileSync(outPath, "utf8"));
+  era5 = file.era5 ?? {};
+  if (onlyMissing) existing = file.cities ?? {};
+} catch {
+  existing = {};
 }
 const cities = readCities().filter((c) => !onlyMissing || !existing[`${c.country}/${c.slug}`]);
 console.log(`Fetching climate averages for ${cities.length} cities from NASA POWER...`);
 
 const out = {
-  source: `NASA POWER daily data, ${START_YEAR}–${END_YEAR} monthly averages, https://power.larc.nasa.gov`,
+  source: `NASA POWER daily data (https://power.larc.nasa.gov); coastal/island cities listed in "era5": ERA5 reanalysis via Open-Meteo (https://open-meteo.com). ${START_YEAR}–${END_YEAR} monthly averages`,
   generatedAt: new Date().toISOString().slice(0, 10),
+  era5,
   cities: { ...existing },
 };
 const failed = [];
@@ -119,13 +173,13 @@ const failed = [];
 for (const [i, city] of cities.entries()) {
   const key = `${city.country}/${city.slug}`;
   try {
-    out.cities[key] = await fetchCity(city);
+    out.cities[key] = era5[key] ? await fetchCityEra5(city, era5[key].elevation ?? null) : await fetchCity(city);
     console.log(`  [${i + 1}/${cities.length}] ${key}  ✓  (Jul max ${out.cities[key].tMax[6]}°C)`);
   } catch (err) {
     failed.push(key);
     console.log(`  [${i + 1}/${cities.length}] ${key}  ✗  ${err.message}`);
   }
-  await sleep(500);
+  await sleep(era5[key] ? 65000 : 500);
 }
 
 writeFileSync(outPath, JSON.stringify(out, null, 1) + "\n");

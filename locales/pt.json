@@ -156,7 +156,8 @@
     "rights": "Todos os direitos reservados.",
     "notMeteorologicalAuthority": "O WeatherCompare agrega e compara dados de fornecedores meteorológicos externos e não é uma autoridade meteorológica. Para avisos oficiais, consulte sempre o serviço meteorológico nacional.",
     "byCountry": "Tempo por país",
-    "whereByMonth": "Para onde viajar, mês a mês"
+    "whereByMonth": "Para onde viajar, mês a mês",
+    "contactUs": "Contacto"
   },
   "cookieConsent": {
     "title": "Valorizamos a sua privacidade",
@@ -190,5 +191,13 @@
     "copy": "Copiar link",
     "copied": "Copiado",
     "more": "Mais opções de partilha"
+  },
+  "locate": {
+    "title": "Ver o tempo onde está?",
+    "text": "Permita o acesso à localização e abrimos logo a previsão da sua zona. Só a usamos para encontrar a sua cidade.",
+    "allow": "Ver o meu tempo",
+    "later": "Agora não",
+    "finding": "A procurar a sua localização…",
+    "denied": "Não foi possível obter a sua localização. Pode pesquisar uma cidade."
   }
 }

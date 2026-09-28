@@ -33,8 +33,8 @@ export function localizedMetadata(
     description: seoDescription(description),
     ...(opts.keywords ? { keywords: opts.keywords } : {}),
     alternates: { canonical: url, languages: languageAlternates(siteConfig.url, ref) },
-    openGraph: { title, description, url, locale: OG_LOCALE[locale], ...(images ? { images } : {}) },
-    twitter: { title, description, images: [defaultOgImage] },
+    openGraph: { type: "website", siteName: siteConfig.name, title, description, url, locale: OG_LOCALE[locale], ...(images ? { images } : {}) },
+    twitter: { card: "summary_large_image", title, description, ...(images ? { images } : {}) },
   };
 }
 

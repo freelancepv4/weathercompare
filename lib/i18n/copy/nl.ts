@@ -123,7 +123,7 @@ export const nl: Copy = {
   faqBestQ: (c) => `Wat is de beste reistijd voor ${deK(c)}?`,
   faqBestA: (c, ms) => `Voor aangenaam, vrij droog weer zijn ${ms} meestal de beste maanden voor ${deK(c)}.`,
   cityInMonth: (c, m) => `${c} in ${M[m]}`,
-  monthFoot: (c) => `De cijfers zijn langjarige gemiddelden voor de regio rond ${c} (NASA POWER, 2011–2020), geen verwachting voor een bepaald jaar.`,
+  monthFoot: (c) => `De cijfers zijn langjarige gemiddelden voor de regio rond ${c} (NASA POWER / ERA5, 2011–2020), geen verwachting voor een bepaald jaar.`,
   monthFootLink: "Bekijk de actuele verwachting",
 
   chartH: (c) => `Weer ${c} per maand`,

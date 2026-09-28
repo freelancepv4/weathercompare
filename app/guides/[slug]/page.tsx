@@ -39,8 +39,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     // No `images` here on purpose — app/guides/[slug]/opengraph-image.tsx
     // (a portrait image, sized for Pinterest's Save-from-URL requirement)
     // auto-attaches as og:image whenever a route doesn't set one explicitly.
-    openGraph: { title: guide.title, description: guide.description, url },
-    twitter: { title: guide.title, description: guide.description, images: [defaultOgImage] },
+    openGraph: { type: "website", siteName: siteConfig.name, title: guide.title, description: guide.description, url },
+    twitter: { card: "summary_large_image", title: guide.title, description: guide.description, images: [defaultOgImage] },
   };
 }
 

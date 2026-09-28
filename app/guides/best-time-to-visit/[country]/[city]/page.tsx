@@ -5,7 +5,7 @@ import { CalendarDays, MapPin, Lightbulb, CloudSun, Bus, Info } from "lucide-rea
 import { findCity, allCityPaths } from "@/config/countries";
 import { getCityGuide } from "@/lib/data/cityGuides";
 import { getLandscapePhoto } from "@/lib/providers/photos";
-import { siteConfig, defaultOgImage } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { AdSlot } from "@/components/AdSlot";
@@ -61,8 +61,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     // No `images` here on purpose — the sibling opengraph-image.tsx (a
     // portrait image, sized for Pinterest's Save-from-URL requirement)
     // auto-attaches as og:image whenever a route doesn't set one explicitly.
-    openGraph: { title, description, url },
-    twitter: { title, description, images: [defaultOgImage] },
+    openGraph: { type: "website", siteName: siteConfig.name, title, description, url },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -295,7 +295,7 @@ export default async function BestTimeToVisitCityPage(props: PageProps) {
           className="mt-8"
           url={`${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}`}
           title={`Best time to visit ${city.name}`}
-          source="climate averages: NASA POWER 2011–2020"
+          source="climate averages: NASA POWER / ERA5, 2011–2020"
           embedUrl={`${siteConfig.url}/embed/${country.slug}/${city.slug}`}
         />
         <div className="mt-8">

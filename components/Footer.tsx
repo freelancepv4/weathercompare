@@ -2,7 +2,8 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { PinterestIcon, InstagramIcon, FacebookIcon, LinkedInIcon, XIcon } from "./SocialIcons";
+import { Mail } from "lucide-react";
+import { PinterestIcon, InstagramIcon, FacebookIcon, LinkedInIcon, XIcon, WhatsAppIcon } from "./SocialIcons";
 import { Logo } from "./Logo";
 import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
 import { siteConfig, localeNames, type Locale } from "@/config/site";
@@ -39,6 +40,26 @@ export function Footer() {
         <div className="col-span-2 lg:col-span-2">
           <Logo href={paths.home(locale)} />
           <p className="mt-4 max-w-xs text-sm text-slate-500 dark:text-slate-400">{t("footer.tagline")}</p>
+          <address className="mt-4 space-y-1.5 text-sm not-italic">
+            <span className="sr-only">{t("footer.contactUs")}</span>
+            <a
+              href={`mailto:${siteConfig.contactEmail}`}
+              className="flex items-center gap-2 text-slate-600 transition-colors hover:text-brand-600 dark:text-slate-300"
+            >
+              <Mail size={16} aria-hidden="true" />
+              {siteConfig.contactEmail}
+            </a>
+            <a
+              href={`https://wa.me/${siteConfig.whatsapp}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label={`WhatsApp ${siteConfig.phoneDisplay}`}
+              className="flex items-center gap-2 text-slate-600 transition-colors hover:text-[#128C7E] dark:text-slate-300"
+            >
+              <WhatsAppIcon size={16} />
+              {siteConfig.phoneDisplay}
+            </a>
+          </address>
           <div className="mt-5 flex flex-wrap items-center gap-2">
             {SOCIAL_LINKS.map(({ key, label, Icon, hover }) => (
               <a
@@ -100,7 +121,7 @@ export function Footer() {
       </div>
 
       <nav aria-label={t("footer.byCountry")} className="container-page border-t border-slate-100 py-6 dark:border-white/10">
-        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-400">{t("footer.byCountry")}</p>
+        <p className="mb-3 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{t("footer.byCountry")}</p>
         <ul className="flex flex-wrap gap-x-4 gap-y-2">
           {countries.map((c) => (
             <li key={c.slug}>
@@ -143,7 +164,7 @@ export function Footer() {
           </div>
         </div>
         <div className="container-page mt-3">
-          <p className="max-w-3xl text-[11px] leading-relaxed text-slate-400 dark:text-slate-500">
+          <p className="max-w-3xl text-[11px] leading-relaxed text-slate-500 dark:text-slate-400">
             {t("footer.notMeteorologicalAuthority")}
           </p>
         </div>

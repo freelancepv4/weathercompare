@@ -25,7 +25,7 @@ export function HeroPhoto({ photo, priority = false }: { photo: CityPhoto | null
           sizes="(min-width: 1024px) 960px, 100vw"
         />
       </div>
-      <figcaption className="mt-1.5 text-right text-[11px] text-slate-400">
+      <figcaption className="mt-1.5 text-right text-[11px] text-slate-500 dark:text-slate-400">
         Photo by{" "}
         <a
           href={`${photo.photographerUrl}?utm_source=weathercompare&utm_medium=referral`}

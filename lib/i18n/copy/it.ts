@@ -114,7 +114,7 @@ export const it: Copy = {
   faqBestQ: (c) => `Qual è il periodo migliore per visitare ${c}?`,
   faqBestA: (c, ms) => `Per un clima piacevole e abbastanza asciutto, i mesi migliori ${a(c)} sono di solito ${ms}.`,
   cityInMonth: (c, m) => `${c} ${IN[m]}`,
-  monthFoot: (c) => `I valori sono medie di lungo periodo per la zona di ${c} (NASA POWER, 2011–2020), non una previsione per un anno specifico.`,
+  monthFoot: (c) => `I valori sono medie di lungo periodo per la zona di ${c} (NASA POWER / ERA5, 2011–2020), non una previsione per un anno specifico.`,
   monthFootLink: "Vedi le previsioni in tempo reale",
 
   chartH: (c) => `Meteo ${c} mese per mese`,

@@ -7,7 +7,6 @@ import { findCity } from "@/config/countries";
 import { getCityGuide } from "@/lib/data/cityGuides";
 import {
   MONTHS,
-  CLIMATE_SOURCE,
   citiesWithClimate,
   describeMonth,
   getCityClimate,
@@ -15,7 +14,7 @@ import {
   type CityClimate,
 } from "@/lib/data/climate";
 import { getLandscapePhoto } from "@/lib/providers/photos";
-import { siteConfig, defaultOgImage } from "@/config/site";
+import { siteConfig } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { ClimateChart } from "@/components/ClimateChart";
@@ -71,8 +70,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     description: seoDescription(description),
     alternates: { canonical: url, ...hreflang({ kind: "month", country: d.country.slug, city: city.slug, month: i }) },
     // No images here on purpose — ./opengraph-image.tsx (a 2:3 Pinterest card) attaches automatically.
-    openGraph: { title, description, url },
-    twitter: { title, description, images: [defaultOgImage] },
+    openGraph: { type: "website", siteName: siteConfig.name, title, description, url },
+    twitter: { card: "summary_large_image", title, description },
   };
 }
 
@@ -343,7 +342,7 @@ export default async function CityMonthPage(props: PageProps) {
           className="mt-10"
           url={`${base}/${month.slug}`}
           title={`${city.name} weather in ${month.name}`}
-          source="NASA POWER 2011–2020 monthly averages"
+          source="NASA POWER / ERA5, 2011–2020 monthly averages"
           embedUrl={`${siteConfig.url}/embed/${country.slug}/${city.slug}`}
         />
 
@@ -371,7 +370,7 @@ export default async function CityMonthPage(props: PageProps) {
         </nav>
 
         <p className="mt-8 text-[11px] leading-relaxed text-slate-400">
-          Figures are long-term averages for the area around {city.name} ({CLIMATE_SOURCE || "NASA POWER"}), not a forecast for a specific year. For
+          Figures are long-term averages for the area around {city.name} (NASA POWER / ERA5, 2011–2020), not a forecast for a specific year. For
           upcoming days, see the{" "}
           <Link href={`/weather/${country.slug}/${city.slug}`} className="underline hover:text-brand-600">
             live multi-source forecast

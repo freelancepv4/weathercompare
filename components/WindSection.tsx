@@ -6,7 +6,17 @@ import { usePreferences } from "@/lib/hooks/usePreferences";
 import { formatWind, windDirectionLabel } from "@/lib/utils/units";
 import { formatHourLabel, formatWeekday } from "@/lib/utils/format";
 
-export function WindSection({ current, hourly, daily }: { current: CurrentConditions; hourly: HourlyPoint[]; daily: DailyPoint[] }) {
+export function WindSection({
+  current,
+  hourly,
+  daily,
+  timeZone,
+}: {
+  current: CurrentConditions;
+  hourly: HourlyPoint[];
+  daily: DailyPoint[];
+  timeZone?: string;
+}) {
   const t = useTranslations();
   const { locale } = useI18n();
   const { windUnit } = usePreferences();
@@ -63,7 +73,7 @@ export function WindSection({ current, hourly, daily }: { current: CurrentCondit
         <div className="scroll-rail flex gap-3 overflow-x-auto pb-1">
           {hourly.slice(0, 12).map((h) => (
             <div key={h.time} className="flex w-16 shrink-0 flex-col items-center gap-1 rounded-lg bg-slate-50 px-2 py-2.5 text-center dark:bg-white/5">
-              <span className="text-[10px] text-slate-400">{formatHourLabel(h.time, locale)}</span>
+              <span className="text-[10px] text-slate-400">{formatHourLabel(h.time, locale, timeZone)}</span>
               <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">{formatWind(h.windSpeed, windUnit)}</span>
             </div>
           ))}

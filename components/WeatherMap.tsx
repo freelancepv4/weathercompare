@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Thermometer, CloudRain, Wind, Cloud, Satellite } from "lucide-react";
 import { useState } from "react";
 import dynamic from "next/dynamic";
+import { LazyVisible } from "./LazyVisible";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
 import { usePreferences } from "@/lib/hooks/usePreferences";
 import type { GeoLocation, CurrentConditions } from "@/types/weather";
@@ -71,7 +72,10 @@ export function WeatherMap({ location, current }: { location: GeoLocation; curre
       </div>
 
       <div className="relative h-80 overflow-hidden rounded-xl3 border border-slate-200 dark:border-white/10 sm:h-96">
-        <LeafletMap location={location} layer={layer} mapKey={OWM_MAP_KEY} current={current} temperatureUnit={temperatureUnit} />
+        {/* Leaflet (~150 KB) is only downloaded once the map scrolls near the viewport. */}
+        <LazyVisible className="h-full w-full">
+          <LeafletMap location={location} layer={layer} mapKey={OWM_MAP_KEY} current={current} temperatureUnit={temperatureUnit} />
+        </LazyVisible>
       </div>
 
       {!overlayAvailable && (

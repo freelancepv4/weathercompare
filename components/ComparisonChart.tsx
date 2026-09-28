@@ -1,16 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import {
-  ResponsiveContainer,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  Legend,
-} from "recharts";
+import dynamic from "next/dynamic";
+import { LazyVisible } from "./LazyVisible";
 import type { ForecastBundle } from "@/types/weather";
 import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
 import { usePreferences } from "@/lib/hooks/usePreferences";
@@ -18,7 +10,10 @@ import { formatDayMonth, formatHourLabel } from "@/lib/utils/format";
 
 const LINE_COLORS = ["#2478ff", "#22c55e", "#f59e0b"];
 
-export function ComparisonChart({ bundles }: { bundles: ForecastBundle[] }) {
+// Recharts is large; load it only when the chart scrolls into view.
+const ComparisonLines = dynamic(() => import("./charts/ComparisonLines").then((m) => m.ComparisonLines), { ssr: false });
+
+export function ComparisonChart({ bundles, timeZone }: { bundles: ForecastBundle[]; timeZone?: string }) {
   const t = useTranslations();
   const { locale } = useI18n();
   const { temperatureUnit } = usePreferences();
@@ -33,7 +28,7 @@ export function ComparisonChart({ bundles }: { bundles: ForecastBundle[] }) {
       const row: Record<string, string | number> = {
         label:
           view === "hourly"
-            ? formatHourLabel(bundles[0]?.hourly[i]?.time ?? "", locale)
+            ? formatHourLabel(bundles[0]?.hourly[i]?.time ?? "", locale, timeZone)
             : formatDayMonth(bundles[0]?.daily[i]?.date ?? "", locale),
       };
       bundles.forEach((b) => {
@@ -45,7 +40,7 @@ export function ComparisonChart({ bundles }: { bundles: ForecastBundle[] }) {
       return row;
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps -- toDisplay is derived purely from temperatureUnit, already a dependency
-  }, [bundles, view, locale, temperatureUnit]);
+  }, [bundles, view, locale, temperatureUnit, timeZone]);
 
   return (
     <div className="rounded-xl3 border border-slate-200 bg-white p-5 dark:border-white/10 dark:bg-surface-dark-subtle">
@@ -69,29 +64,13 @@ export function ComparisonChart({ bundles }: { bundles: ForecastBundle[] }) {
         </div>
       </div>
       <div className="h-72 w-full" role="img" aria-label={t("comparison.chartTitle")}>
-        <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={data} margin={{ top: 5, right: 10, left: -20, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-slate-100 dark:stroke-white/10" />
-            <XAxis dataKey="label" tick={{ fontSize: 12 }} stroke="currentColor" className="text-slate-400" />
-            <YAxis tick={{ fontSize: 12 }} stroke="currentColor" className="text-slate-400" unit={temperatureUnit === "fahrenheit" ? "°F" : "°C"} />
-            <Tooltip
-              contentStyle={{ borderRadius: 12, border: "1px solid #e2e8f0", fontSize: 13 }}
-              formatter={(value: number) => [`${value}°`, ""]}
-            />
-            <Legend wrapperStyle={{ fontSize: 12 }} />
-            {bundles.map((b, i) => (
-              <Line
-                key={b.provider.id}
-                type="monotone"
-                dataKey={b.provider.name}
-                stroke={LINE_COLORS[i % LINE_COLORS.length]}
-                strokeWidth={2.5}
-                dot={false}
-                activeDot={{ r: 5 }}
-              />
-            ))}
-          </LineChart>
-        </ResponsiveContainer>
+        <LazyVisible className="h-full w-full">
+          <ComparisonLines
+            data={data}
+            series={bundles.map((b, i) => ({ id: b.provider.id, name: b.provider.name, color: LINE_COLORS[i % LINE_COLORS.length]! }))}
+            unit={temperatureUnit === "fahrenheit" ? "°F" : "°C"}
+          />
+        </LazyVisible>
       </div>
     </div>
   );

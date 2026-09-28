@@ -9,7 +9,7 @@ import { formatTemperature, formatWind } from "@/lib/utils/units";
 import { summarizeComparison } from "@/lib/services/weatherService";
 import { ComparisonChart } from "./ComparisonChart";
 
-export function ForecastComparison({ bundles }: { bundles: ForecastBundle[] }) {
+export function ForecastComparison({ bundles, timeZone }: { bundles: ForecastBundle[]; timeZone?: string }) {
   const t = useTranslations();
   const { temperatureUnit, windUnit } = usePreferences();
   const summary = summarizeComparison(bundles);
@@ -86,7 +86,7 @@ export function ForecastComparison({ bundles }: { bundles: ForecastBundle[] }) {
       )}
 
       <div className="mt-6">
-        <ComparisonChart bundles={bundles} />
+        <ComparisonChart bundles={bundles} timeZone={timeZone} />
       </div>
     </section>
   );

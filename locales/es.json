@@ -156,7 +156,8 @@
     "rights": "Todos los derechos reservados.",
     "notMeteorologicalAuthority": "WeatherCompare agrega y compara datos de proveedores meteorológicos externos y no es una autoridad meteorológica. Para avisos oficiales, consulta siempre tu servicio meteorológico nacional.",
     "byCountry": "El tiempo por país",
-    "whereByMonth": "Dónde viajar, mes a mes"
+    "whereByMonth": "Dónde viajar, mes a mes",
+    "contactUs": "Contacto"
   },
   "cookieConsent": {
     "title": "Tu privacidad nos importa",
@@ -190,5 +191,13 @@
     "copy": "Copiar enlace",
     "copied": "Copiado",
     "more": "Más opciones para compartir"
+  },
+  "locate": {
+    "title": "¿Ver el tiempo donde estás?",
+    "text": "Permite el acceso a tu ubicación y abrimos directamente la previsión de tu zona. Solo la usamos para encontrar tu ciudad.",
+    "allow": "Ver mi tiempo",
+    "later": "Ahora no",
+    "finding": "Buscando tu ubicación…",
+    "denied": "No pudimos obtener tu ubicación. Puedes buscar una ciudad."
   }
 }

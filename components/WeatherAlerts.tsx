@@ -12,7 +12,7 @@ const SEVERITY_STYLES: Record<WeatherAlert["severity"], string> = {
   extreme: "bg-rose-100 text-rose-800 border-rose-300 dark:bg-rose-950/50 dark:text-rose-200 dark:border-rose-800",
 };
 
-export function WeatherAlerts({ alerts }: { alerts: WeatherAlert[] }) {
+export function WeatherAlerts({ alerts, timeZone }: { alerts: WeatherAlert[]; timeZone?: string }) {
   const t = useTranslations();
   const { locale } = useI18n();
 
@@ -47,11 +47,11 @@ export function WeatherAlerts({ alerts }: { alerts: WeatherAlert[] }) {
                     </div>
                     <div>
                       <dt className="opacity-70">{t("alerts.starts")}</dt>
-                      <dd className="font-semibold">{formatTime(alert.startsAt, undefined, locale)}</dd>
+                      <dd className="font-semibold">{formatTime(alert.startsAt, timeZone, locale)}</dd>
                     </div>
                     <div>
                       <dt className="opacity-70">{t("alerts.ends")}</dt>
-                      <dd className="font-semibold">{formatTime(alert.endsAt, undefined, locale)}</dd>
+                      <dd className="font-semibold">{formatTime(alert.endsAt, timeZone, locale)}</dd>
                     </div>
                   </dl>
                   <p className="mt-2 text-[11px] opacity-70">

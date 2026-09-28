@@ -157,7 +157,7 @@ export const tr: Copy = {
   faqBestQ: (c) => `${c} için en iyi seyahat zamanı ne zaman?`,
   faqBestA: (c, ms) => `Keyifli ve oldukça kuru bir hava için ${da(c)} en iyi aylar genellikle ${ms}.`,
   cityInMonth: (c, m) => `${IN[m]} ${c}`,
-  monthFoot: (c) => `Rakamlar ${c} çevresi için uzun dönem ortalamalarıdır (NASA POWER, 2011–2020), belirli bir yılın tahmini değildir.`,
+  monthFoot: (c) => `Rakamlar ${c} çevresi için uzun dönem ortalamalarıdır (NASA POWER / ERA5, 2011–2020), belirli bir yılın tahmini değildir.`,
   monthFootLink: "Canlı tahmini gör",
 
   chartH: (c) => `Aylara göre ${c} hava durumu`,

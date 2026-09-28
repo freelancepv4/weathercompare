@@ -7,7 +7,7 @@ import { usePreferences } from "@/lib/hooks/usePreferences";
 import { formatTemperature, formatWind } from "@/lib/utils/units";
 import { formatHourLabel } from "@/lib/utils/format";
 
-export function HourlyForecast({ hourly }: { hourly: HourlyPoint[] }) {
+export function HourlyForecast({ hourly, timeZone }: { hourly: HourlyPoint[]; timeZone?: string }) {
   const t = useTranslations();
   const { locale } = useI18n();
   const { temperatureUnit, windUnit } = usePreferences();
@@ -23,7 +23,7 @@ export function HourlyForecast({ hourly }: { hourly: HourlyPoint[] }) {
             key={h.time}
             className="flex w-24 shrink-0 snap-start flex-col items-center gap-2 rounded-xl2 border border-slate-200 bg-white px-3 py-4 text-center shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle"
           >
-            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{formatHourLabel(h.time, locale)}</span>
+            <span className="text-xs font-medium text-slate-500 dark:text-slate-400">{formatHourLabel(h.time, locale, timeZone)}</span>
             <WeatherIcon condition={h.condition} size={28} aria-hidden="true" />
             <span className="text-lg font-semibold text-slate-900 dark:text-white">{formatTemperature(h.temperature, temperatureUnit)}</span>
             <span className="text-[11px] text-sky-600 dark:text-sky-400">{h.precipitationProbability}%</span>

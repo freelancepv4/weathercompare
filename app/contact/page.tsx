@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { siteConfig } from "@/config/site";
+import { Mail, Phone } from "lucide-react";
 import { ContactForm } from "./ContactForm";
+import { WhatsAppIcon } from "@/components/SocialIcons";
 
 export const metadata: Metadata = {
   title: "Contact",
@@ -15,9 +17,43 @@ export default function ContactPage() {
         <div className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-sky-glow/20 blur-3xl" aria-hidden="true" />
         <h1 className="relative text-3xl font-bold tracking-tight sm:text-4xl">Contact</h1>
         <p className="relative mt-3 text-sm text-white/80">
-          Questions, feedback, or partnership inquiries — send us a message below. We typically reply within a couple of days.
+          Questions, feedback or partnership ideas: email us, message us on WhatsApp, or use the form below. We usually reply within a couple of days.
         </p>
       </header>
+      <section aria-label="Contact details" className="mt-6 grid gap-3 sm:grid-cols-3">
+        <a
+          href={`mailto:${siteConfig.contactEmail}`}
+          className="flex items-center gap-3 rounded-xl2 border border-slate-200 bg-white p-4 shadow-soft transition-colors hover:border-brand-300 dark:border-white/10 dark:bg-surface-dark-subtle"
+        >
+          <Mail size={20} className="shrink-0 text-brand-600" aria-hidden="true" />
+          <span className="min-w-0">
+            <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Email</span>
+            <span className="block truncate text-sm font-medium text-slate-900 dark:text-white">{siteConfig.contactEmail}</span>
+          </span>
+        </a>
+        <a
+          href={`https://wa.me/${siteConfig.whatsapp}`}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center gap-3 rounded-xl2 border border-slate-200 bg-white p-4 shadow-soft transition-colors hover:border-[#25D366] dark:border-white/10 dark:bg-surface-dark-subtle"
+        >
+          <WhatsAppIcon size={20} className="shrink-0 text-[#128C7E]" />
+          <span className="min-w-0">
+            <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">WhatsApp</span>
+            <span className="block text-sm font-medium text-slate-900 dark:text-white">{siteConfig.phoneDisplay}</span>
+          </span>
+        </a>
+        <a
+          href={`tel:+${siteConfig.whatsapp}`}
+          className="flex items-center gap-3 rounded-xl2 border border-slate-200 bg-white p-4 shadow-soft transition-colors hover:border-brand-300 dark:border-white/10 dark:bg-surface-dark-subtle"
+        >
+          <Phone size={20} className="shrink-0 text-brand-600" aria-hidden="true" />
+          <span className="min-w-0">
+            <span className="block text-xs font-semibold uppercase tracking-wide text-slate-500 dark:text-slate-400">Phone</span>
+            <span className="block text-sm font-medium text-slate-900 dark:text-white">{siteConfig.phoneDisplay}</span>
+          </span>
+        </a>
+      </section>
       <div className="mt-6 rounded-xl3 border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">
         <ContactForm />
       </div>
