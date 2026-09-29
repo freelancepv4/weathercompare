@@ -71,11 +71,11 @@ export function ClimateChart({ climate, countrySlug, citySlug, cityName, activeM
                   style={{ bottom: `${pct(climate.tMin[i]!)}%`, height: `${Math.max(pct(climate.tMax[i]!) - pct(climate.tMin[i]!), 3)}%` }}
                 />
               </div>
-              <span className="text-[10px] text-slate-400 sm:text-xs">{Math.round(climate.tMin[i]!)}°</span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400 sm:text-xs">{Math.round(climate.tMin[i]!)}°</span>
               <div className="mt-2 flex h-10 w-full items-end justify-center sm:h-12">
                 <div className="w-3 rounded-t bg-brand-400/80 sm:w-4" style={{ height: `${Math.max((climate.precipMm[i]! / rainMax) * 100, 4)}%` }} />
               </div>
-              <span className="text-[9px] text-slate-400 sm:text-[10px]">{climate.precipMm[i]}</span>
+              <span className="text-[10px] text-slate-500 dark:text-slate-400">{climate.precipMm[i]}</span>
               <span className={`mt-1 text-[10px] font-semibold sm:text-xs ${active ? "text-brand-700 dark:text-brand-200" : "text-slate-500 group-hover:text-brand-600"}`}>
                 {copy.monthShort[i]}
               </span>

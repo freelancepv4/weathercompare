@@ -199,8 +199,8 @@ export function SearchBar({ size = "md", autoFocus = false, compact = false }: S
           type="button"
           onClick={useMyLocation}
           disabled={locating}
-          title={compact ? t("hero.useMyLocation") : undefined}
-          aria-label={compact ? t("hero.useMyLocation") : undefined}
+          title={t("hero.useMyLocation")}
+          aria-label={t("hero.useMyLocation")}
           className={`mr-2 flex shrink-0 items-center gap-1.5 rounded-xl text-xs font-semibold text-brand-700 hover:bg-brand-50 disabled:opacity-60 dark:text-brand-300 dark:hover:bg-white/5 sm:text-sm ${
             compact ? "p-2" : "px-3 py-2"
           }`}

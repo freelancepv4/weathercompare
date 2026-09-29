@@ -89,7 +89,7 @@ export function CityGrid({ title, items, hrefFor, climate, subtitle, nameFor, hi
                   <span className="block truncate text-sm font-bold text-slate-900 group-hover:text-brand-700 dark:text-white dark:group-hover:text-brand-200 sm:text-base">
                     {names.city}
                   </span>
-                  <span className="block truncate text-xs text-slate-400">{names.country}</span>
+                  <span className="block truncate text-xs text-slate-500 dark:text-slate-400">{names.country}</span>
                 </span>
                 <ArrowRight
                   size={15}
