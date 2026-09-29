@@ -38,7 +38,7 @@ const KW: Record<AnyLocale, Kw> = {
     best: (c) => [`quand partir ${frA(c)}`, `meilleure période pour partir ${frA(c)}`, `climat ${c}`, `météo ${c} par mois`],
   },
   es: {
-    city: (c) => [`tiempo en ${c}`, `el tiempo en ${c}`, `tiempo ${c} 14 días`, `pronóstico ${c}`],
+    city: (c) => [`el tiempo en ${c}`, `tiempo en ${c}`, `tiempo ${c}`, `el tiempo ${c}`, `tiempo ${c} mañana`, `tiempo ${c} 14 días`, `temperatura ${c}`, `clima ${c}`, `lluvia ${c}`, `pronóstico ${c}`],
     month: (c, m) => [`tiempo en ${c} en ${m}`, `clima ${c} ${m}`, `${c} en ${m}`],
     best: (c) => [`mejor época para viajar a ${c}`, `cuándo ir a ${c}`, `clima en ${c}`, `clima ${c} mes a mes`],
   },

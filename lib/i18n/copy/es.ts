@@ -38,8 +38,8 @@ export const es: Copy = {
   countryMonthsH: "Cuándo ir, mes a mes",
   countryMonthsText: (k) => `¿Qué meses tienen mejor tiempo en ${k}? Elige un mes.`,
 
-  cityTitle: (c) => `Tiempo en ${c} hoy, mañana y 14 días`,
-  cityDesc: (c) => `El tiempo en ${c} hoy y mañana, comparado entre varias fuentes: temperatura por horas, lluvia y viento: previsión a 14 días.`,
+  cityTitle: (c) => `El tiempo en ${c}: hoy, mañana y 14 días`,
+  cityDesc: (c) => `Tiempo en ${c} hoy y mañana: temperatura por horas, lluvia, viento y avisos, con varias fuentes comparadas. Previsión a 14 días y clima mes a mes.`,
   cityH1: (c) => `El tiempo en ${c} hoy y mañana`,
   cityIntro: (c, k) => `Previsión en directo para ${c} (${k}), comparada entre varios servicios meteorológicos.`,
   sourcesDown: (n, t) => `${n} de ${t} fuentes no respondieron y se han excluido de la comparación.`,
@@ -168,8 +168,8 @@ export const es: Copy = {
     regions: { Europe: "Europa", Asia: "Asia", "Middle East & Africa": "Oriente Medio y África", Americas: "América", Oceania: "Oceanía" },
   },
 
-  todayTitle: "Tiempo hoy y mañana: dónde hace calor y dónde llueve",
-  todayDesc: "El tiempo de hoy y la previsión de mañana: las ciudades más calurosas, frías, lluviosas y ventosas, con consejos para el día. Se actualiza varias veces al día.",
+  todayTitle: "El tiempo hoy y mañana: calor, lluvia y alertas",
+  todayDesc: "El tiempo de hoy y mañana en España y el mundo: dónde hace más calor, dónde llueve y dónde hay alertas por lluvia o viento. Se actualiza varias veces al día.",
   todayH1: "El tiempo hoy y mañana",
   todayKicker: "Tendencias del tiempo de hoy",
   todayIntro: (d) => `${cap(d)}: dónde hace calor, dónde llueve y qué trae mañana en 140 ciudades, actualizado a lo largo del día.`,
