@@ -109,7 +109,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
         {/* Ahrefs Web Analytics: cookieless and privacy-friendly, so it
             needs no consent and loads for every visitor. */}
-        <script src="https://analytics.ahrefs.com/analytics.js" data-key="iczzHM0Z3gGQBXEtRMJG7w" async />
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="YRwIBRFki76Qx0zAZpq+CQ" async />
       </head>
       <body className="min-h-screen flex flex-col">
         <Providers locale={siteConfig.defaultLocale}>
