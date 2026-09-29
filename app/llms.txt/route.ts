@@ -1,6 +1,6 @@
 import { CONTENT_LOCALES, ROUTING, paths } from "@/lib/i18n/routing";
 import { siteConfig } from "@/config/site";
-import { countries } from "@/config/countries";
+import { countries } from "@/config/world";
 import { allGuides } from "@/lib/data/guides";
 import { MONTHS } from "@/lib/data/climate";
 

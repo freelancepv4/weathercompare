@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import { findCity, countries, type CountrySeed, type CitySeed } from "@/config/countries";
+import { findCity, countries, type CountrySeed, type CitySeed, nearestCities } from "@/config/world";
 import { locationFromSeed } from "@/lib/providers/geocoding";
 import { getForecastBundles } from "@/lib/services/weatherService";
 import { getLandscapePhoto } from "@/lib/providers/photos";
@@ -27,6 +27,8 @@ import { monthFacts } from "@/lib/content/insights";
 import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { ShareBar } from "@/components/ShareBar";
 import { ErrorState } from "@/components/ErrorState";
+import { cityProfile } from "@/lib/content/cityProfile";
+import { formatCoords } from "@/lib/utils/format";
 import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
 import { ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
@@ -84,13 +86,18 @@ export default async function LocalizedCityPage(props: PageProps) {
   const primary = bundles[0];
   const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} landmark`);
   const climate = getCityClimate(country.slug, city.slug);
+  const profile = cityProfile(locale, {
+    city: cn,
+    seed: `${country.slug}/${city.slug}`,
+    lat: city.lat,
+    climate,
+    neighbours: nearestCities(city, 3).map((n) => ({ name: cityName(n.city.slug, n.city.name, locale), km: Math.round(n.km) })),
+  });
   const mi = monthInfo(locale);
   const best = climate ? joinList(locale, bestMonths(climate).map((m) => mi.monthNames[m]!)) : null;
 
-  const nearby = country.cities
-    .filter((c) => c.slug !== city.slug)
-    .slice(0, 4)
-    .map((c) => ({ country, city: c }));
+  // Geographically closest cities with a page (internal links between neighbours).
+  const nearby = nearestCities(city, 6).map(({ country: co, city: ci }) => ({ country: co, city: ci }));
   const nameFor = (co: CountrySeed, ci: CitySeed) => ({ city: cityName(ci.slug, ci.name, locale), country: countryName(co.slug, co.name, locale) });
 
   // The daily list uses whichever source forecasts furthest ahead (Open-Meteo: 16 days).
@@ -221,8 +228,11 @@ export default async function LocalizedCityPage(props: PageProps) {
               {copy.aboutH(cn)}
             </h2>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-              {copy.aboutText(cn, kn, city.lat.toFixed(2), city.lon.toFixed(2))}
+              {copy.aboutText(cn, kn, ...(formatCoords(city.lat, city.lon).split(", ") as [string, string]))}
             </p>
+            {profile.length > 0 && (
+              <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{profile.join(" ")}</p>
+            )}
           </section>
 
           {faqItems.length > 0 && <CityFaq title={copy.faqH} items={faqItems} />}

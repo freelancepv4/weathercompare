@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CalendarDays, ExternalLink } from "lucide-react";
 import { allGuideSlugs, allGuides, getGuide, CATEGORY_LABELS } from "@/lib/data/guides";
-import { findCity, type CountrySeed, type CitySeed } from "@/config/countries";
+import { findCity, type CountrySeed, type CitySeed } from "@/config/world";
 import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";

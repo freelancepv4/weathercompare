@@ -3,7 +3,7 @@ import { goodMonthFaq } from "@/lib/i18n/bestTime";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CloudRain, Droplets, Sun, Thermometer, Luggage, CalendarDays, Compass } from "lucide-react";
-import { findCity } from "@/config/countries";
+import { findCity, nearestCities } from "@/config/world";
 import { getCityGuide } from "@/lib/data/cityGuides";
 import {
   MONTHS,
@@ -28,15 +28,17 @@ import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
 import { hreflang } from "@/lib/i18n/pageMeta";
 
 // Built entirely from long-term averages (lib/data/climate.json), so fully static.
-export const dynamic = "force-static";
-export const dynamicParams = false;
+// Long-term averages only: pre-built for the curated core cities, every other
+// city (1,700+ world cities) is rendered on its first request and then cached.
+export const revalidate = false;
+export const dynamicParams = true;
 
 interface PageProps {
   params: Promise<{ country: string; city: string; month: string }>;
 }
 
 export function generateStaticParams() {
-  return citiesWithClimate().flatMap(({ country, city }) =>
+  return citiesWithClimate().filter(({ city }) => city.core).flatMap(({ country, city }) =>
     MONTHS.map((m) => ({ country: country.slug, city: city.slug, month: m.slug }))
   );
 }
@@ -154,8 +156,9 @@ export default async function CityMonthPage(props: PageProps) {
   const packing = packingList(climate, i);
 
   // Same-month comparison with the other cities in this country.
-  const siblings = citiesWithClimate()
-    .filter((c) => c.country.slug === country.slug && c.city.slug !== city.slug)
+  const siblings = nearestCities(city, 14, { sameCountry: country.slug })
+    .map(({ country: co, city: ci }) => ({ country: co, city: ci, climate: getCityClimate(co.slug, ci.slug) }))
+    .filter((x): x is { country: typeof country; city: typeof city; climate: NonNullable<typeof x.climate> } => Boolean(x.climate))
     .slice(0, 6);
 
   const good = goodMonthFaq("en", city.name, climate, i);

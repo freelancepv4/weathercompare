@@ -42,9 +42,16 @@ export function nl(f: Fact, x: Ctx): string {
         ? s([`Het is een van de zonnigste maanden, met ongeveer ${f.cloud}% bewolking.`, `De lucht is nu helderder dan bijna de rest van het jaar.`])
         : s([`Het is een van de grijste maanden, met bijna ${f.cloud}% bewolking.`, `Reken op meer bewolking dan in welk ander seizoen ook.`]);
     case "sibling":
+      if (f.km) return f.diff > 0 ? s([`${city} is deze maand meestal zo'n ${f.diff}°C warmer dan ${f.other.name}, ${f.km} km verderop.`, `Maar ${f.km} km verderop, toch is ${f.other.name} zo'n ${f.diff}°C koeler dan ${city}.`]) : s([`${city} is deze maand meestal zo'n ${-f.diff}°C koeler dan ${f.other.name}, ${f.km} km verderop.`, `Maar ${f.km} km verderop, toch is ${f.other.name} zo'n ${-f.diff}°C warmer dan ${city}.`]);
       return f.diff > 0
         ? s([`In ${M} is het ${inC} meestal zo'n ${f.diff}°C warmer dan in ${f.other.name}.`, `Vergeleken met ${f.other.name} is ${city} deze maand ongeveer ${f.diff}°C warmer.`])
         : s([`In ${M} is het ${inC} meestal zo'n ${-f.diff}°C koeler dan in ${f.other.name}.`, `Vergeleken met ${f.other.name} is ${city} deze maand ongeveer ${-f.diff}°C koeler.`]);
+    case "nights":
+      return f.frost
+        ? s([`'s Nachts vriest het vaak (gemiddeld minimum ${f.lo}°C): reken op rijp en gladheid in de ochtend.`, `De ochtenden zijn koud: het gemiddelde minimum is ${f.lo}°C en vorst komt vaak voor.`])
+        : s([`De nachten blijven warm, zelden onder ${f.lo}°C: airco is fijn.`, `Ook na zonsondergang blijft het rond ${f.lo}°C (tropische nachten).`]);
+    case "beach":
+      return s([`Met maxima rond ${f.hi}°C, weinig regen en veel zon is het echt strand- en zwembadweer.`, `Zon, warmte (zo'n ${f.hi}°C) en droge dagen maken ${M} een goede strandmaand.`]);
     case "landmark":
       return "";
   }

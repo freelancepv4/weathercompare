@@ -1,6 +1,7 @@
+import type { GeoLocation } from "@/types/weather";
 import { NextRequest, NextResponse } from "next/server";
 import { searchLocations } from "@/lib/providers/geocoding";
-import { countries } from "@/config/countries";
+import { countries } from "@/config/world";
 import { rateLimit, clientIp } from "@/lib/rateLimit";
 
 /**
@@ -32,11 +33,11 @@ export async function GET(request: NextRequest) {
     // Demo reverse-geocode: nearest seed city by simple distance.
     const latN = parseFloat(lat);
     const lonN = parseFloat(lon);
-    let nearest: { id: string; name: string; region: string; country: string; countryCode: string; lat: number; lon: number } | null = null;
+    let nearest: GeoLocation | null = null;
     let bestDist = Infinity;
     for (const country of countries) {
       for (const city of country.cities) {
-        const d = Math.hypot(city.lat - latN, city.lon - lonN);
+        const d = Math.hypot(city.lat - latN, (city.lon - lonN) * Math.cos((latN * Math.PI) / 180));
         if (d < bestDist) {
           bestDist = d;
           nearest = {
@@ -47,6 +48,8 @@ export async function GET(request: NextRequest) {
             countryCode: country.isoCode,
             lat: city.lat,
             lon: city.lon,
+            // Only send visitors to a city page when it is really their area (~50 km).
+            page: d < 0.45 ? { country: country.slug, city: city.slug } : undefined,
           };
         }
       }

@@ -7,6 +7,7 @@ import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
 import { useFavorites } from "@/lib/hooks/useFavorites";
 import type { GeoLocation } from "@/types/weather";
 import { countries } from "@/config/countries";
+import { paths } from "@/lib/i18n/routing";
 
 interface SearchBarProps {
   size?: "lg" | "md";
@@ -84,6 +85,14 @@ export function SearchBar({ size = "md", autoFocus = false, compact = false }: S
   }
 
   function goToLocation(loc: GeoLocation) {
+    if (loc.page) {
+      // One of our 1,800+ city pages (core or world list).
+      addRecentSearch({ id: loc.id, name: loc.name, country: loc.country, countrySlug: loc.page.country, citySlug: loc.page.city });
+      setOpen(false);
+      setQuery("");
+      router.push(paths.city(locale, loc.page.country, loc.page.city));
+      return;
+    }
     const seedCountry = countries.find((c) => c.isoCode === loc.countryCode);
     const countrySlug = seedCountry?.slug ?? slugify(loc.countryCode || loc.country);
     const isSeedCity = seedCountry?.cities.some((c) => `${seedCountry.slug}-${c.slug}` === loc.id);

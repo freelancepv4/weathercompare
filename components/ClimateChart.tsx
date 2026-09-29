@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { MONTHS, type CityClimate } from "@/lib/data/climate";
+import { MONTHS, type CityClimate } from "@/lib/data/months";
 import { paths, monthInfo, type AnyLocale } from "@/lib/i18n/routing";
 import { getCopy } from "@/lib/i18n/copy";
 

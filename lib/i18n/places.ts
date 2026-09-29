@@ -149,20 +149,39 @@ const CITIES: Record<string, Names> = {
   karachi: ["Karachi", "Karatschi", "Karachi", "Karachi", "Carachi", "Karachi", "Karaczi", "Karaçi"],
 };
 
+/**
+ * Names for the 1,700 world-dataset cities and the countries that aren't in
+ * the maps above (from Wikidata). They are registered at runtime by
+ * config/world.ts, which only server code imports — so this file stays small
+ * for the client components that also use it.
+ */
+const EXTRA_CITIES: Record<string, string[]> = {};
+const EXTRA_COUNTRIES: Record<string, string[]> = {};
+
+export function registerPlaceNames(cities: Record<string, string[]>, countries: Record<string, string[]>) {
+  Object.assign(EXTRA_CITIES, cities);
+  Object.assign(EXTRA_COUNTRIES, countries);
+}
+
 export function countryName(slug: string, english: string, locale: ContentLocale | "en"): string {
   if (locale === "en") return english;
-  return COUNTRIES[slug]?.[ORDER.indexOf(locale)] ?? english;
+  const i = ORDER.indexOf(locale);
+  return COUNTRIES[slug]?.[i] || EXTRA_COUNTRIES[slug]?.[i] || english;
 }
 
 export function cityName(slug: string, english: string, locale: ContentLocale | "en"): string {
   if (locale === "en") return english;
-  return CITIES[slug]?.[ORDER.indexOf(locale)] ?? english;
+  const i = ORDER.indexOf(locale);
+  return CITIES[slug]?.[i] || EXTRA_CITIES[slug]?.[i] || english;
 }
 
 /** Language spoken locally, for countries whose city names differ from English. */
 const LOCAL_LANG: Record<string, ContentLocale> = {
   italy: "it", germany: "de", austria: "de", france: "fr", spain: "es", mexico: "es",
   portugal: "pt", brazil: "pt", netherlands: "nl", poland: "pl",
+  argentina: "es", colombia: "es", chile: "es", peru: "es", venezuela: "es", ecuador: "es", bolivia: "es", uruguay: "es",
+  paraguay: "es", cuba: "es", guatemala: "es", honduras: "es", nicaragua: "es", "el-salvador": "es", panama: "es",
+  "costa-rica": "es", "dominican-republic": "es", "puerto-rico": "es",
 };
 
 /**

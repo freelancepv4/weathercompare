@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { countries, findCity } from "@/config/countries";
+import { countries } from "@/config/countries";
+import { findCity } from "@/config/world";
 import { getCityGuide } from "@/lib/data/cityGuides";
 import { allGuides } from "@/lib/data/guides";
 import { getCityClimate, MONTHS } from "@/lib/data/climate";

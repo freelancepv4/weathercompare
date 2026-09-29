@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, ArrowRight, Compass, CalendarDays } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import { countries, type CountrySeed, type CitySeed } from "@/config/countries";
-import { citiesWithClimate, climateHighsFor, getCityClimate } from "@/lib/data/climate";
+import { countries, citiesByImportance, type CountrySeed, type CitySeed } from "@/config/world";
+import { AllCitiesList } from "@/components/AllCitiesList";
+import { citiesWithClimate, featuredCitiesWithClimate, climateHighsFor, getCityClimate } from "@/lib/data/climate";
 import { STYLES, scoreMonth } from "@/lib/tripScore";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
@@ -67,6 +68,17 @@ export default async function SlugPage(props: PageProps) {
   return x.kind === "country" ? <CountryView locale={x.locale} country={x.country} /> : <WhereToGoView locale={x.locale} month={x.month} />;
 }
 
+/** Heading for the A–Z list of every city in a country. */
+const ALL_CITIES: Record<ContentLocale, { h: (k: string, n: number) => string; p: string; other: string }> = {
+  it: { h: (k, n) => `Tutte le ${n} località in ${k} con previsioni`, p: "Raggruppate per regione. Ogni pagina ha previsioni a confronto, clima mese per mese e il periodo migliore per andare.", other: "Altro" },
+  de: { h: (k, n) => `Alle ${n} Orte in ${k} mit Wettervorhersage`, p: "Nach Region sortiert. Jede Seite bietet Vorhersagen im Vergleich, das Klima Monat für Monat und die beste Reisezeit.", other: "Sonstige" },
+  fr: { h: (k, n) => `Les ${n} villes de ${k} avec prévisions`, p: "Classées par région. Chaque page propose des prévisions comparées, le climat mois par mois et la meilleure période pour partir.", other: "Autres" },
+  es: { h: (k, n) => `Las ${n} localidades de ${k} con previsión`, p: "Agrupadas por región. Cada página tiene previsiones comparadas, el clima mes a mes y la mejor época para viajar.", other: "Otras" },
+  pt: { h: (k, n) => `As ${n} localidades de ${k} com previsão`, p: "Agrupadas por região. Cada página tem previsões comparadas, o clima mês a mês e a melhor época para viajar.", other: "Outras" },
+  nl: { h: (k, n) => `Alle ${n} plaatsen in ${k} met weersverwachting`, p: "Per regio. Elke pagina heeft vergeleken verwachtingen, het klimaat per maand en de beste reistijd.", other: "Overig" },
+  pl: { h: (k, n) => `Wszystkie miejscowości z prognozą: ${k} (${n})`, p: "Według regionów. Każda strona ma porównanie prognoz, klimat miesiąc po miesiącu i najlepszy termin wyjazdu.", other: "Inne" },
+};
+
 /** Localized labels for the per-country climate table. */
 const GLANCE: Record<ContentLocale, { h: (k: string) => string; p: (k: string) => string; city: string; warm: string; cool: string; wet: string; dry: string }> = {
   it: { h: (k) => `Il clima in ${k} a colpo d'occhio`, p: (k) => `Per ogni città: il mese più caldo e più fresco (massime e minime medie) e i mesi più piovosi e più secchi, dalle medie 2011–2020.`, city: "Città", warm: "Mese più caldo", cool: "Mese più fresco", wet: "Più piovoso", dry: "Più secco" },
@@ -85,9 +97,11 @@ function CountryView({ locale, country }: { locale: ContentLocale; country: Coun
   const copy = getCopy(locale);
   const mi = monthInfo(locale);
   const k = countryName(country.slug, country.name, locale);
-  const items = country.cities.map((city) => ({ country, city }));
+  const main = citiesByImportance(country).slice(0, 24);
+  const items = main.map((city) => ({ country, city }));
   const nameFor = (co: CountrySeed, ci: CitySeed) => ({ city: cityName(ci.slug, ci.name, locale), country: countryName(co.slug, co.name, locale) });
-  const best = country.cities
+  const best = citiesByImportance(country)
+    .slice(0, 40)
     .map((city) => ({ city, climate: getCityClimate(country.slug, city.slug) }))
     .filter((x): x is { city: CitySeed; climate: NonNullable<typeof x.climate> } => Boolean(x.climate));
   const url = `${siteConfig.url}${paths.country(locale, country.slug)}`;
@@ -124,6 +138,19 @@ function CountryView({ locale, country }: { locale: ContentLocale; country: Coun
           monthShort={copy.monthShort}
         />
       </div>
+
+      {country.cities.length > main.length && (
+        <AllCitiesList
+          country={country}
+          title={ALL_CITIES[locale].h(k, country.cities.length)}
+          subtitle={ALL_CITIES[locale].p}
+          hrefFor={(c) => paths.city(locale, country.slug, c.slug)}
+          nameFor={(c) => cityName(c.slug, c.name, locale)}
+          exclude={main.map((c) => c.slug)}
+          otherLabel={ALL_CITIES[locale].other}
+          collator={locale}
+        />
+      )}
 
       {best.length > 0 && (
         <section className="mt-12 rounded-xl3 border border-slate-200 bg-white p-6 shadow-soft dark:border-white/10 dark:bg-surface-dark-subtle" aria-labelledby="best-heading">
@@ -239,7 +266,7 @@ const TONES: Record<(typeof SECTIONS)[number], string> = {
 
 function WhereToGoView({ locale, month: i }: { locale: ContentLocale; month: number }) {
   const copy = getCopy(locale);
-  const all = citiesWithClimate();
+  const all = featuredCitiesWithClimate();
   const prev = (i + 11) % 12;
   const next = (i + 1) % 12;
   const lists = SECTIONS.map((style) => ({

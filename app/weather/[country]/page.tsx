@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { countries } from "@/config/countries";
+import { countries, citiesByImportance } from "@/config/world";
+import { AllCitiesList } from "@/components/AllCitiesList";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
@@ -91,8 +92,12 @@ export default async function CountryPage(props: PageProps) {
   const country = countries.find((c) => c.slug === params.country);
   if (!country) notFound();
 
-  const items = country.cities.map((city) => ({ country, city }));
-  const climateRows = country.cities
+  // Cards and the climate table show the main cities; every other city is in
+  // the A–Z list below them (Spain alone has ~200 city pages).
+  const main = citiesByImportance(country).slice(0, 24);
+  const items = main.map((city) => ({ country, city }));
+  const climateRows = citiesByImportance(country)
+    .slice(0, 40)
     .map((city) => ({ city, c: getCityClimate(country.slug, city.slug) }))
     .filter((r): r is { city: (typeof country.cities)[number]; c: NonNullable<ReturnType<typeof getCityClimate>> } => r.c !== null);
   const url = `${siteConfig.url}/weather/${country.slug}`;
@@ -159,11 +164,21 @@ export default async function CountryPage(props: PageProps) {
       </PageHeader>
 
       <CityGrid
-        title={`Cities in ${country.name}`}
+        title={country.cities.length > main.length ? `Main cities in ${country.name}` : `Cities in ${country.name}`}
         subtitle="Mini charts show the average daytime high for each month."
         items={items}
         climate={climateHighsFor(items)}
       />
+
+      {country.cities.length > main.length && (
+        <AllCitiesList
+          country={country}
+          title={`All ${country.cities.length} places in ${country.name} with a forecast`}
+          subtitle="Grouped by region. Every page has a live multi-source forecast, month-by-month climate and the best time to visit."
+          hrefFor={(c) => `/weather/${country.slug}/${c.slug}`}
+          exclude={main.map((c) => c.slug)}
+        />
+      )}
 
       {climateRows.length > 0 && (
         <section className="mt-12" aria-labelledby="climate-glance-heading">

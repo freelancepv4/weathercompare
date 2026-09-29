@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Compass } from "lucide-react";
-import { citiesWithClimate, MONTHS, monthIndex } from "@/lib/data/climate";
+import { citiesWithClimate, featuredCitiesWithClimate, MONTHS, monthIndex } from "@/lib/data/climate";
 import { STYLES, scoreMonth } from "@/lib/tripScore";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -54,7 +54,7 @@ export default async function WhereToGoPage(props: PageProps) {
   const month = MONTHS[i]!;
   const prev = MONTHS[(i + 11) % 12]!;
   const next = MONTHS[(i + 1) % 12]!;
-  const all = citiesWithClimate();
+  const all = featuredCitiesWithClimate();
   if (all.length === 0) notFound();
 
   const lists = SECTIONS.map((style) => ({

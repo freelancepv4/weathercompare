@@ -14,7 +14,7 @@ const GA_ID = "G-1H565EMS0S";
 export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: {
-    default: `${siteConfig.name} — Weather forecasts, compared in one place`,
+    default: `${siteConfig.name} — Weather for any city in the world, compared`,
     template: `%s — ${siteConfig.name}`,
   },
   description: siteConfig.description,
@@ -47,14 +47,14 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — Weather forecasts, compared in one place`,
+    title: `${siteConfig.name} — Weather for any city in the world, compared`,
     description: siteConfig.description,
     url: siteConfig.url,
   },
   twitter: {
     card: "summary_large_image",
     site: siteConfig.twitterHandle,
-    title: `${siteConfig.name} — Weather forecasts, compared in one place`,
+    title: `${siteConfig.name} — Weather for any city in the world, compared`,
     description: siteConfig.description,
   },
   robots: {

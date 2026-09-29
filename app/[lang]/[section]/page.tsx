@@ -3,8 +3,9 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Compass } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import { citiesWithClimate } from "@/lib/data/climate";
-import { regionOf } from "@/lib/tripScore";
+import { tripFinderCitiesWithClimate } from "@/lib/data/climate";
+import { worldRegionOf } from "@/config/world";
+import { regionOf, COUNTRY_REGIONS } from "@/lib/tripScore";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
 import { TripFinder, type FinderCity } from "@/components/TripFinder";
@@ -14,6 +15,7 @@ import { CONTENT_LOCALES, ROUTING, isContentLocale, paths, monthInfo, type Conte
 import { cityName, countryName } from "@/lib/i18n/places";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
 import { getDailySnapshot } from "@/lib/services/dailyWeather";
+import { CountriesIndex, COUNTRIES_COPY, countriesIndexStats } from "@/components/CountriesIndex";
 
 // The "weather today" page refreshes hourly; the trip finder is static data
 // and simply gets re-rendered alongside it.
@@ -28,14 +30,16 @@ export function generateStaticParams() {
   return CONTENT_LOCALES.flatMap((lang) => [
     { lang, section: ROUTING[lang].tripFinder },
     { lang, section: ROUTING[lang].today },
+    { lang, section: ROUTING[lang].weather },
   ]);
 }
 
-function resolve(params: Awaited<PageProps["params"]>): { locale: ContentLocale; kind: "tripFinder" | "today" } | null {
+function resolve(params: Awaited<PageProps["params"]>): { locale: ContentLocale; kind: "tripFinder" | "today" | "countries" } | null {
   if (!isContentLocale(params.lang)) return null;
   const r = ROUTING[params.lang];
   if (params.section === r.tripFinder) return { locale: params.lang, kind: "tripFinder" };
   if (params.section === r.today) return { locale: params.lang, kind: "today" };
+  if (params.section === r.weather) return { locale: params.lang, kind: "countries" };
   return null;
 }
 
@@ -44,6 +48,11 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const x = resolve(params);
   if (!x) return {};
   const copy = getCopy(x.locale);
+  if (x.kind === "countries") {
+    const t = COUNTRIES_COPY[x.locale];
+    const s = countriesIndexStats(x.locale);
+    return localizedMetadata(x.locale, { kind: "countries" }, t.title, t.desc(s.countries, s.cities));
+  }
   return x.kind === "today"
     ? localizedMetadata(x.locale, { kind: "today" }, copy.todayTitle, copy.todayDesc)
     : localizedMetadata(x.locale, { kind: "tripFinder" }, copy.tripTitle, copy.tripDesc);
@@ -55,18 +64,20 @@ export default async function SectionPage(props: PageProps) {
   if (!x) notFound();
   const { locale } = x;
 
+  if (x.kind === "countries") return <CountriesIndex locale={locale} />;
+
   if (x.kind === "today") {
     const snapshot = await getDailySnapshot();
     return <WeatherTodayView locale={locale} snapshot={snapshot} />;
   }
 
   const copy = getCopy(locale);
-  const cities: FinderCity[] = citiesWithClimate().map(({ country, city, climate }) => ({
+  const cities: FinderCity[] = tripFinderCitiesWithClimate().map(({ country, city, climate }) => ({
     country: countryName(country.slug, country.name, locale),
     countrySlug: country.slug,
     city: cityName(city.slug, city.name, locale),
     citySlug: city.slug,
-    region: regionOf(country.slug),
+    region: COUNTRY_REGIONS[country.slug] ?? worldRegionOf(country.slug) ?? regionOf(country.slug),
     climate,
   }));
   const url = `${siteConfig.url}${paths.tripFinder(locale)}`;

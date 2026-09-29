@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { countries } from "@/config/countries";
+import { countries } from "@/config/world";
 import { getForecastBundles } from "@/lib/services/weatherService";
 import type { GeoLocation } from "@/types/weather";
 import { Breadcrumb } from "@/components/Breadcrumb";

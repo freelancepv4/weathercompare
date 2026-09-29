@@ -1,10 +1,12 @@
 /**
- * Seed dataset of countries and cities used to generate SEO-friendly
- * location pages (/weather/{country}/{city}) without a database.
+ * The hand-curated core destinations (~140 cities with editorial guides,
+ * ERA5 climate for coasts and islands, and pre-built pages).
  *
- * In production this would be backed by a geocoding API / database of
- * thousands of locations (see lib/providers/geocoding.ts). This seed list
- * keeps the demo build fast and avoids generating fake/low-value pages.
+ * This file is small on purpose: client components (header, footer, search,
+ * location prompt) import it, so it ships to the browser. The full world
+ * list (1,800+ cities in 200+ countries) lives in config/world.ts, which
+ * merges these with lib/data/world.json and must only be imported by server
+ * code (pages, routes, sitemaps).
  */
 
 export interface CitySeed {
@@ -17,6 +19,10 @@ export interface CitySeed {
   lon: number;
   population: number;
   timezone: string;
+  /** Hand-curated core city (pre-built at deploy time). Set by config/world.ts. */
+  core?: boolean;
+  /** Well-known destination: used for "where to go" lists and the trip finder. */
+  featured?: boolean;
 }
 
 export interface CountrySeed {

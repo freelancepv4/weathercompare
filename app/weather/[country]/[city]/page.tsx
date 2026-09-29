@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { findCity, allCityPaths, countries } from "@/config/countries";
+import { findCity, coreCityPaths, countries, nearestCities } from "@/config/world";
 import { locationFromSeed } from "@/lib/providers/geocoding";
 import { getForecastBundles } from "@/lib/services/weatherService";
 import { getCityGuide } from "@/lib/data/cityGuides";
@@ -30,6 +30,8 @@ import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { localCityName } from "@/lib/i18n/places";
 import { ErrorState } from "@/components/ErrorState";
+import { cityProfile } from "@/lib/content/cityProfile";
+import { formatCoords } from "@/lib/utils/format";
 import { hreflang } from "@/lib/i18n/pageMeta";
 
 // This page stays fully static/ISR (no searchParams) so the pre-built
@@ -45,7 +47,8 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return allCityPaths();
+  // Core cities are pre-built; the 1,700+ world cities render on first visit (ISR).
+  return coreCityPaths();
 }
 
 // Native-language weather terms, by country, used only in the `keywords`
@@ -128,15 +131,20 @@ export default async function CityPage(props: PageProps) {
   if (!location) notFound();
 
   const nativeName = localCityName(country.slug, city.slug, city.name);
+  const profile = cityProfile("en", {
+    city: city.name,
+    seed: `${country.slug}/${city.slug}`,
+    lat: city.lat,
+    climate: getCityClimate(country.slug, city.slug),
+    neighbours: nearestCities(city, 3).map((n) => ({ name: n.city.name, km: Math.round(n.km) })),
+  });
   const { bundles, errors } = await getForecastBundles(location);
   const primary = bundles[0];
   const guide = getCityGuide(country.slug, city.slug);
   const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} landmark`);
 
-  const nearby = country.cities
-    .filter((c) => c.slug !== city.slug)
-    .slice(0, 4)
-    .map((c) => ({ country, city: c }));
+  // Geographically closest cities with a page (internal links between neighbours).
+  const nearby = nearestCities(city, 6).map(({ country: co, city: ci }) => ({ country: co, city: ci }));
 
   const faqItems = primary
     ? [
@@ -313,11 +321,15 @@ export default async function CityPage(props: PageProps) {
               About {city.name} weather
             </h2>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
-              {city.name}, in {city.region}, {country.name}, sits at approximately {city.lat.toFixed(2)}°N, {city.lon.toFixed(2)}°E. The
-              forecasts above are aggregated from multiple independent weather data providers so you can see, at a glance, where they
-              agree and where they diverge — useful context for planning travel, outdoor activities, or daily commutes in and around{" "}
-              {city.name}.
+              {city.name}
+              {city.region && city.region !== city.name ? `, in ${city.region}, ${country.name},` : `, ${country.name},`} sits at approximately{" "}
+              {formatCoords(city.lat, city.lon)}
+              {city.population >= 1000 ? ` and is home to about ${new Intl.NumberFormat("en-GB").format(Math.round(city.population / 1000) * 1000)} people` : ""}. The
+              forecasts above come from several independent providers, so you can see at a glance where they agree and where they differ.
             </p>
+            {profile.length > 0 && (
+              <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{profile.join(" ")}</p>
+            )}
           </section>
 
           {faqItems.length > 0 && <CityFaq title="Frequently asked questions" items={faqItems} />}

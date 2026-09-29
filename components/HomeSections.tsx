@@ -39,7 +39,7 @@ export function HomeSections({ climate, guides }: HomeSectionsProps) {
           <p className="text-xs font-semibold uppercase tracking-widest text-white/80">New</p>
           <h2 id="plan-heading" className="mt-2 text-2xl font-bold">Trip weather finder</h2>
           <p className="mt-2 max-w-sm text-sm text-white/85">
-            Pick a month and the weather you want — hot and sunny, mild, or cool — and see which of our 120+ cities match best.
+            Pick a month and the weather you want — hot and sunny, mild, or cool — and see which of 1,800+ cities worldwide match best.
           </p>
           <span className="mt-5 inline-flex items-center gap-1.5 rounded-full bg-white px-4 py-2 text-sm font-semibold text-teal-700">
             Find my destination <ArrowRight size={15} className="transition-transform group-hover:translate-x-0.5" aria-hidden="true" />

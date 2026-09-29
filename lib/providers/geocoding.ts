@@ -1,5 +1,5 @@
 import type { GeoLocation } from "@/types/weather";
-import { countries, localizedCityName, localizedCountryName } from "@/config/countries";
+import { countries, localizedCityName, localizedCountryName } from "@/config/world";
 
 /**
  * Location search / geocoding layer.
@@ -70,14 +70,19 @@ export async function searchLocations(query: string, locale = "en"): Promise<Geo
     return (data.results ?? []).map((r) => {
       // Prefer the pre-built seed city (and its localized name) when this
       // result matches one, so search still routes to the fast static page.
-      const seedMatch = countries
-        .flatMap((country) => country.cities.map((city) => ({ country, city })))
-        .find(
-          ({ city }) =>
-            city.name.toLowerCase() === r.name.toLowerCase() &&
-            Math.abs(city.lat - r.latitude) < 0.5 &&
-            Math.abs(city.lon - r.longitude) < 0.5
-        );
+      // Same name nearby, or (for translated/alternate spellings) practically the same spot.
+      const seedMatch =
+        countries
+          .flatMap((country) => country.cities.map((city) => ({ country, city })))
+          .find(
+            ({ city }) =>
+              city.name.toLowerCase() === r.name.toLowerCase() &&
+              Math.abs(city.lat - r.latitude) < 0.5 &&
+              Math.abs(city.lon - r.longitude) < 0.5
+          ) ??
+        countries
+          .flatMap((country) => country.cities.map((city) => ({ country, city })))
+          .find(({ city }) => Math.abs(city.lat - r.latitude) < 0.06 && Math.abs(city.lon - r.longitude) < 0.06);
 
       if (seedMatch) {
         return {
@@ -88,6 +93,7 @@ export async function searchLocations(query: string, locale = "en"): Promise<Geo
           countryCode: seedMatch.country.isoCode,
           lat: seedMatch.city.lat,
           lon: seedMatch.city.lon,
+          page: { country: seedMatch.country.slug, city: seedMatch.city.slug },
         };
       }
 
@@ -119,5 +125,6 @@ export function locationFromSeed(countrySlug: string, citySlug: string, locale =
     countryCode: country.isoCode,
     lat: city.lat,
     lon: city.lon,
+    page: { country: country.slug, city: city.slug },
   };
 }

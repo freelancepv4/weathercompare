@@ -14,7 +14,7 @@ export const siteConfig = {
   shortName: "WeatherCompa",
   url: process.env.NEXT_PUBLIC_SITE_URL || "https://www.weathercompare.example",
   description:
-    "Compare 3 weather forecasts for 120+ cities: today, tomorrow and 14 days. Plus climate by month, the best time to visit and where to go for sun.",
+    "Compare 3 weather forecasts for any city in the world: today, tomorrow and 14 days. 1,800+ city guides with climate by month and the best time to visit.",
   demoMode: (process.env.DEMO_MODE ?? "true") !== "false",
   defaultLocale: "en" as const,
   locales: ["en", "it", "de", "fr", "es", "pt", "nl", "pl"] as const,

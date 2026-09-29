@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { CloudRain, MapPin, Share2, Check } from "lucide-react";
-import { MONTHS, type CityClimate } from "@/lib/data/climate";
+import { MONTHS, type CityClimate } from "@/lib/data/months";
 import { REGIONS, STYLES, scoreMonth, type WeatherStyle } from "@/lib/tripScore";
 import { paths, monthInfo as routeMonths, type AnyLocale } from "@/lib/i18n/routing";
 import type { TripUi } from "@/lib/i18n/copy/types";

@@ -1,8 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Compass } from "lucide-react";
-import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
-import { regionOf } from "@/lib/tripScore";
+import { tripFinderCitiesWithClimate, MONTHS } from "@/lib/data/climate";
+import { worldRegionOf } from "@/config/world";
+import { regionOf, COUNTRY_REGIONS } from "@/lib/tripScore";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
@@ -27,12 +28,12 @@ export function generateMetadata(): Metadata {
 }
 
 export default function TripFinderPage() {
-  const cities: FinderCity[] = citiesWithClimate().map(({ country, city, climate }) => ({
+  const cities: FinderCity[] = tripFinderCitiesWithClimate().map(({ country, city, climate }) => ({
     country: country.name,
     countrySlug: country.slug,
     city: city.name,
     citySlug: city.slug,
-    region: regionOf(country.slug),
+    region: COUNTRY_REGIONS[country.slug] ?? worldRegionOf(country.slug) ?? regionOf(country.slug),
     climate,
   }));
 

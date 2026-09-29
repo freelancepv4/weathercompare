@@ -91,7 +91,7 @@ export const tr: Copy = {
   shareCity: (c) => `${c} seyahati mi planlıyorsunuz? Bu tahmini kaydedin veya paylaşın.`,
   shareCityTitle: (c) => `${c} hava tahmini, karşılaştırmalı`,
   aboutH: (c) => `${c} hava durumu hakkında`,
-  aboutText: (c, k, lat, lon) => `${c} (${k}) yaklaşık ${lat}°, ${lon}° koordinatlarında yer alır. Yukarıdaki tahminler birbirinden bağımsız birkaç kaynaktan gelir; böylece nerede aynı fikirde olduklarını ve nerede ayrıştıklarını görebilirsiniz.`,
+  aboutText: (c, k, lat, lon) => `${c} (${k}) yaklaşık ${lat}, ${lon} koordinatlarında yer alır. Yukarıdaki tahminler birbirinden bağımsız birkaç kaynaktan gelir; böylece nerede aynı fikirde olduklarını ve nerede ayrıştıklarını görebilirsiniz.`,
   faqH: "Sık sorulan sorular",
   faqTempQ: (c) => `${da(c)} bugün hava kaç derece?`,
   faqTempA: (c, t, f, s) => `${da(c)} şu anda yaklaşık ${t}°C, hissedilen sıcaklık ${f}°C (kaynak: ${s}).`,

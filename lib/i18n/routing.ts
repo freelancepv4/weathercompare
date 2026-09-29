@@ -194,6 +194,8 @@ const prefix = (l: AnyLocale) => (l === "en" ? "" : `/${l}`);
 
 export const paths = {
   home: (l: AnyLocale) => (l === "en" ? "/" : `/${l}`),
+  /** Index of every country: /weather, /es/tiempo, /de/wetter … */
+  countries: (l: AnyLocale) => (l === "en" ? "/weather" : `/${l}/${ROUTING[l].weather}`),
   country: (l: AnyLocale, country: string) =>
     l === "en" ? `/weather/${country}` : `/${l}/${ROUTING[l].weather}/${country}`,
   city: (l: AnyLocale, country: string, city: string) =>
@@ -211,6 +213,7 @@ export const paths = {
 
 export type PageRef =
   | { kind: "home" }
+  | { kind: "countries" }
   | { kind: "country"; country: string }
   | { kind: "city"; country: string; city: string }
   | { kind: "month"; country: string; city: string; month: number }
@@ -223,6 +226,8 @@ export function pathFor(l: AnyLocale, ref: PageRef): string {
   switch (ref.kind) {
     case "home":
       return paths.home(l);
+    case "countries":
+      return paths.countries(l);
     case "country":
       return paths.country(l, ref.country);
     case "city":
@@ -256,6 +261,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
   const mi = monthInfo(locale);
   if (locale === "en") {
     const [a, b, c, d] = parts;
+    if (a === "weather" && !b) return { locale, ref: { kind: "countries" } };
     if (a === "weather" && b && !c && b !== "search") return { locale, ref: { kind: "country", country: b } };
     if (a === "weather" && b && c && !d) return { locale, ref: { kind: "city", country: b, city: c } };
     if (a === "weather" && b && c && d && mi.monthSlugs.includes(d))
@@ -268,6 +274,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
   }
   const r = ROUTING[locale];
   const [a, b, c, d] = parts;
+  if (a === r.weather && !b) return { locale, ref: { kind: "countries" } };
   if (a === r.weather && b && !c) return { locale, ref: { kind: "country", country: b } };
   if (a === r.weather && b && c && !d) return { locale, ref: { kind: "city", country: b, city: c } };
   if (a === r.weather && b && c && d && r.monthSlugs.includes(d))

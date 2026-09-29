@@ -93,6 +93,8 @@ export interface GeoLocation {
   countryCode: string;
   lat: number;
   lon: number;
+  /** Set when this place has its own page on the site (core or world city). */
+  page?: { country: string; city: string };
 }
 
 /**

@@ -45,9 +45,16 @@ export function en(f: Fact, x: Ctx): string {
         ? s([`It's one of the sunniest months here, with cloud cover around ${f.cloud}%.`, `Skies are at their clearest this time of year.`])
         : s([`It's one of the greyest months, with cloud cover near ${f.cloud}%.`, `Expect more cloud than at any other time of year.`]);
     case "sibling":
+      if (f.km) return f.diff > 0 ? s([`${city} is usually about ${f.diff}°C warmer than ${f.other.name}, ${f.km} km away, in ${M}.`, `Just ${f.km} km apart, but ${city} runs about ${f.diff}°C warmer than ${f.other.name} this month.`]) : s([`${city} is usually about ${-f.diff}°C cooler than ${f.other.name}, ${f.km} km away, in ${M}.`, `Just ${f.km} km apart, but ${city} runs about ${-f.diff}°C cooler than ${f.other.name} this month.`]);
       return f.diff > 0
         ? s([`${city} is usually about ${f.diff}°C warmer than ${f.other.name} in ${M}.`, `Compared with ${f.other.name}, ${city} runs roughly ${f.diff}°C warmer this month.`])
         : s([`${city} is usually about ${-f.diff}°C cooler than ${f.other.name} in ${M}.`, `Compared with ${f.other.name}, ${city} runs roughly ${-f.diff}°C cooler this month.`]);
+    case "nights":
+      return f.frost
+        ? s([`Nights often drop below freezing (average low ${f.lo}°C), so expect frost and icy mornings.`, `Mornings start cold: the average low is ${f.lo}°C, and frost is common.`, `Pack for frost — nights average ${f.lo}°C in ${M}.`])
+        : s([`Nights stay warm, rarely below ${f.lo}°C — air-conditioning helps.`, `Even after dark it stays around ${f.lo}°C, so sleeping can feel warm.`]);
+    case "beach":
+      return s([`With highs near ${f.hi}°C, little rain and plenty of sun, it's proper beach and pool weather.`, `Sun, warmth (about ${f.hi}°C) and dry days make ${M} a good pick for the beach.`, `Outdoor swimming weather: around ${f.hi}°C, mostly dry and sunny.`]);
     case "landmark": {
       const [a, b] = f.names;
       if (f.mode === "early") return s([`With the heat, see ${a} early in the morning or late in the afternoon.`, `Plan ${a} for the cooler hours — early morning is best.`]);

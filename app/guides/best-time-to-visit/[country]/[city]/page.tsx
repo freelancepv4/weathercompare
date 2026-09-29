@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { CalendarDays, MapPin, Lightbulb, CloudSun, Bus, Info } from "lucide-react";
-import { findCity, allCityPaths } from "@/config/countries";
+import { findCity, coreCityPaths, nearestCities } from "@/config/world";
+import { LocalizedBestTime, bestTimeMetadata } from "@/components/LocalizedBestTime";
 import { getCityGuide } from "@/lib/data/cityGuides";
 import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig } from "@/config/site";
@@ -27,14 +28,16 @@ import { keywordsFor } from "@/lib/i18n/keywords";
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
 // data — so this stays fully static rather than ISR-revalidated like the
 // weather pages themselves.
-export const dynamic = "force-static";
+// Pre-built for core cities; world cities render on first request, then cached.
+export const revalidate = false;
+export const dynamicParams = true;
 
 interface PageProps {
   params: Promise<{ country: string; city: string }>;
 }
 
 export function generateStaticParams() {
-  return allCityPaths();
+  return coreCityPaths();
 }
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {
@@ -42,6 +45,8 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const found = findCity(params.country, params.city);
   if (!found) return {};
   const { country, city } = found;
+  // World cities without an editorial guide get the data-driven version.
+  if (!getCityGuide(country.slug, city.slug)) return bestTimeMetadata("en", country, city);
   // "{city} weather by month" is a big, low-competition query family (it is
   // what ranks holiday-weather.com's averages pages), so name it in the title
   // whenever it fits.
@@ -72,14 +77,11 @@ export default async function BestTimeToVisitCityPage(props: PageProps) {
   if (!found) notFound();
   const { country, city } = found;
   const guide = getCityGuide(country.slug, city.slug);
-  if (!guide) notFound();
+  if (!guide) return <LocalizedBestTime locale="en" country={country} city={city} />;
   const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} landmark`);
 
   const weatherUrl = `/weather/${country.slug}/${city.slug}`;
-  const nearby = country.cities
-    .filter((c) => c.slug !== city.slug)
-    .slice(0, 4)
-    .map((c) => ({ country, city: c }));
+  const nearby = nearestCities(city, 4, { sameCountry: country.slug }).map(({ country: co, city: ci }) => ({ country: co, city: ci }));
 
   const climateData = getCityClimate(country.slug, city.slug);
   const facts = climateData ? analyseClimate(climateData) : null;

@@ -16,6 +16,7 @@ import type { CityClimate } from "@/lib/data/climate";
 import { getCityClimate } from "@/lib/data/climate";
 import type { CountrySeed, CitySeed } from "@/config/countries";
 import type { Landmark } from "@/lib/data/cityGuides";
+import { nearestCities } from "@/config/world";
 
 export type Season = "winter" | "spring" | "summer" | "autumn";
 export type Phase = "early" | "mid" | "late";
@@ -29,7 +30,9 @@ export type Fact =
   | { k: "rain"; pct: number; wetter: boolean }
   | { k: "humid"; h: number; hi: number; muggy: boolean }
   | { k: "sun"; cloud: number; sunny: boolean }
-  | { k: "sibling"; other: { slug: string; name: string }; diff: number }
+  | { k: "sibling"; other: { slug: string; name: string }; diff: number; km?: number }
+  | { k: "nights"; lo: number; frost: boolean }
+  | { k: "beach"; hi: number }
   | { k: "landmark"; mode: "early" | "rainy" | "walk" | "cold"; names: string[] };
 
 /** Small stable string hash (FNV-1a). */
@@ -116,16 +119,35 @@ export function monthFacts({ country, city, climate: c, m, landmarks, nameOf, ma
   if (cloudPos <= 2) cands.push({ f: { k: "sun", cloud: c.cloud[m]!, sunny: true }, score: 5 });
   else if (cloudPos >= 11) cands.push({ f: { k: "sun", cloud: c.cloud[m]!, sunny: false }, score: 5 });
 
-  // Compare with another city in the same country (the one with the biggest gap).
-  const others = country.cities
-    .filter((o) => o.slug !== city.slug)
-    .map((o) => ({ o, oc: getCityClimate(country.slug, o.slug) }))
+  // Nights: frost, or "tropical nights" that never cool below ~22°C.
+  if (lo <= 0) cands.push({ f: { k: "nights", lo: r(lo), frost: true }, score: lo <= -5 ? 7 : 6 });
+  else if (lo >= 22) cands.push({ f: { k: "nights", lo: r(lo), frost: false }, score: 5 });
+
+  // Beach / pool weather: hot, fairly dry and mostly sunny.
+  if (hi >= 26 && mm < 50 && c.cloud[m]! < 45) cands.push({ f: { k: "beach", hi: r(hi) }, score: 4 });
+
+  // Compare with a nearby city in the same country (the nearest one that is
+  // noticeably different), falling back to any city in the country.
+  const near = nearestCities(city, 10, { sameCountry: country.slug, maxKm: 600 })
+    .map(({ city: o, km }) => ({ o, km, oc: getCityClimate(country.slug, o.slug) }))
     .filter((x) => x.oc)
-    .map((x) => ({ o: x.o, diff: r(hi - x.oc!.tMax[m]!) }))
+    .map((x) => ({ o: x.o, km: Math.round(x.km / 10) * 10, diff: r(hi - x.oc!.tMax[m]!) }))
     .filter((x) => Math.abs(x.diff) >= 2);
-  if (others.length > 0) {
-    const chosen = pick(`${seed}:sib`, others);
-    cands.push({ f: { k: "sibling", other: { slug: chosen.o.slug, name: nameOf ? nameOf(chosen.o) : chosen.o.name }, diff: chosen.diff }, score: 4 });
+  if (near.length > 0) {
+    const chosen = near[0]!;
+    cands.push({ f: { k: "sibling", other: { slug: chosen.o.slug, name: nameOf ? nameOf(chosen.o) : chosen.o.name }, diff: chosen.diff, km: chosen.km }, score: 5 });
+  } else {
+    const others = country.cities
+      .filter((o) => o.slug !== city.slug)
+      .slice(0, 40)
+      .map((o) => ({ o, oc: getCityClimate(country.slug, o.slug) }))
+      .filter((x) => x.oc)
+      .map((x) => ({ o: x.o, diff: r(hi - x.oc!.tMax[m]!) }))
+      .filter((x) => Math.abs(x.diff) >= 2);
+    if (others.length > 0) {
+      const chosen = pick(`${seed}:sib`, others);
+      cands.push({ f: { k: "sibling", other: { slug: chosen.o.slug, name: nameOf ? nameOf(chosen.o) : chosen.o.name }, diff: chosen.diff }, score: 4 });
+    }
   }
 
   if (landmarks && landmarks.length >= 2) {

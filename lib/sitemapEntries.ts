@@ -1,5 +1,5 @@
 import { siteConfig } from "@/config/site";
-import { countries, allCityPaths } from "@/config/countries";
+import { countries } from "@/config/world";
 import { allGuides } from "@/lib/data/guides";
 import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
 import { CONTENT_LOCALES, paths } from "@/lib/i18n/routing";
@@ -12,6 +12,13 @@ import { CONTENT_LOCALES, paths } from "@/lib/i18n/routing";
  */
 export type SitemapGroup = "en" | (typeof CONTENT_LOCALES)[number];
 export const SITEMAP_GROUPS: SitemapGroup[] = ["en", ...CONTENT_LOCALES];
+/**
+ * One sitemap file per language for the main pages (/sitemaps/es.xml) and
+ * one for the month-by-month climate pages (/sitemaps/es-months.xml), so
+ * each file stays well under Google's 50,000-URL limit (~26k at most) and
+ * Search Console reports indexing for the two page types separately.
+ */
+export const SITEMAP_FILES: string[] = SITEMAP_GROUPS.flatMap((g) => [g, `${g}-months`]);
 
 export interface Entry {
   url: string;
@@ -36,7 +43,15 @@ export function urlsetXml(entries: Entry[]): string {
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${rows.join("\n")}\n</urlset>\n`;
 }
 
-export function sitemapGroups(): Record<SitemapGroup, Entry[]> {
+let memo: Record<string, Entry[]> | null = null;
+
+export function sitemapGroups(): Record<string, Entry[]> {
+  if (memo) return memo;
+  memo = buildGroups();
+  return memo;
+}
+
+function buildGroups(): Record<string, Entry[]> {
   const staticPages = [
     "",
     "/about",
@@ -64,26 +79,29 @@ export function sitemapGroups(): Record<SitemapGroup, Entry[]> {
     priority: 0.6,
   }));
 
-  const bestTimeToVisitPages = allCityPaths().map(({ country, city }) => ({
-    url: `${siteConfig.url}/guides/best-time-to-visit/${country}/${city}`,
-    lastModified: new Date(),
+  // Best-time pages exist for every city with climate data (core cities also have an editorial guide).
+  const bestTimeToVisitPages = citiesWithClimate().map(({ country, city }) => ({
+    url: `${siteConfig.url}/guides/best-time-to-visit/${country.slug}/${city.slug}`,
     changeFrequency: "monthly" as const,
-    priority: 0.6,
+    priority: city.core ? 0.7 : 0.6,
   }));
 
-  const countryPages = countries.map((country) => ({
-    url: `${siteConfig.url}/weather/${country.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "daily" as const,
-    priority: 0.6,
-  }));
+  const countryPages = [
+    { url: `${siteConfig.url}/weather`, changeFrequency: "weekly" as const, priority: 0.8 },
+    ...countries.map((country) => ({
+      url: `${siteConfig.url}/weather/${country.slug}`,
+      changeFrequency: "daily" as const,
+      priority: 0.6,
+    })),
+  ];
 
-  const cityPages = allCityPaths().map(({ country, city }) => ({
-    url: `${siteConfig.url}/weather/${country}/${city}`,
-    lastModified: new Date(),
-    changeFrequency: "hourly" as const,
-    priority: 0.8,
-  }));
+  const cityPages = countries.flatMap((country) =>
+    country.cities.map((city) => ({
+      url: `${siteConfig.url}/weather/${country.slug}/${city.slug}`,
+      changeFrequency: "daily" as const,
+      priority: city.core ? 0.8 : 0.7,
+    }))
+  );
 
   // Month-by-month climate pages and "where to go in {month}" roundups —
   // only for cities that have climate data (see scripts/fetch-climate.mjs).
@@ -113,20 +131,26 @@ export function sitemapGroups(): Record<SitemapGroup, Entry[]> {
     { url: url(paths.home(l)), changeFrequency: "daily" as const, priority: 0.9 },
     { url: url(paths.today(l)), changeFrequency: "hourly" as const, priority: 0.8 },
     { url: url(paths.tripFinder(l)), changeFrequency: "monthly" as const, priority: 0.5 },
+    { url: url(paths.countries(l)), changeFrequency: "weekly" as const, priority: 0.8 },
     ...countries.map((c) => ({ url: url(paths.country(l, c.slug)), changeFrequency: "daily" as const, priority: 0.6 })),
-    ...allCityPaths().map(({ country, city }) => ({ url: url(paths.city(l, country, city)), changeFrequency: "hourly" as const, priority: 0.8 })),
+    ...countries.flatMap((c) => c.cities.map((city) => ({ url: url(paths.city(l, c.slug, city.slug)), changeFrequency: "daily" as const, priority: city.core ? 0.8 : 0.7 }))),
     ...climateCities.map(({ country, city }) => ({ url: url(paths.bestTime(l, country.slug, city.slug)), changeFrequency: "monthly" as const, priority: 0.8 })),
     ...(climateCities.length > 0
       ? MONTHS.map((_, i) => ({ url: url(paths.whereToGo(l, i)), changeFrequency: "monthly" as const, priority: 0.7 }))
       : []),
-    ...climateCities.flatMap(({ country, city }) =>
-      MONTHS.map((_, i) => ({ url: url(paths.month(l, country.slug, city.slug, i)), changeFrequency: "yearly" as const, priority: 0.6 }))
-    ),
   ];
+  const localizedMonths = (l: (typeof CONTENT_LOCALES)[number]): Entry[] =>
+    climateCities.flatMap(({ country, city }) =>
+      MONTHS.map((_, i) => ({ url: url(paths.month(l, country.slug, city.slug, i)), changeFrequency: "yearly" as const, priority: 0.6 }))
+    );
 
-  const groups = {
-    en: [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeToVisitPages, ...whereToGoPages, ...monthPages],
-  } as Record<SitemapGroup, Entry[]>;
-  for (const l of CONTENT_LOCALES) groups[l] = localized(l);
+  const groups: Record<string, Entry[]> = {
+    en: [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeToVisitPages, ...whereToGoPages],
+    "en-months": monthPages,
+  };
+  for (const l of CONTENT_LOCALES) {
+    groups[l] = localized(l);
+    groups[`${l}-months`] = localizedMonths(l);
+  }
   return groups;
 }

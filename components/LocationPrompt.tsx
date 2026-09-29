@@ -107,6 +107,10 @@ export function LocationPrompt() {
   }
 
   function open(loc: GeoLocation) {
+    if (loc.page) {
+      router.push(paths.city(locale, loc.page.country, loc.page.city));
+      return;
+    }
     const seedCountry = countries.find((c) => c.isoCode === loc.countryCode);
     const seedCity = seedCountry?.cities.find((c) => `${seedCountry.slug}-${c.slug}` === loc.id);
     if (seedCountry && seedCity) {

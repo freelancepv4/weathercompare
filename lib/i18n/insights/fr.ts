@@ -48,9 +48,16 @@ export function fr(f: Fact, x: Ctx): string {
         ? s([`C'est l'un des mois les plus ensoleillés, avec environ ${f.cloud} % de nébulosité.`, `Le ciel est parmi les plus dégagés de l'année.`])
         : s([`C'est l'un des mois les plus gris, avec près de ${f.cloud} % de nébulosité.`, `Attendez-vous à plus de nuages qu'à toute autre saison.`]);
     case "sibling":
+      if (f.km) return f.diff > 0 ? s([`Ce mois-ci, ${city} est en moyenne ${f.diff} °C plus chaude que ${f.other.name}, à ${f.km} km.`, `À seulement ${f.km} km, ${f.other.name} est pourtant environ ${f.diff} °C plus fraîche que ${city}.`]) : s([`Ce mois-ci, ${city} est en moyenne ${-f.diff} °C plus fraîche que ${f.other.name}, à ${f.km} km.`, `À seulement ${f.km} km, ${f.other.name} est pourtant environ ${-f.diff} °C plus chaude que ${city}.`]);
       return f.diff > 0
         ? s([`En ${M}, il fait en général environ ${f.diff}°C de plus ${inC} qu'${a(f.other.name)}.`, `Par rapport à ${f.other.name}, ${city} est plus chaude d'environ ${f.diff}°C ce mois-ci.`])
         : s([`En ${M}, il fait en général environ ${-f.diff}°C de moins ${inC} qu'${a(f.other.name)}.`, `Par rapport à ${f.other.name}, ${city} est plus fraîche d'environ ${-f.diff}°C ce mois-ci.`]);
+    case "nights":
+      return f.frost
+        ? s([`Les nuits descendent souvent sous zéro (minimale moyenne ${f.lo} °C) : gelées et verglas le matin.`, `Les matinées sont froides : la minimale moyenne est de ${f.lo} °C et les gelées sont fréquentes.`])
+        : s([`Les nuits restent chaudes, rarement sous ${f.lo} °C : la climatisation est appréciable.`, `Même après le coucher du soleil, il fait encore environ ${f.lo} °C.`]);
+    case "beach":
+      return s([`Avec des maximales autour de ${f.hi} °C, peu de pluie et beaucoup de soleil, c'est un vrai temps de plage.`, `Soleil, chaleur (environ ${f.hi} °C) et journées sèches : ${M} se prête bien à la plage.`]);
     case "landmark":
       return "";
   }

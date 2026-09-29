@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-import { findCity } from "@/config/countries";
+import { findCity } from "@/config/world";
 import { getCityGuide } from "@/lib/data/cityGuides";
 import { getPortraitPhotoDataUri } from "@/lib/providers/photos";
 import { PinImageCard } from "@/lib/pinImageCard";

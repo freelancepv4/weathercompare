@@ -24,6 +24,11 @@ const SOCIAL_LINKS = (
   ] as const
 ).filter((s) => siteConfig.social[s.key]);
 
+const ALL_COUNTRIES: Record<string, string> = {
+  en: "All 200+ countries →", it: "Oltre 200 paesi →", de: "Alle 200+ Länder →", fr: "Plus de 200 pays →",
+  es: "Más de 200 países →", pt: "Mais de 200 países →", nl: "Alle 200+ landen →", pl: "Ponad 200 krajów →",
+};
+
 export function Footer() {
   const t = useTranslations();
   const { locale, setLocale } = useI18n();
@@ -137,6 +142,11 @@ export function Footer() {
               </Link>
             </li>
           ))}
+          <li>
+            <Link href={paths.countries(locale)} className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
+              {ALL_COUNTRIES[locale] ?? ALL_COUNTRIES.en}
+            </Link>
+          </li>
           <li>
             <Link href={paths.whereToGo(locale, new Date().getMonth())} className="text-sm font-medium text-brand-600 hover:underline dark:text-brand-300">
               {t("footer.whereByMonth")}

@@ -10,20 +10,20 @@ import { GuideCard } from "@/components/GuideCard";
 import { hreflang } from "@/lib/i18n/pageMeta";
 
 export const metadata: Metadata = {
-  title: { absolute: `14-Day Weather Forecast Compared | ${siteConfig.name}` },
+  title: { absolute: `World Weather: 14-Day Forecast for Any City | ${siteConfig.name}` },
   description: siteConfig.description,
   alternates: { canonical: "/", ...hreflang({ kind: "home" }) },
   openGraph: {
     type: "website",
     siteName: siteConfig.name,
-    title: `${siteConfig.name} — Weather forecasts, compared in one place`,
+    title: `${siteConfig.name} — Weather for any city in the world, compared`,
     description: siteConfig.description,
     url: siteConfig.url,
     images: [defaultOgImage],
   },
   twitter: {
     card: "summary_large_image",
-    title: `${siteConfig.name} — Weather forecasts, compared in one place`,
+    title: `${siteConfig.name} — Weather for any city in the world, compared`,
     description: siteConfig.description,
     images: [defaultOgImage],
   },

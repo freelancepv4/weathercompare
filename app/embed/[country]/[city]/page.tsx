@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { findCity, allCityPaths } from "@/config/countries";
+import { findCity, coreCityPaths } from "@/config/world";
 import { locationFromSeed } from "@/lib/providers/geocoding";
 import { getForecastBundles } from "@/lib/services/weatherService";
 import { siteConfig } from "@/config/site";
@@ -30,7 +30,7 @@ interface PageProps {
 }
 
 export async function generateStaticParams() {
-  return allCityPaths();
+  return coreCityPaths();
 }
 
 export async function generateMetadata(props: PageProps): Promise<Metadata> {

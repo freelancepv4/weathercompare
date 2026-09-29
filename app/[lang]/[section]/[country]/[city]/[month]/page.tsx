@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, CloudRain, Droplets, Sun, Thermometer, Luggage, CalendarDays, Compass } from "lucide-react";
 import { siteConfig } from "@/config/site";
-import { findCity } from "@/config/countries";
+import { findCity, nearestCities } from "@/config/world";
 import { citiesWithClimate, getCityClimate } from "@/lib/data/climate";
 import { getLandscapePhoto } from "@/lib/providers/photos";
 import { Breadcrumb } from "@/components/Breadcrumb";
@@ -124,8 +124,9 @@ export default async function LocalizedMonthPage(props: PageProps) {
     i,
     `${country.slug}/${city.slug}/${i}`
   );
-  const siblings = citiesWithClimate()
-    .filter((c) => c.country.slug === country.slug && c.city.slug !== city.slug)
+  const siblings = nearestCities(city, 14, { sameCountry: country.slug })
+    .map(({ country: co, city: ci }) => ({ country: co, city: ci, climate: getCityClimate(co.slug, ci.slug) }))
+    .filter((x): x is { country: typeof country; city: typeof city; climate: NonNullable<typeof x.climate> } => Boolean(x.climate))
     .slice(0, 6);
 
   const good = goodMonthFaq(locale, cn, climate, i);

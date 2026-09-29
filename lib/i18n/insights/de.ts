@@ -44,9 +44,16 @@ export function de(f: Fact, x: Ctx): string {
         ? s([`Es ist einer der sonnigsten Monate, mit rund ${f.cloud} % Bewölkung.`, `Der Himmel ist jetzt so klar wie selten im Jahr.`])
         : s([`Es ist einer der trübsten Monate, mit etwa ${f.cloud} % Bewölkung.`, `Rechne mit mehr Wolken als zu jeder anderen Jahreszeit.`]);
     case "sibling":
+      if (f.km) return f.diff > 0 ? s([`${city} ist in diesem Monat meist etwa ${f.diff}°C wärmer als das ${f.km} km entfernte ${f.other.name}.`, `Nur ${f.km} km Luftlinie, aber ${city} ist rund ${f.diff}°C wärmer als ${f.other.name}.`]) : s([`${city} ist in diesem Monat meist etwa ${-f.diff}°C kühler als das ${f.km} km entfernte ${f.other.name}.`, `Nur ${f.km} km Luftlinie, aber ${city} ist rund ${-f.diff}°C kühler als ${f.other.name}.`]);
       return f.diff > 0
         ? s([`Im ${M} ist es ${inC} meist rund ${f.diff}°C wärmer als in ${f.other.name}.`, `Verglichen mit ${f.other.name} ist ${city} in diesem Monat etwa ${f.diff}°C wärmer.`])
         : s([`Im ${M} ist es ${inC} meist rund ${-f.diff}°C kühler als in ${f.other.name}.`, `Verglichen mit ${f.other.name} ist ${city} in diesem Monat etwa ${-f.diff}°C kühler.`]);
+    case "nights":
+      return f.frost
+        ? s([`Nachts gibt es oft Frost (Tiefstwert im Schnitt ${f.lo}°C) – morgens kann es glatt sein.`, `Die Morgen sind kalt: Im Mittel sinkt die Temperatur auf ${f.lo}°C, Frost ist häufig.`])
+        : s([`Die Nächte bleiben warm, kaum unter ${f.lo}°C – eine Klimaanlage ist Gold wert.`, `Auch nach Sonnenuntergang bleibt es bei etwa ${f.lo}°C (Tropennächte).`]);
+    case "beach":
+      return s([`Mit rund ${f.hi}°C, wenig Regen und viel Sonne ist es echtes Strand- und Badewetter.`, `Sonne, Wärme (etwa ${f.hi}°C) und trockene Tage machen den ${M} zum Badeurlaubsmonat.`]);
     case "landmark":
       return "";
   }

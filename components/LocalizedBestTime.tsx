@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { CalendarDays } from "lucide-react";
+import { nearestCities } from "@/config/world";
+import { cityProfile } from "@/lib/content/cityProfile";
 import { siteConfig } from "@/config/site";
 import type { CountrySeed, CitySeed } from "@/config/countries";
 import { getCityClimate, climateHighsFor } from "@/lib/data/climate";
@@ -17,12 +19,12 @@ import { monthFacts } from "@/lib/content/insights";
 import { renderInsights } from "@/lib/i18n/insights";
 import { getCopy, joinList } from "@/lib/i18n/copy";
 import { bestTimeCopy, analyseClimate, bestTimeFaq } from "@/lib/i18n/bestTime";
-import { paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
+import { paths, monthInfo, type AnyLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
 import { keywordsFor } from "@/lib/i18n/keywords";
 
-export function bestTimeMetadata(locale: ContentLocale, country: CountrySeed, city: CitySeed): Metadata {
+export function bestTimeMetadata(locale: AnyLocale, country: CountrySeed, city: CitySeed): Metadata {
   const climate = getCityClimate(country.slug, city.slug);
   if (!climate) return {};
   const t = bestTimeCopy(locale);
@@ -32,7 +34,7 @@ export function bestTimeMetadata(locale: ContentLocale, country: CountrySeed, ci
   return localizedMetadata(locale, { kind: "bestTime", country: country.slug, city: city.slug }, t.title(c), t.desc(c, best), { keywords: keywordsFor(locale).best(c) });
 }
 
-export async function LocalizedBestTime({ locale, country, city }: { locale: ContentLocale; country: CountrySeed; city: CitySeed }) {
+export async function LocalizedBestTime({ locale, country, city }: { locale: AnyLocale; country: CountrySeed; city: CitySeed }) {
   const climate = getCityClimate(country.slug, city.slug);
   if (!climate) notFound();
   const t = bestTimeCopy(locale);
@@ -46,10 +48,7 @@ export async function LocalizedBestTime({ locale, country, city }: { locale: Con
   const mn = monthInfo(locale).monthNames;
   const bestList = joinList(locale, facts.best.map((m) => mn[m]!));
 
-  const nearby = country.cities
-    .filter((c) => c.slug !== city.slug)
-    .slice(0, 4)
-    .map((c) => ({ country, city: c }));
+  const nearby = nearestCities(city, 4, { sameCountry: country.slug }).map(({ country: co, city: ci }) => ({ country: co, city: ci }));
   const nameFor = (co: CountrySeed, ci: CitySeed) => ({ city: cityName(ci.slug, ci.name, locale), country: countryName(co.slug, co.name, locale) });
 
   // Data-driven notes for the best month, so each page has its own prose.
@@ -111,6 +110,9 @@ export async function LocalizedBestTime({ locale, country, city }: { locale: Con
         </p>
         <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{t.h1(cn)}</h1>
         <ShareBar className="mt-4" url={url} title={t.h1(cn)} pinDescription={t.desc(cn, bestList)} />
+        <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">
+          {cityProfile(locale, { city: cn, seed: `${country.slug}/${city.slug}:bt`, lat: city.lat, climate, neighbours: [] }).join(" ")}
+        </p>
 
         <div className="mt-6">
           <BestTimeContent locale={locale} cityLabel={cn} countrySlug={country.slug} citySlug={city.slug} climate={climate} facts={facts} />
