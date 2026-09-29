@@ -507,6 +507,201 @@ export const guides: Guide[] = [
     ],
     photoQuery: "traveler planning trip smartphone airport",
   },
+  {
+    slug: "year-round-warm-destinations",
+    category: "seasonal",
+    title: "Where Can You Travel Year-Round With 20–30°C Weather?",
+    seoTitle: "Year-Round Warm Destinations: 20–30°C Every Month",
+    description:
+      "Places where average daytime highs stay between about 20°C and 30°C (70–85°F) in every month of the year — from the Canary Islands and Cape Verde to Curaçao, Mauritius and Bali — and which months are driest in each.",
+    updated: "2026-09-29",
+    intro:
+      "\"Somewhere that's warm but not too hot, whenever I can get time off\" is one of the most common travel-planning wishes. Very few places truly deliver it: most destinations either get cool in winter or scorching in summer. Using 10 years of climate averages for the 139 destinations on this site, these are the ones where the average daytime high stays roughly between 20°C and 30°C (about 70–85°F) in every single month. Temperature is only half the story, though — several of them have a wet season, so we note the driest months too.",
+    sections: [
+      {
+        heading: "How we picked them",
+        paragraphs: [
+          "Every place below has an average daily high of at least about 20°C in its coolest month and no more than about 30°C in its hottest, based on NASA POWER climate averages (2011–2020). These are area averages, so a specific beach or hillside can run a degree or two warmer or cooler.",
+          "\"Warm all year\" doesn't mean \"dry all year\": in the tropics the difference between months is mostly rain, not temperature. Check the rainfall figures before you book.",
+        ],
+      },
+      {
+        heading: "Closest to Europe: the Canary Islands",
+        paragraphs: [
+          "Gran Canaria and Fuerteventura are the only places within a short flight of most of Europe where average highs stay at around 21°C or above all winter, rising to about 28–30°C in August. They are also very dry: Fuerteventura averages under 80 mm of rain in a whole year.",
+          "Tenerife and Lanzarote are close behind, with highs of about 19–20°C in February and 24–25°C in late summer, which makes them milder rather than hot. Rain, when it comes, mostly falls between October and December.",
+        ],
+        bullets: [
+          "Gran Canaria: highs about 21°C (Jan) to 30°C (Aug)",
+          "Fuerteventura: highs about 21°C (Jan) to 30°C (Aug), the driest of the islands",
+          "Tenerife: highs about 19°C (Feb) to 25°C (Aug–Sep)",
+        ],
+      },
+      {
+        heading: "Cape Verde: Sal and Boa Vista",
+        paragraphs: [
+          "About 6 hours from much of Europe, Sal and Boa Vista stay between about 22°C and 27°C all year and get only around 250 mm of rain annually, most of it in a short August–October window. From November to June they are one of the most reliable winter-sun choices in the Atlantic.",
+        ],
+      },
+      {
+        heading: "The Caribbean: Curaçao and Punta Cana",
+        paragraphs: [
+          "Curaçao is remarkably steady: average highs of about 27–29°C in every month, and it sits south of the main hurricane belt. It is also one of the drier Caribbean islands, with most of its rain from October to December.",
+          "Punta Cana in the Dominican Republic stays around 26–29°C year-round too, but it is inside the Atlantic hurricane season (June to November), so winter and spring are the safer bet.",
+        ],
+      },
+      {
+        heading: "Indian Ocean: Mauritius, Seychelles, Maldives, Zanzibar",
+        paragraphs: [
+          "Mauritius is the mildest of these, with highs of about 24°C in its July–August winter and 28°C in summer. Its driest, most comfortable months are roughly May to December.",
+          "The Maldives, Seychelles and Zanzibar are warmer (about 27–30°C every month) and more humid. For the Maldives, January to April is the drier season; for Zanzibar, June to October and January to February avoid the heaviest rains.",
+        ],
+      },
+      {
+        heading: "Asia and the Pacific: Bali, Phuket, Honolulu",
+        paragraphs: [
+          "Bali (about 26–30°C) and Phuket (about 28–30°C) never get cold, but both have a clear rainy season: Bali is wettest from December to February and driest from June to September; Phuket is wettest from May to October and best from December to March.",
+          "Honolulu is the gentlest of all, with highs of about 24–28°C and fairly modest rain spread through the year, which makes it one of the few places that works in almost any month.",
+        ],
+      },
+      {
+        heading: "How to choose between them",
+        bullets: [
+          "Want the shortest flight from Europe? The Canary Islands, then Cape Verde.",
+          "Want it hot rather than mild in December–February? The Caribbean, Indian Ocean or Southeast Asia.",
+          "Travelling in July–September? Bali, Mauritius, Cape Verde (before late August) or the Canaries; avoid Phuket's monsoon.",
+          "Before booking, check the month page for your exact dates and compare the live forecasts a few days before you go.",
+        ],
+      },
+    ],
+    relatedCityPaths: [
+      { country: "spain", city: "gran-canaria" },
+      { country: "spain", city: "fuerteventura" },
+      { country: "cape-verde", city: "sal" },
+      { country: "curacao", city: "willemstad" },
+      { country: "mauritius", city: "mauritius" },
+      { country: "indonesia", city: "bali" },
+    ],
+    photoQuery: "tropical beach palm trees sunny",
+  },
+  {
+    slug: "warm-winter-sun-destinations",
+    category: "seasonal",
+    title: "Winter Sun: Warm Places to Visit in December, January and February",
+    seoTitle: "Winter Sun Destinations: Warm Places in Dec–Feb",
+    description:
+      "Where it's actually warm from December to February, with average highs and rainfall for each: the Canary Islands, Egypt's Red Sea, Dubai, Cape Verde, Agadir, the Caribbean and Southeast Asia — sorted by flight distance from Europe.",
+    updated: "2026-09-29",
+    intro:
+      "When Europe is grey and cold, the question is simple: where is it warm enough to sit outside without a coat, and how far do I have to fly? Here is what 10 years of climate averages say about December, January and February, from the closest options to the long-haul ones. The numbers are average daytime highs and average monthly rainfall for those three months.",
+    sections: [
+      {
+        heading: "Under 5 hours from most of Europe",
+        bullets: [
+          "Canary Islands: highs about 20–22°C with little rain. Gran Canaria and Fuerteventura are a touch warmer than Tenerife and Lanzarote.",
+          "Agadir, Morocco: highs about 21–22°C and mostly sunny, though nights are cool.",
+          "Hurghada and Sharm el-Sheikh, Egypt: highs about 21–24°C, almost no rain, and the Red Sea is still warm enough to snorkel.",
+          "Madeira: milder at about 17–19°C, with more showers — better for walking than for the beach.",
+        ],
+      },
+      {
+        heading: "5 to 7 hours: Dubai, Abu Dhabi and Cape Verde",
+        paragraphs: [
+          "Dubai and Abu Dhabi are at their best in winter, with highs of about 23–26°C, instead of the 40°C summer heat. There can be a few rainy days in January and February, but they're rare.",
+          "Cape Verde (Sal and Boa Vista) sits at about 22–24°C through the winter with steady trade winds, which is why it's popular for kitesurfing as well as beach holidays.",
+        ],
+      },
+      {
+        heading: "Long-haul: the Caribbean and Mexico",
+        paragraphs: [
+          "December to April is the dry season across most of the Caribbean. Curaçao and Punta Cana average about 27°C, and Cancún about 27–28°C, with rain much lower than in the September–October hurricane peak.",
+        ],
+      },
+      {
+        heading: "Long-haul: Southeast Asia and the Indian Ocean",
+        paragraphs: [
+          "Thailand's dry season makes Bangkok (highs about 31–36°C) and Phuket (about 28–29°C) reliable from December to February. Phuket is at its driest in February.",
+          "The Maldives are entering their drier season (about 28°C), while Bali and the Seychelles are in their wetter months: still warm, but expect regular tropical downpours.",
+        ],
+      },
+      {
+        heading: "Which one should you pick?",
+        bullets: [
+          "Short break, guaranteed mild weather: the Canary Islands.",
+          "Hottest within a medium flight: Egypt's Red Sea coast or Dubai.",
+          "Beach plus diving: Hurghada or Sharm el-Sheikh (winter); the Maldives (January–April).",
+          "Proper tropical heat: Thailand, the Caribbean or Mexico.",
+          "Check the live forecast comparison a few days before you fly: winter storms can occasionally reach the Canaries and Egypt, even in the dry season.",
+        ],
+      },
+    ],
+    relatedCityPaths: [
+      { country: "spain", city: "tenerife" },
+      { country: "egypt", city: "hurghada" },
+      { country: "uae", city: "dubai" },
+      { country: "cape-verde", city: "sal" },
+      { country: "mexico", city: "cancun" },
+      { country: "thailand", city: "phuket" },
+    ],
+    photoQuery: "Canary Islands beach sunny",
+  },
+  {
+    slug: "how-accurate-are-weather-forecasts-for-travel",
+    category: "comparison",
+    title: "How Far Ahead Can You Trust a Weather Forecast for Your Trip?",
+    seoTitle: "How Accurate Are Weather Forecasts for Travel?",
+    description:
+      "How accurate are 3-day, 7-day and 14-day forecasts, why weather apps disagree, and how to plan a trip weeks or months ahead using climate averages instead.",
+    updated: "2026-09-29",
+    intro:
+      "\"The app says rain every day of my holiday. Should I worry?\" If your trip is more than a week away, usually not. Weather forecasts are very good in the short term and lose detail quickly after that. Here is how to read them at different distances, why different apps show different weather for the same place, and what to use instead when you're planning months ahead.",
+    sections: [
+      {
+        heading: "1–3 days ahead: trust it",
+        paragraphs: [
+          "Modern forecasts for the next one to three days are generally reliable for temperature and whether it will be a wet or dry day. This is the time to plan your outdoor days, boat trips and hikes around the forecast.",
+        ],
+      },
+      {
+        heading: "4–7 days ahead: good for the trend",
+        paragraphs: [
+          "At this range forecasts are usually right about the general pattern (a warm spell, a cooler, unsettled period) but the timing of individual showers can shift by a day or more. Use it to decide which days look best, then re-check the evening before.",
+        ],
+      },
+      {
+        heading: "8–16 days ahead: a hint, not a plan",
+        paragraphs: [
+          "Beyond about a week, day-by-day detail becomes unreliable. A rain symbol on day 12 often just means some models show a chance of rain. It's better to read these days as \"warmer or cooler than normal\" than as a specific forecast.",
+        ],
+      },
+      {
+        heading: "Why weather apps disagree",
+        paragraphs: [
+          "Different apps use different weather models, update them at different times, and turn percentages into icons in different ways. One app may show a rain icon for a 30% chance, another only above 50%.",
+          "That's why comparing sources helps: when three independent forecasts agree, confidence is high. When they disagree, the weather really is uncertain, and it's worth keeping plans flexible. WeatherCompare shows three providers side by side for exactly this reason.",
+        ],
+      },
+      {
+        heading: "Planning months ahead? Use climate averages",
+        paragraphs: [
+          "For a trip that's weeks or months away, no forecast can help. What you need is the typical weather for that month: average highs and lows, how much rain usually falls, and how many cloudy days to expect. Every city on this site has a month-by-month page and a \"best time to visit\" page built from 10 years of data.",
+        ],
+        bullets: [
+          "Months away: check the climate averages and the best-time-to-visit page.",
+          "1–2 weeks away: watch the long-range trend, but don't cancel anything yet.",
+          "3–7 days away: compare the forecasts and start planning specific days.",
+          "1–2 days away: plan outdoor activities around the forecast.",
+        ],
+      },
+    ],
+    relatedCityPaths: [
+      { country: "italy", city: "rome" },
+      { country: "spain", city: "tenerife" },
+      { country: "france", city: "paris" },
+      { country: "uk", city: "london" },
+    ],
+    photoQuery: "weather forecast phone travel",
+  },
 ];
 
 export function getGuide(slug: string): Guide | null {

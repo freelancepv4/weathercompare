@@ -1,7 +1,154 @@
 {
  "source": "NASA POWER daily data (https://power.larc.nasa.gov); coastal/island cities listed in \"era5\": ERA5 reanalysis via Open-Meteo (https://open-meteo.com). 2011–2020 monthly averages",
  "generatedAt": "2026-09-28",
- "era5": {},
+ "era5": {
+  "cape-verde/boa-vista": {
+   "elevation": 20
+  },
+  "cape-verde/sal": {
+   "elevation": 20
+  },
+  "curacao/willemstad": {
+   "elevation": null
+  },
+  "dominican-republic/punta-cana": {
+   "elevation": null
+  },
+  "france/nice": {
+   "elevation": null
+  },
+  "greece/corfu": {
+   "elevation": null
+  },
+  "greece/crete": {
+   "elevation": null
+  },
+  "greece/halkidiki": {
+   "elevation": null
+  },
+  "greece/kefalonia": {
+   "elevation": null
+  },
+  "greece/rhodes": {
+   "elevation": null
+  },
+  "greece/zakynthos": {
+   "elevation": null
+  },
+  "maldives/maldives": {
+   "elevation": 2
+  },
+  "malta/valletta": {
+   "elevation": null
+  },
+  "mauritius/mauritius": {
+   "elevation": null
+  },
+  "mexico/cancun": {
+   "elevation": null
+  },
+  "portugal/azores": {
+   "elevation": null
+  },
+  "portugal/lisbon": {
+   "elevation": null
+  },
+  "portugal/madeira": {
+   "elevation": 50
+  },
+  "seychelles/seychelles": {
+   "elevation": 20
+  },
+  "singapore/singapore": {
+   "elevation": null
+  },
+  "south-africa/cape-town": {
+   "elevation": null
+  },
+  "spain/alcudia": {
+   "elevation": null
+  },
+  "spain/benalmadena": {
+   "elevation": null
+  },
+  "spain/benidorm": {
+   "elevation": null
+  },
+  "spain/corralejo": {
+   "elevation": 20
+  },
+  "spain/costa-adeje": {
+   "elevation": 20
+  },
+  "spain/fuengirola": {
+   "elevation": null
+  },
+  "spain/fuerteventura": {
+   "elevation": 20,
+   "fetched": "2026-09-28"
+  },
+  "spain/gran-canaria": {
+   "elevation": 20,
+   "fetched": "2026-09-28"
+  },
+  "spain/ibiza": {
+   "elevation": null
+  },
+  "spain/lanzarote": {
+   "elevation": 20,
+   "lat": 29.0,
+   "lon": -13.62
+  },
+  "spain/lloret-de-mar": {
+   "elevation": null
+  },
+  "spain/malaga": {
+   "elevation": null
+  },
+  "spain/mallorca": {
+   "elevation": null,
+   "fetched": "2026-09-28"
+  },
+  "spain/maspalomas": {
+   "elevation": 20
+  },
+  "spain/menorca": {
+   "elevation": null
+  },
+  "spain/playa-blanca": {
+   "elevation": 20
+  },
+  "spain/puerto-de-la-cruz": {
+   "elevation": null
+  },
+  "spain/tenerife": {
+   "elevation": 50
+  },
+  "spain/torremolinos": {
+   "elevation": null
+  },
+  "sri-lanka/colombo": {
+   "elevation": null
+  },
+  "tanzania/zanzibar": {
+   "elevation": null
+  },
+  "thailand/koh-samui": {
+   "elevation": 20
+  },
+  "thailand/phuket": {
+   "elevation": 20
+  },
+  "tunisia/djerba": {
+   "elevation": null
+  },
+  "usa/honolulu": {
+   "elevation": null
+  },
+  "usa/miami": {
+   "elevation": null
+  }
+ },
  "cities": {
   "italy/rome": {
    "tMax": [
@@ -5549,74 +5696,74 @@
   },
   "spain/gran-canaria": {
    "tMax": [
-    19.1,
-    18.6,
-    19.1,
-    20,
-    21.2,
-    22.4,
-    23.2,
+    20.7,
+    20.7,
+    21.7,
+    22.2,
     24.1,
-    24.5,
-    24.1,
-    22,
-    20.2
+    25.7,
+    28.2,
+    29.7,
+    27.7,
+    26.4,
+    23.6,
+    21.7
    ],
    "tMin": [
-    16.9,
-    16.3,
-    16.5,
-    17.4,
-    18.5,
-    19.8,
-    20.8,
-    21.7,
-    22,
-    21.6,
-    19.9,
-    18.1
+    15.3,
+    15.2,
+    15.7,
+    16.4,
+    18,
+    19.5,
+    21.3,
+    22.8,
+    21.8,
+    20.9,
+    18.7,
+    16.7
    ],
    "precipMm": [
-    13,
-    18,
-    13,
     8,
-    4,
-    1,
-    1,
-    4,
-    8,
+    20,
     19,
-    22,
-    18
+    21,
+    9,
+    4,
+    1,
+    1,
+    7,
+    26,
+    18,
+    9
    ],
    "humidity": [
-    73,
-    76,
-    77,
-    76,
-    77,
-    80,
-    83,
-    84,
-    80,
-    77,
-    76,
-    74
+    65,
+    65,
+    67,
+    71,
+    67,
+    68,
+    64,
+    62,
+    69,
+    69,
+    70,
+    66
    ],
    "cloud": [
-    28,
     29,
     29,
-    27,
-    27,
-    22,
-    18,
-    20,
-    23,
     32,
-    35,
-    31
+    36,
+    33,
+    19,
+    10,
+    12,
+    23,
+    38,
+    39,
+    32
    ]
   },
   "spain/lanzarote": {
@@ -5693,146 +5840,146 @@
   },
   "spain/fuerteventura": {
    "tMax": [
-    18.9,
-    18.6,
-    19.2,
-    20.2,
-    21.6,
-    22.7,
-    23.6,
-    24.5,
-    24.7,
-    24.1,
-    22,
-    20
+    20.9,
+    21,
+    22.3,
+    23.2,
+    25,
+    26.5,
+    28,
+    29.5,
+    28.6,
+    27.1,
+    24,
+    22
    ],
    "tMin": [
-    16.7,
-    16.1,
-    16.5,
-    17.4,
-    18.6,
-    19.8,
-    20.8,
+    14.8,
+    14.8,
+    15.3,
+    16.4,
+    17.8,
+    19.4,
+    20.6,
     21.7,
-    22,
-    21.6,
-    19.8,
-    17.9
+    21.3,
+    20.3,
+    18.2,
+    15.9
    ],
    "precipMm": [
-    11,
-    11,
+    6,
+    9,
+    9,
+    6,
+    2,
+    1,
+    0,
+    0,
     8,
-    3,
-    3,
-    1,
-    1,
-    1,
-    3,
+    13,
     14,
-    20,
-    6
+    5
    ],
    "humidity": [
-    73,
-    75,
-    77,
-    76,
-    77,
-    79,
-    82,
-    83,
-    79,
-    77,
-    75,
-    73
+    67,
+    66,
+    69,
+    68,
+    68,
+    69,
+    72,
+    71,
+    71,
+    70,
+    69,
+    67
    ],
    "cloud": [
-    30,
-    34,
-    35,
-    35,
+    36,
     39,
-    34,
-    37,
-    33,
-    28,
-    33,
-    37,
-    32
+    38,
+    42,
+    41,
+    30,
+    22,
+    22,
+    29,
+    41,
+    44,
+    36
    ]
   },
   "spain/mallorca": {
    "tMax": [
-    14.3,
-    13.8,
-    15.2,
-    17.5,
-    20.5,
-    24.9,
-    28.1,
-    28.7,
-    26,
-    22.9,
-    18.5,
-    15.8
+    14.4,
+    14.5,
+    16.6,
+    19.6,
+    23.1,
+    27.9,
+    31.1,
+    31.3,
+    27.4,
+    23.4,
+    18.4,
+    15.7
    ],
    "tMin": [
-    12.1,
-    11.3,
-    12.4,
-    14.4,
-    17.2,
-    21.2,
-    24.3,
-    25.1,
-    23.1,
-    20.2,
-    16.2,
-    13.7
+    9,
+    8.5,
+    10.2,
+    12.6,
+    15.5,
+    19.4,
+    22.5,
+    22.9,
+    20.5,
+    17.4,
+    13.4,
+    10.5
    ],
    "precipMm": [
-    51,
-    40,
-    37,
-    54,
-    26,
-    16,
-    8,
+    42,
+    41,
+    36,
+    48,
+    25,
     24,
-    59,
-    64,
-    93,
-    44
+    8,
+    11,
+    55,
+    61,
+    56,
+    27
    ],
    "humidity": [
-    76,
-    76,
-    77,
-    77,
-    74,
-    71,
-    68,
-    69,
-    70,
-    73,
+    78,
     75,
-    76
+    73,
+    72,
+    67,
+    65,
+    62,
+    66,
+    72,
+    76,
+    77,
+    79
    ],
    "cloud": [
-    54,
-    54,
-    53,
-    53,
+    47,
     46,
-    33,
-    30,
-    34,
-    46,
-    50,
-    58,
-    52
+    45,
+    47,
+    40,
+    26,
+    19,
+    24,
+    41,
+    45,
+    51,
+    49
    ]
   },
   "spain/ibiza": {

@@ -28,7 +28,7 @@ interface ClimateFile {
   source: string;
   generatedAt: string;
   /** Cities sourced from ERA5 instead of NASA POWER, with an optional fixed elevation (m). */
-  era5?: Record<string, { elevation: number | null }>;
+  era5?: Record<string, { elevation: number | null; lat?: number; lon?: number; fetched?: string; kept?: "nasa" }>;
   cities: Record<string, CityClimate>;
 }
 
