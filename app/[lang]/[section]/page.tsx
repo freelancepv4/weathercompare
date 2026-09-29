@@ -16,6 +16,8 @@ import { cityName, countryName } from "@/lib/i18n/places";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
 import { getDailySnapshot } from "@/lib/services/dailyWeather";
 import { CountriesIndex, COUNTRIES_COPY, countriesIndexStats } from "@/components/CountriesIndex";
+import { FaqPage } from "@/components/FaqPage";
+import { FAQ_COPY } from "@/lib/content/faq";
 
 // The "weather today" page refreshes hourly; the trip finder is static data
 // and simply gets re-rendered alongside it.
@@ -31,15 +33,17 @@ export function generateStaticParams() {
     { lang, section: ROUTING[lang].tripFinder },
     { lang, section: ROUTING[lang].today },
     { lang, section: ROUTING[lang].weather },
+    { lang, section: ROUTING[lang].faq },
   ]);
 }
 
-function resolve(params: Awaited<PageProps["params"]>): { locale: ContentLocale; kind: "tripFinder" | "today" | "countries" } | null {
+function resolve(params: Awaited<PageProps["params"]>): { locale: ContentLocale; kind: "tripFinder" | "today" | "countries" | "faq" } | null {
   if (!isContentLocale(params.lang)) return null;
   const r = ROUTING[params.lang];
   if (params.section === r.tripFinder) return { locale: params.lang, kind: "tripFinder" };
   if (params.section === r.today) return { locale: params.lang, kind: "today" };
   if (params.section === r.weather) return { locale: params.lang, kind: "countries" };
+  if (params.section === r.faq) return { locale: params.lang, kind: "faq" };
   return null;
 }
 
@@ -48,6 +52,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const x = resolve(params);
   if (!x) return {};
   const copy = getCopy(x.locale);
+  if (x.kind === "faq") return localizedMetadata(x.locale, { kind: "faq" }, FAQ_COPY[x.locale].title, FAQ_COPY[x.locale].desc);
   if (x.kind === "countries") {
     const t = COUNTRIES_COPY[x.locale];
     const s = countriesIndexStats(x.locale);
@@ -65,6 +70,7 @@ export default async function SectionPage(props: PageProps) {
   const { locale } = x;
 
   if (x.kind === "countries") return <CountriesIndex locale={locale} />;
+  if (x.kind === "faq") return <FaqPage locale={locale} />;
 
   if (x.kind === "today") {
     const snapshot = await getDailySnapshot();

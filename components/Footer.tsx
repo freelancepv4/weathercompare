@@ -29,6 +29,11 @@ const ALL_COUNTRIES: Record<string, string> = {
   es: "Más de 200 países →", pt: "Mais de 200 países →", nl: "Alle 200+ landen →", pl: "Ponad 200 krajów →",
 };
 
+const FAQ_LABEL: Record<string, string> = {
+  en: "Weather FAQ", it: "Domande frequenti", de: "Häufige Fragen", fr: "Questions fréquentes",
+  es: "Preguntas frecuentes", pt: "Perguntas frequentes", nl: "Veelgestelde vragen", pl: "Częste pytania",
+};
+
 export function Footer() {
   const t = useTranslations();
   const { locale, setLocale } = useI18n();
@@ -100,6 +105,7 @@ export function Footer() {
           <FooterLink href={paths.tripFinder(locale)}>{t("nav.tripFinder")}</FooterLink>
           <FooterLink href="/news">{t("nav.news")}</FooterLink>
           <FooterLink href="/guides">{t("nav.guides")}</FooterLink>
+          <FooterLink href={paths.faq(locale)}>{FAQ_LABEL[locale] ?? FAQ_LABEL.en}</FooterLink>
           <FooterLink href="/favorites">{t("nav.favorites")}</FooterLink>
         </FooterColumn>
 

@@ -65,6 +65,7 @@ function buildGroups(): Record<string, Entry[]> {
     "/guides/best-time-to-visit",
     "/trip-finder",
     "/weather-today",
+    "/faq",
   ].map((path) => ({
     url: `${siteConfig.url}${path}`,
     lastModified: new Date(),
@@ -132,6 +133,7 @@ function buildGroups(): Record<string, Entry[]> {
     { url: url(paths.today(l)), changeFrequency: "hourly" as const, priority: 0.8 },
     { url: url(paths.tripFinder(l)), changeFrequency: "monthly" as const, priority: 0.5 },
     { url: url(paths.countries(l)), changeFrequency: "weekly" as const, priority: 0.8 },
+    { url: url(paths.faq(l)), changeFrequency: "monthly" as const, priority: 0.6 },
     ...countries.map((c) => ({ url: url(paths.country(l, c.slug)), changeFrequency: "daily" as const, priority: 0.6 })),
     ...countries.flatMap((c) => c.cities.map((city) => ({ url: url(paths.city(l, c.slug, city.slug)), changeFrequency: "daily" as const, priority: city.core ? 0.8 : 0.7 }))),
     ...climateCities.map(({ country, city }) => ({ url: url(paths.bestTime(l, country.slug, city.slug)), changeFrequency: "monthly" as const, priority: 0.8 })),

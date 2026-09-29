@@ -125,7 +125,7 @@ export async function LocalizedBestTime({ locale, country, city }: { locale: Any
         )}
 
         <div className="mt-10">
-          <CityFaq title={t.faqH} items={faq} />
+          <CityFaq title={t.faqH} items={faq} locale={locale} />
         </div>
 
         <p className="mt-6 text-xs text-slate-400">{t.source}</p>

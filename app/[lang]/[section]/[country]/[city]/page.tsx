@@ -235,7 +235,7 @@ export default async function LocalizedCityPage(props: PageProps) {
             )}
           </section>
 
-          {faqItems.length > 0 && <CityFaq title={copy.faqH} items={faqItems} />}
+          {faqItems.length > 0 && <CityFaq title={copy.faqH} items={faqItems} locale={locale} />}
 
           {nearby.length > 0 && (
             <CityGrid
