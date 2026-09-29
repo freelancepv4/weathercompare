@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mail } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { PinterestIcon, InstagramIcon, FacebookIcon, LinkedInIcon, XIcon, WhatsAppIcon } from "./SocialIcons";
 import { Logo } from "./Logo";
 import { useTranslations, useI18n } from "@/lib/i18n/I18nProvider";
@@ -57,6 +57,13 @@ export function Footer() {
               className="flex items-center gap-2 text-slate-600 transition-colors hover:text-[#128C7E] dark:text-slate-300"
             >
               <WhatsAppIcon size={16} />
+              WhatsApp
+            </a>
+            <a
+              href={`tel:+${siteConfig.whatsapp}`}
+              className="flex items-center gap-2 text-slate-600 transition-colors hover:text-brand-600 dark:text-slate-300"
+            >
+              <Phone size={16} aria-hidden="true" />
               {siteConfig.phoneDisplay}
             </a>
           </address>

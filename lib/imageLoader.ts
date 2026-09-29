@@ -15,6 +15,8 @@ export default function imageLoader({ src, width, quality }: { src: string; widt
     if (oldW > 0 && oldH > 0) url.searchParams.set("h", String(Math.round((oldH * width) / oldW)));
     url.searchParams.set("auto", "compress");
     url.searchParams.set("cs", "tinysrgb");
+    // Serve WebP (smaller, "next-gen" format) — Pexels converts on the fly.
+    url.searchParams.set("fm", "webp");
     if (quality) url.searchParams.set("q", String(quality));
     return url.toString();
   }

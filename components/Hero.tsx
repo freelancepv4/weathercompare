@@ -27,7 +27,7 @@ export function Hero({ title, subtitle, links }: HeroProps = {}) {
 
       <div className="container-page relative py-9 sm:py-12">
         <div className="mx-auto max-w-2xl text-center">
-          <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-[2.75rem] animate-fade-up">
+          <h1 className="text-3xl font-bold leading-tight tracking-tight sm:text-4xl lg:text-[2.75rem]">
             {title ?? t("hero.headline")}
           </h1>
           <p className="mx-auto mt-3 max-w-xl text-sm text-white/75 sm:text-base">{subtitle ?? t("hero.subheadline")}</p>
