@@ -107,6 +107,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             __html: `(function(){if(/^\\/embed/.test(location.pathname))return;window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',wait_for_update:500});try{var c=JSON.parse(localStorage.getItem('wc_cookie_consent')||'null');if(c){gtag('consent','update',{analytics_storage:c.analytics?'granted':'denied',ad_storage:c.advertising?'granted':'denied',ad_user_data:c.advertising?'granted':'denied',ad_personalization:c.advertising?'granted':'denied'});}}catch(e){}gtag('js',new Date());gtag('config','${GA_ID}');var s=document.createElement('script');s.async=true;s.src='https://www.googletagmanager.com/gtag/js?id=${GA_ID}';document.head.appendChild(s);})();`,
           }}
         />
+        {/* Ahrefs Web Analytics: cookieless and privacy-friendly, so it
+            needs no consent and loads for every visitor. */}
+        <script src="https://analytics.ahrefs.com/analytics.js" data-key="iczzHM0Z3gGQBXEtRMJG7w" async />
       </head>
       <body className="min-h-screen flex flex-col">
         <Providers locale={siteConfig.defaultLocale}>
