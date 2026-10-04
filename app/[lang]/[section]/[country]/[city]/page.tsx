@@ -36,6 +36,8 @@ import { localizedMetadata } from "@/lib/i18n/pageMeta";
 import { LocalizedBestTime, bestTimeMetadata } from "@/components/LocalizedBestTime";
 import { bestTimeCopy } from "@/lib/i18n/bestTime";
 import { keywordsFor } from "@/lib/i18n/keywords";
+import type { ConditionCode } from "@/types/weather";
+import type { Sky } from "@/lib/i18n/copy/types";
 
 // Same cache window as the English city pages (and the providers' own fetch
 // cache) — see siteConfig.weatherCacheSeconds for the rate-limit maths.
@@ -47,6 +49,22 @@ export const dynamicParams = true;
 export function generateStaticParams() {
   return [];
 }
+
+/** Maps a provider condition code to the localized sky labels in the copy files. */
+const SKY_KEY: Record<ConditionCode, Sky> = {
+  clear: "clear",
+  "mostly-clear": "clear",
+  "partly-cloudy": "partly",
+  cloudy: "cloudy",
+  fog: "fog",
+  drizzle: "drizzle",
+  rain: "rain",
+  "heavy-rain": "rain",
+  thunderstorm: "storm",
+  snow: "snow",
+  sleet: "snow",
+  windy: "cloudy",
+};
 
 interface PageProps {
   params: Promise<{ lang: string; section: string; country: string; city: string }>;
@@ -154,7 +172,7 @@ export default async function LocalizedCityPage(props: PageProps) {
         <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">{copy.cityIntro(cn, kn)}</p>
         {primary && tomorrow && (
           <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
-            {copy.cityNow(cn, Math.round(primary.current.temperature), primary.current.conditionText, Math.round(tomorrow.tempMax), Math.round(tomorrow.tempMin), tomorrow.precipitationProbability)}
+            {copy.cityNow(cn, Math.round(primary.current.temperature), (copy.sky[SKY_KEY[primary.current.condition]] ?? copy.sky.clear).toLowerCase(),Math.round(tomorrow.tempMax), Math.round(tomorrow.tempMin), tomorrow.precipitationProbability)}
           </p>
         )}
         <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">{copy.citySources}</p>
