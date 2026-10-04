@@ -65,6 +65,7 @@ function buildGroups(): Record<string, Entry[]> {
     "/guides/best-time-to-visit",
     "/trip-finder",
     "/weather-today",
+    "/weather-tomorrow",
     "/faq",
   ].map((path) => ({
     url: `${siteConfig.url}${path}`,
@@ -131,6 +132,7 @@ function buildGroups(): Record<string, Entry[]> {
   const localized = (l: (typeof CONTENT_LOCALES)[number]): Entry[] => [
     { url: url(paths.home(l)), changeFrequency: "daily" as const, priority: 0.9 },
     { url: url(paths.today(l)), changeFrequency: "hourly" as const, priority: 0.8 },
+    { url: url(paths.tomorrow(l)), changeFrequency: "hourly" as const, priority: 0.8 },
     { url: url(paths.tripFinder(l)), changeFrequency: "monthly" as const, priority: 0.5 },
     { url: url(paths.countries(l)), changeFrequency: "weekly" as const, priority: 0.8 },
     { url: url(paths.faq(l)), changeFrequency: "monthly" as const, priority: 0.6 },

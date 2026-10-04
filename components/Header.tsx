@@ -30,6 +30,7 @@ const FLAGSHIP_CITY_PATH = "/weather/italy/rome";
 const navItems = (l: AnyLocale) =>
   [
     { key: "weatherToday", href: paths.today(l) },
+    { key: "weatherTomorrow", href: paths.tomorrow(l), wideOnly: true },
     { key: "tripFinder", href: paths.tripFinder(l) },
     { key: "compare", wideOnly: true, href: l === "en" ? `${FLAGSHIP_CITY_PATH}#compare` : `${paths.city(l, "italy", "rome")}#compare` },
     { key: "news", wideOnly: true, href: "/news" },

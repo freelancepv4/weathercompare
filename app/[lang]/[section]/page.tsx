@@ -10,6 +10,7 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
 import { TripFinder, type FinderCity } from "@/components/TripFinder";
 import { WeatherTodayView } from "@/components/today/WeatherTodayView";
+import { WeatherTomorrowView } from "@/components/today/WeatherTomorrowView";
 import { getCopy, tripUi } from "@/lib/i18n/copy";
 import { CONTENT_LOCALES, ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
@@ -32,16 +33,18 @@ export function generateStaticParams() {
   return CONTENT_LOCALES.flatMap((lang) => [
     { lang, section: ROUTING[lang].tripFinder },
     { lang, section: ROUTING[lang].today },
+    { lang, section: ROUTING[lang].tomorrow },
     { lang, section: ROUTING[lang].weather },
     { lang, section: ROUTING[lang].faq },
   ]);
 }
 
-function resolve(params: Awaited<PageProps["params"]>): { locale: ContentLocale; kind: "tripFinder" | "today" | "countries" | "faq" } | null {
+function resolve(params: Awaited<PageProps["params"]>): { locale: ContentLocale; kind: "tripFinder" | "today" | "tomorrow" | "countries" | "faq" } | null {
   if (!isContentLocale(params.lang)) return null;
   const r = ROUTING[params.lang];
   if (params.section === r.tripFinder) return { locale: params.lang, kind: "tripFinder" };
   if (params.section === r.today) return { locale: params.lang, kind: "today" };
+  if (params.section === r.tomorrow) return { locale: params.lang, kind: "tomorrow" };
   if (params.section === r.weather) return { locale: params.lang, kind: "countries" };
   if (params.section === r.faq) return { locale: params.lang, kind: "faq" };
   return null;
@@ -58,9 +61,9 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     const s = countriesIndexStats(x.locale);
     return localizedMetadata(x.locale, { kind: "countries" }, t.title, t.desc(s.countries, s.cities));
   }
-  return x.kind === "today"
-    ? localizedMetadata(x.locale, { kind: "today" }, copy.todayTitle, copy.todayDesc)
-    : localizedMetadata(x.locale, { kind: "tripFinder" }, copy.tripTitle, copy.tripDesc);
+  if (x.kind === "today") return localizedMetadata(x.locale, { kind: "today" }, copy.todayTitle, copy.todayDesc);
+  if (x.kind === "tomorrow") return localizedMetadata(x.locale, { kind: "tomorrow" }, copy.tomorrowPage.title, copy.tomorrowPage.desc);
+  return localizedMetadata(x.locale, { kind: "tripFinder" }, copy.tripTitle, copy.tripDesc);
 }
 
 export default async function SectionPage(props: PageProps) {
@@ -75,6 +78,11 @@ export default async function SectionPage(props: PageProps) {
   if (x.kind === "today") {
     const snapshot = await getDailySnapshot();
     return <WeatherTodayView locale={locale} snapshot={snapshot} />;
+  }
+
+  if (x.kind === "tomorrow") {
+    const snapshot = await getDailySnapshot();
+    return <WeatherTomorrowView locale={locale} snapshot={snapshot} />;
   }
 
   const copy = getCopy(locale);

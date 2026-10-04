@@ -98,6 +98,7 @@ export function Footer() {
         <FooterColumn title={t("footer.navigation")}>
           <FooterLink href={paths.home(locale)}>{t("nav.weather")}</FooterLink>
           <FooterLink href={paths.today(locale)}>{t("nav.weatherToday")}</FooterLink>
+          <FooterLink href={paths.tomorrow(locale)}>{t("nav.weatherTomorrow")}</FooterLink>
           {/* compare/map/alerts are sections on a city page, not the homepage
               — see the matching comment in components/Header.tsx */}
           <FooterLink href="/weather/italy/rome#compare">{t("nav.compare")}</FooterLink>

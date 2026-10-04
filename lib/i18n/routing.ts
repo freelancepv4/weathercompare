@@ -53,6 +53,8 @@ interface LocaleRouting {
   whereToGo: string;
   tripFinder: string;
   today: string;
+  /** "Weather tomorrow" page, e.g. /es/tiempo-manana */
+  tomorrow: string;
   /** "Best time to visit" guides, e.g. /de/beste-reisezeit/spain/tenerife */
   bestTime: string;
   /** Weather FAQ page, e.g. /es/preguntas-frecuentes */
@@ -73,6 +75,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "dove-andare",
     tripFinder: "trova-meta",
     today: "meteo-oggi",
+    tomorrow: "meteo-domani",
     bestTime: "quando-andare",
     faq: "domande-frequenti",
     monthSlugs: ["gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno", "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre"],
@@ -86,6 +89,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "wohin-reisen",
     tripFinder: "reiseziel-finder",
     today: "wetter-heute",
+    tomorrow: "wetter-morgen",
     bestTime: "beste-reisezeit",
     faq: "haeufige-fragen",
     monthSlugs: ["januar", "februar", "maerz", "april", "mai", "juni", "juli", "august", "september", "oktober", "november", "dezember"],
@@ -99,6 +103,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "ou-partir",
     tripFinder: "trouver-destination",
     today: "meteo-aujourdhui",
+    tomorrow: "meteo-demain",
     bestTime: "quand-partir",
     faq: "questions-frequentes",
     monthSlugs: ["janvier", "fevrier", "mars", "avril", "mai", "juin", "juillet", "aout", "septembre", "octobre", "novembre", "decembre"],
@@ -112,6 +117,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "donde-viajar",
     tripFinder: "buscador-destinos",
     today: "tiempo-hoy",
+    tomorrow: "tiempo-manana",
     bestTime: "mejor-epoca",
     faq: "preguntas-frecuentes",
     monthSlugs: ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio", "agosto", "septiembre", "octubre", "noviembre", "diciembre"],
@@ -125,6 +131,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "para-onde-viajar",
     tripFinder: "encontrar-destino",
     today: "tempo-hoje",
+    tomorrow: "tempo-amanha",
     bestTime: "melhor-epoca",
     faq: "perguntas-frequentes",
     monthSlugs: ["janeiro", "fevereiro", "marco", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"],
@@ -138,6 +145,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "waar-naartoe",
     tripFinder: "bestemming-zoeker",
     today: "weer-vandaag",
+    tomorrow: "weer-morgen",
     bestTime: "beste-reistijd",
     faq: "veelgestelde-vragen",
     monthSlugs: ["januari", "februari", "maart", "april", "mei", "juni", "juli", "augustus", "september", "oktober", "november", "december"],
@@ -151,6 +159,7 @@ export const ROUTING: Record<ContentLocale, LocaleRouting> = {
     whereToGo: "gdzie-jechac",
     tripFinder: "wyszukiwarka-kierunkow",
     today: "pogoda-dzisiaj",
+    tomorrow: "pogoda-jutro",
     bestTime: "kiedy-jechac",
     faq: "czeste-pytania",
     monthSlugs: ["styczen", "luty", "marzec", "kwiecien", "maj", "czerwiec", "lipiec", "sierpien", "wrzesien", "pazdziernik", "listopad", "grudzien"],
@@ -173,6 +182,7 @@ export const TR_ROUTING: LocaleRouting = {
   whereToGo: "nereye-gidilir",
   tripFinder: "seyahat-hava-bulucu",
   today: "bugun-hava-durumu",
+  tomorrow: "yarin-hava-durumu",
   bestTime: "ne-zaman-gidilir",
   faq: "sikca-sorulan-sorular",
   monthSlugs: ["ocak", "subat", "mart", "nisan", "mayis", "haziran", "temmuz", "agustos", "eylul", "ekim", "kasim", "aralik"],
@@ -216,6 +226,7 @@ export const paths = {
     l === "en" ? `/where-to-go/${EN_MONTHS.monthSlugs[month]}` : `/${l}/${ROUTING[l].whereToGo}/${ROUTING[l].monthSlugs[month]}`,
   tripFinder: (l: AnyLocale) => (l === "en" ? "/trip-finder" : `/${l}/${ROUTING[l].tripFinder}`),
   today: (l: AnyLocale) => (l === "en" ? "/weather-today" : `/${l}/${ROUTING[l].today}`),
+  tomorrow: (l: AnyLocale) => (l === "en" ? "/weather-tomorrow" : `/${l}/${ROUTING[l].tomorrow}`),
   faq: (l: AnyLocale) => (l === "en" ? "/faq" : `/${l}/${ROUTING[l].faq}`),
   bestTime: (l: AnyLocale, country: string, city: string) =>
     l === "en" ? `/guides/best-time-to-visit/${country}/${city}` : `/${l}/${ROUTING[l].bestTime}/${country}/${city}`,
@@ -231,6 +242,7 @@ export type PageRef =
   | { kind: "whereToGo"; month: number }
   | { kind: "tripFinder" }
   | { kind: "today" }
+  | { kind: "tomorrow" }
   | { kind: "faq" }
   | { kind: "bestTime"; country: string; city: string };
 
@@ -252,6 +264,8 @@ export function pathFor(l: AnyLocale, ref: PageRef): string {
       return paths.tripFinder(l);
     case "today":
       return paths.today(l);
+    case "tomorrow":
+      return paths.tomorrow(l);
     case "faq":
       return paths.faq(l);
     case "bestTime":
@@ -283,6 +297,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
     if (a === "where-to-go" && b && mi.monthSlugs.includes(b)) return { locale, ref: { kind: "whereToGo", month: mi.monthSlugs.indexOf(b) } };
     if (a === "trip-finder" && !b) return { locale, ref: { kind: "tripFinder" } };
     if (a === "weather-today" && !b) return { locale, ref: { kind: "today" } };
+    if (a === "weather-tomorrow" && !b) return { locale, ref: { kind: "tomorrow" } };
     if (a === "faq" && !b) return { locale, ref: { kind: "faq" } };
     if (a === "guides" && b === "best-time-to-visit" && c && d && !parts[4]) return { locale, ref: { kind: "bestTime", country: c, city: d } };
     return null;
@@ -297,6 +312,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
   if (a === r.whereToGo && b && r.monthSlugs.includes(b)) return { locale, ref: { kind: "whereToGo", month: r.monthSlugs.indexOf(b) } };
   if (a === r.tripFinder && !b) return { locale, ref: { kind: "tripFinder" } };
   if (a === r.today && !b) return { locale, ref: { kind: "today" } };
+  if (a === r.tomorrow && !b) return { locale, ref: { kind: "tomorrow" } };
   if (a === r.faq && !b) return { locale, ref: { kind: "faq" } };
   if (a === r.bestTime && b && c && !d) return { locale, ref: { kind: "bestTime", country: b, city: c } };
   return { locale, ref: { kind: "home" } };

@@ -243,4 +243,32 @@ export interface Copy {
   sky: Record<Sky, string>;
   rainChance: string;
   wind: string;
+
+  // Weather tomorrow (dedicated page — targets "weather tomorrow" style
+  // searches directly, distinct from the "today" page's forward glance) ----
+  tomorrowPage: {
+    title: string;
+    desc: string;
+    h1: string;
+    kicker: string;
+    intro: (date: string) => string;
+    updated: (time: string) => string;
+    fallback: string;
+    hottest: string;
+    coldest: string;
+    wettest: string;
+    windiest: string;
+    sunniest: string;
+    localH: (region: string) => string;
+    suggestionsH: string;
+    sugOutdoor: (city: string, t: number) => string;
+    sugUmbrella: (cities: string) => string;
+    sugUmbrellaText: string;
+    sugNoUmbrella: string;
+    sugPackH: string;
+    sugPack: (hi: number, lo: number, rainy: boolean) => string;
+    sugEscape: (city: string, t: number) => string;
+    sugWind: (city: string, kmh: number) => string;
+    backToToday: string;
+  };
 }
