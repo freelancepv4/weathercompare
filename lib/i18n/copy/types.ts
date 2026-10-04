@@ -114,6 +114,10 @@ export interface Copy {
   cityDesc: (city: string) => string;
   cityH1: (city: string) => string;
   cityIntro: (city: string, country: string) => string;
+  /** Short line shown below the intro with live current + tomorrow data for AI answerability. */
+  cityNow: (city: string, temp: number, cond: string, hi: number, lo: number, rain: number) => string;
+  /** Data-source attribution line below the intro. */
+  citySources: string;
   sourcesDown: (n: number, total: number) => string;
   unavailable: string;
   byMonthH: (city: string) => string;

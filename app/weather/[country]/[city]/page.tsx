@@ -88,23 +88,25 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   const { country, city } = found;
   const native = localCityName(country.slug, city.slug, city.name);
   // Include the local name ("Florence (Firenze)") so the page also matches
-  // searches in that form, and "10-day"/"next 10 days" phrasing people use.
-  const longNative = `${city.name} (${native}) Weather: 10-Day Forecast, Today & Tomorrow`;
+  // searches in that form, and "14-day"/"tomorrow" phrasing people use.
+  const longNative = `${city.name} (${native}) Weather — 14-Day Forecast`;
   const title = native
     ? longNative.length <= 60
       ? longNative
-      : `${city.name} (${native}) Weather: 10-Day Forecast`
-    : `${city.name} Weather Today & Tomorrow: 10-Day Forecast`;
-  const description = `${city.name}${native ? ` (${native})` : ""} weather for today, tomorrow and the next 10 days, compared across several forecast sources: hourly temperature, rain and wind.`;
+      : `${city.name} (${native}) Weather — 14-Day Forecast`
+    : `${city.name} Weather Today & Tomorrow — 14-Day Forecast`;
+  const description = `${city.name}${native ? ` (${native})` : ""} weather right now, tomorrow and the next 14 days — hourly temperature, rain probability and wind compared across three forecast sources. Updated every 12 hours.`;
   const url = `${siteConfig.url}/weather/${country.slug}/${city.slug}`;
 
   const nativeCityName = native ?? undefined;
   const nativeTerms = COUNTRY_WEATHER_TERMS[country.isoCode] ?? [];
   const keywords = [
     `${city.name} weather`,
+    `${city.name} weather today`,
+    `${city.name} weather tomorrow`,
     `${city.name} forecast`,
-    `${city.name} weather next 10 days`,
-    `${city.name} 10 day weather`,
+    `${city.name} 14 day forecast`,
+    `weather in ${city.name}`,
     ...(nativeCityName ? [`${nativeCityName} weather`] : []),
     ...(nativeCityName ? [`${nativeCityName} meteo`] : []),
     ...nativeTerms.map((term) => `${term} ${nativeCityName ?? city.name}`),
@@ -143,6 +145,10 @@ export default async function CityPage(props: PageProps) {
   const guide = getCityGuide(country.slug, city.slug);
   const heroPhoto = await getLandscapePhoto(`${city.name} ${country.name} landmark`);
 
+  // The daily list uses whichever source forecasts furthest ahead (Open-Meteo: 16 days).
+  const longestDaily = bundles.reduce((best, b) => (b.daily.length > best.length ? b.daily : best), primary?.daily ?? []);
+  const tomorrow = primary?.daily[1];
+
   // Geographically closest cities with a page (internal links between neighbours).
   const nearby = nearestCities(city, 6).map(({ country: co, city: ci }) => ({ country: co, city: ci }));
 
@@ -152,21 +158,23 @@ export default async function CityPage(props: PageProps) {
           question: `What is the weather in ${city.name} today?`,
           answer: `Right now ${city.name} shows ${primary.current.conditionLabel.toLowerCase()} conditions at around ${Math.round(
             primary.current.temperature
-          )}°C, based on ${primary.provider.name}. Compare this with the other sources above for a fuller picture.`,
+          )}°C (feels like ${Math.round(primary.current.feelsLike)}°C), based on ${primary.provider.name}. The chance of rain today is about ${primary.current.precipitationProbability}%. Compare this with the other sources above for a fuller picture.`,
         },
-        {
-          question: `What is the temperature in ${city.name}?`,
-          answer: `The current temperature in ${city.name} is approximately ${Math.round(primary.current.temperature)}°C, feeling like ${Math.round(
-            primary.current.feelsLike
-          )}°C. See the hourly forecast above for how it will change through the day.`,
-        },
+        ...(tomorrow
+          ? [
+              {
+                question: `What is the weather in ${city.name} tomorrow?`,
+                answer: `Tomorrow in ${city.name}: expect a high of ${Math.round(tomorrow.tempMax)}°C and a low of ${Math.round(tomorrow.tempMin)}°C, with a ${tomorrow.precipitationProbability}% chance of rain. See the hourly breakdown above for more detail.`,
+              },
+            ]
+          : []),
         {
           question: `Will it rain in ${city.name} today?`,
-          answer: `The precipitation probability for ${city.name} is around ${primary.current.precipitationProbability}% according to ${primary.provider.name}. Check the Rain forecast section for the hour-by-hour breakdown.`,
+          answer: `The precipitation probability for ${city.name} is around ${primary.current.precipitationProbability}% according to ${primary.provider.name}. Check the Rain forecast section for the hour-by-hour breakdown and compare with other sources.`,
         },
         {
-          question: `What is the 10-day forecast for ${city.name}?`,
-          answer: `Scroll up to the 10-day forecast section for daily highs, lows and rain probability for ${city.name}, or use the comparison chart to see how different sources see the coming days.`,
+          question: `What is the 14-day forecast for ${city.name}?`,
+          answer: `The 14-day forecast above shows daily highs, lows and rain probability for ${city.name} from multiple sources; compare them to see how confident the outlook is.`,
         },
       ]
     : [];
@@ -232,10 +240,18 @@ export default async function CityPage(props: PageProps) {
         ]}
       />
 
-      <p className="-mt-3 mb-6 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+      <p className="-mt-3 mb-4 max-w-3xl text-sm leading-relaxed text-slate-500 dark:text-slate-400">
         {city.name}
-        {nativeName ? ` (${nativeName})` : ""} weather for today, tomorrow and the next 10 days, with each source&apos;s forecast
-        side by side so you can see where they agree before you plan your day in {city.name}.
+        {nativeName ? ` (${nativeName})` : ""} weather for today, tomorrow and the next 14 days, compared across three independent forecast sources
+        so you can see where they agree before you plan your day.
+        {primary && tomorrow && (
+          <> Right now it is {Math.round(primary.current.temperature)}°C and {primary.current.conditionLabel.toLowerCase()} in {city.name}.
+          Tomorrow&apos;s forecast: highs of {Math.round(tomorrow.tempMax)}°C, lows of {Math.round(tomorrow.tempMin)}°C{tomorrow.precipitationProbability > 20 ? ` with a ${tomorrow.precipitationProbability}% chance of rain` : ""}.
+          </>
+        )}
+      </p>
+      <p className="mb-6 text-xs text-slate-400 dark:text-slate-500">
+        Sources: Open-Meteo, OpenWeather, WeatherAPI · Updated every 12 hours
       </p>
 
       {!primary ? (
@@ -261,7 +277,7 @@ export default async function CityPage(props: PageProps) {
           <AdSlot variant="banner" />
 
           <HourlyForecast hourly={primary.hourly} timeZone={city.timezone} />
-          <DailyForecast daily={bundles.reduce((best, b) => (b.daily.length > best.length ? b.daily : best), primary.daily)} />
+          <DailyForecast daily={longestDaily} />
 
           <div className="grid gap-6 lg:grid-cols-2">
             <RainSection hourly={primary.hourly} timeZone={city.timezone} />
@@ -318,14 +334,14 @@ export default async function CityPage(props: PageProps) {
 
           <section aria-labelledby="about-heading" className="rounded-xl3 border border-slate-200 bg-white p-6 dark:border-white/10 dark:bg-surface-dark-subtle sm:p-8">
             <h2 id="about-heading" className="mb-3 text-xl font-semibold text-slate-900 dark:text-white">
-              About {city.name} weather
+              {city.name} weather overview: climate, seasons and what to expect
             </h2>
             <p className="text-sm leading-relaxed text-slate-500 dark:text-slate-400">
               {city.name}
               {city.region && city.region !== city.name ? `, in ${city.region}, ${country.name},` : `, ${country.name},`} sits at approximately{" "}
               {formatCoords(city.lat, city.lon)}
-              {city.population >= 1000 ? ` and is home to about ${new Intl.NumberFormat("en-GB").format(Math.round(city.population / 1000) * 1000)} people` : ""}. The
-              forecasts above come from several independent providers, so you can see at a glance where they agree and where they differ.
+              {city.population >= 1000 ? ` and is home to about ${new Intl.NumberFormat("en-GB").format(Math.round(city.population / 1000) * 1000)} people` : ""}.
+              This page compares forecasts from three independent weather providers — Open-Meteo, OpenWeather and WeatherAPI — so you can see at a glance where they agree and where they differ. The data refreshes every 12 hours via ISR.
             </p>
             {profile.length > 0 && (
               <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{profile.join(" ")}</p>
