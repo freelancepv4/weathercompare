@@ -8,7 +8,6 @@ import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
 import { seoTitle, seoDescription } from "@/lib/seo";
-import { AdSlot } from "@/components/AdSlot";
 import { hreflang } from "@/lib/i18n/pageMeta";
 
 export const dynamic = "force-static";
@@ -142,9 +141,6 @@ export default async function WhereToGoPage(props: PageProps) {
         ))}
       </div>
 
-      <div className="mt-10">
-        <AdSlot variant="inline" />
-      </div>
 
       <nav className="mt-10 flex items-center justify-between gap-3 text-sm font-semibold" aria-label="Other months">
         <Link href={`/where-to-go/${prev.slug}`} className="inline-flex items-center gap-1.5 text-brand-600 hover:underline dark:text-brand-300">

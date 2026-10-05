@@ -7,7 +7,6 @@ import { countries, type CountrySeed, type CitySeed } from "@/config/countries";
 import { climateHighsFor } from "@/lib/data/climate";
 import { Hero } from "@/components/Hero";
 import { CityGrid } from "@/components/CityGrid";
-import { AdSlot } from "@/components/AdSlot";
 import { getCopy } from "@/lib/i18n/copy";
 import { CONTENT_LOCALES, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
@@ -136,7 +135,6 @@ export default async function LocalizedHome(props: PageProps) {
           <CityGrid title={copy.homeLocal(countryName(homeCountry.slug, homeCountry.name, locale))} items={local} {...gridProps} />
         )}
 
-        <AdSlot variant="banner" />
 
         <CityGrid title={copy.homeEurope} items={europe} {...gridProps} />
         <CityGrid title={copy.homeWorld} items={world} {...gridProps} />

@@ -3,7 +3,6 @@ import { Flame, Snowflake, CloudRain, Wind, Sun, Umbrella, Shirt, Plane, Trendin
 import { siteConfig } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { ShareBar } from "@/components/ShareBar";
-import { AdSlot } from "@/components/AdSlot";
 import { getCopy } from "@/lib/i18n/copy";
 import { paths, pathFor, monthInfo, type AnyLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
@@ -233,9 +232,6 @@ export function WeatherTodayView({ locale, snapshot }: { locale: AnyLocale; snap
         </ul>
       </section>
 
-      <div className="mt-8">
-        <AdSlot variant="banner" />
-      </div>
 
       {/* Europe */}
       {europeRest.length > 0 && (

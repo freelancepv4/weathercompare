@@ -9,7 +9,6 @@ import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
-import { AdSlot } from "@/components/AdSlot";
 import { CiteBox } from "@/components/CiteBox";
 import { monthFacts } from "@/lib/content/insights";
 import { renderInsights } from "@/lib/i18n/insights";
@@ -300,9 +299,6 @@ export default async function BestTimeToVisitCityPage(props: PageProps) {
           source="climate averages: NASA POWER / ERA5, 2011–2020"
           embedUrl={`${siteConfig.url}/embed/${country.slug}/${city.slug}`}
         />
-        <div className="mt-8">
-          <AdSlot variant="inline" />
-        </div>
       </article>
 
       {nearby.length > 0 && (

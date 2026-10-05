@@ -12,7 +12,6 @@ import { RainSection } from "@/components/RainSection";
 import { WindSection } from "@/components/WindSection";
 import { WeatherAlerts } from "@/components/WeatherAlerts";
 import { WeatherMap } from "@/components/WeatherMap";
-import { AdSlot } from "@/components/AdSlot";
 import { ErrorState } from "@/components/ErrorState";
 
 /**
@@ -95,7 +94,6 @@ export default async function SearchResultWeatherPage(props: SearchPageProps) {
 
           <ForecastComparison bundles={bundles} />
 
-          <AdSlot variant="banner" />
 
           <HourlyForecast hourly={primary.hourly} />
           <DailyForecast daily={primary.daily} />

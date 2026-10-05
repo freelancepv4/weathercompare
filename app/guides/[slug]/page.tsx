@@ -8,7 +8,6 @@ import { getLandscapePhoto } from "@/lib/providers/photos";
 import { siteConfig, defaultOgImage } from "@/config/site";
 import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
-import { AdSlot } from "@/components/AdSlot";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { GuideCard } from "@/components/GuideCard";
 import { ShareBar } from "@/components/ShareBar";
@@ -163,9 +162,6 @@ export default async function GuideArticlePage(props: PageProps) {
           />
         </div>
 
-        <div className="mt-8">
-          <AdSlot variant="inline" />
-        </div>
       </article>
 
       {relatedCities.length > 0 && (

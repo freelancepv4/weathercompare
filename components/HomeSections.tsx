@@ -4,7 +4,6 @@ import Link from "next/link";
 import { Layers, ShieldCheck, Gauge, Compass, ArrowRight, BookOpen } from "lucide-react";
 import { useTranslations } from "@/lib/i18n/I18nProvider";
 import { CityGrid, type ClimateHighs } from "./CityGrid";
-import { AdSlot } from "./AdSlot";
 import { popularCities, worldHighlights } from "@/config/countries";
 import type { ReactNode } from "react";
 
@@ -63,7 +62,6 @@ export function HomeSections({ climate, guides }: HomeSectionsProps) {
         </div>
       </section>
 
-      <AdSlot variant="banner" />
       <CityGrid title={t("home.worldSection")} items={world} climate={climate} />
 
       {guides && (

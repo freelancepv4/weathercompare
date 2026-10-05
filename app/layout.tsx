@@ -6,7 +6,6 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { LocationPrompt } from "@/components/LocationPrompt";
-import { AdSlot } from "@/components/AdSlot";
 import { AssistantWidget } from "@/components/AssistantWidget";
 
 const GA_ID = "G-1H565EMS0S";
@@ -123,8 +122,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <main id="main-content" className="flex-1">
             {children}
           </main>
-          <AdSlot variant="bottom" />
-          <AdSlot variant="side" />
           <Footer />
           <CookieConsent />
           <LocationPrompt />

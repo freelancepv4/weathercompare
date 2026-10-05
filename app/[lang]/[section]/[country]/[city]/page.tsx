@@ -21,7 +21,6 @@ import { WeatherMap } from "@/components/WeatherMap";
 import { CityFaq } from "@/components/CityFaq";
 import { CityGrid } from "@/components/CityGrid";
 import { MonthLinks } from "@/components/ClimateChart";
-import { AdSlot } from "@/components/AdSlot";
 import { InsightList } from "@/components/InsightList";
 import { monthFacts } from "@/lib/content/insights";
 import { renderInsights, insightsHeading } from "@/lib/i18n/insights";
@@ -198,7 +197,6 @@ export default async function LocalizedCityPage(props: PageProps) {
           )}
 
           <ForecastComparison bundles={bundles} timeZone={city.timezone} />
-          <AdSlot variant="banner" />
           <HourlyForecast hourly={primary.hourly} timeZone={city.timezone} />
           <DailyForecast daily={longestDaily} />
 
@@ -209,7 +207,6 @@ export default async function LocalizedCityPage(props: PageProps) {
 
           <WeatherAlerts alerts={primary.alerts} timeZone={city.timezone} />
           <WeatherMap location={location} current={primary.current} />
-          <AdSlot variant="square" />
 
           {climate && (
             <>

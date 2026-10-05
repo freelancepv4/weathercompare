@@ -11,7 +11,6 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { CityGrid } from "@/components/CityGrid";
 import { bestTimeCopy } from "@/lib/i18n/bestTime";
 import { ShareBar } from "@/components/ShareBar";
-import { AdSlot } from "@/components/AdSlot";
 import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
 import { CONTENT_LOCALES, ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
@@ -362,9 +361,6 @@ function WhereToGoView({ locale, month: i }: { locale: ContentLocale; month: num
         ))}
       </div>
 
-      <div className="mt-10">
-        <AdSlot variant="inline" />
-      </div>
 
       <nav className="mt-10 flex items-center justify-between gap-3 text-sm font-semibold" aria-label={copy.whereMonthsH}>
         <Link href={paths.whereToGo(locale, prev)} className="inline-flex items-center gap-1.5 text-brand-600 hover:underline dark:text-brand-300">

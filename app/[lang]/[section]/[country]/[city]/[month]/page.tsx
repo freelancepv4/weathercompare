@@ -10,7 +10,6 @@ import { Breadcrumb } from "@/components/Breadcrumb";
 import { HeroPhoto } from "@/components/HeroPhoto";
 import { ClimateChart } from "@/components/ClimateChart";
 import { ShareBar } from "@/components/ShareBar";
-import { AdSlot } from "@/components/AdSlot";
 import { InsightList } from "@/components/InsightList";
 import { CiteBox } from "@/components/CiteBox";
 import { monthFacts, pick } from "@/lib/content/insights";
@@ -279,9 +278,6 @@ export default async function LocalizedMonthPage(props: PageProps) {
           </section>
         </div>
 
-        <div className="mt-8">
-          <AdSlot variant="inline" />
-        </div>
 
         {siblings.length > 0 && (
           <section className="mt-10" aria-labelledby="siblings-heading">

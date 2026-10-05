@@ -146,9 +146,9 @@ every 10 minutes), a sitemap entry, and appears in "Popular locations" /
 
 ## Monetization readiness
 
-- `<AdSlot />` component renders clean, clearly-labeled placeholders
-  (`Advertisement`) — wire up Google AdSense or direct ad tags inside it
-  when ready, gated behind the "Advertising" cookie-consent category
+- No ads are currently shown (the Adsterra `AdSlot` component was removed);
+  add a new ad component gated behind the "Advertising" cookie-consent
+  category when ready
 - Architecture supports adding: user accounts, saved cities synced to a
   backend, push/email notifications, historical weather, a public API,
   premium (ad-free) tier, embeddable widgets — without restructuring
