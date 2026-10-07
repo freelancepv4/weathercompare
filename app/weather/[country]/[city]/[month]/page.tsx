@@ -135,14 +135,21 @@ export default async function CityMonthPage(props: PageProps) {
     return `${Math.abs(diff)}°C ${diff > 0 ? "warmer" : "cooler"} than ${other}`;
   };
 
-  // Three sentence structures, picked per page, so hundreds of month pages
-  // don't all open with the identical sentence.
+  // Five sentence structures, picked per page, so hundreds of month pages
+  // don't all open with the identical sentence. The last two lead with rain
+  // and with a direct question-and-answer: Search Console shows these pages
+  // already pick up impressions for literal questions ("how cold will it be
+  // in october", "does it rain a lot in january", "what is the weather like
+  // in {city} in {month}"), and an opening that answers in the first line is
+  // what a snippet or an AI answer can quote back.
   const seed = `${country.slug}/${city.slug}/${i}`;
   const cmpLine = `Daytime highs are ${compare(hi, prevHi, prev.name)} and ${compare(hi, nextHi, next.name)}.`;
   const summary = pick(`${seed}:summary`, [
     `${month.name} in ${city.name} is typically ${feel.temp}, with average daytime highs around ${r(hi)}°C (${toF(hi)}°F) and night-time lows near ${r(lo)}°C (${toF(lo)}°F). The month usually brings about ${rain} mm of rain (${feel.rain}) and is ${feel.sky}. ${cmpLine}`,
     `Expect ${feel.temp} weather in ${city.name} in ${month.name}: afternoons reach about ${r(hi)}°C (${toF(hi)}°F), while nights drop to around ${r(lo)}°C (${toF(lo)}°F). Around ${rain} mm of rain falls over the month (${feel.rain}), and skies are ${feel.sky}. ${cmpLine}`,
     `With highs near ${r(hi)}°C (${toF(hi)}°F) and lows around ${r(lo)}°C (${toF(lo)}°F), ${month.name} feels ${feel.temp} in ${city.name}. Rainfall averages about ${rain} mm (${feel.rain}) and the sky is ${feel.sky}. ${cmpLine}`,
+    `Around ${rain} mm of rain falls on ${city.name} through ${month.name} (${feel.rain}), under skies that are ${feel.sky}. Daytime temperatures settle near ${r(hi)}°C (${toF(hi)}°F) and drop to about ${r(lo)}°C (${toF(lo)}°F) after dark — ${feel.temp} for most visitors. ${cmpLine}`,
+    `How warm is ${city.name} in ${month.name}? Expect about ${r(hi)}°C (${toF(hi)}°F) by day and ${r(lo)}°C (${toF(lo)}°F) at night, which counts as ${feel.temp}. Rain averages ${rain} mm across the month (${feel.rain}) and the sky is ${feel.sky}. ${cmpLine}`,
   ]);
   const insights = renderInsights(
     "en",
@@ -226,6 +233,17 @@ export default async function CityMonthPage(props: PageProps) {
           {city.name} weather in {month.name}
         </h1>
         <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">{summary}</p>
+        {/* Where the numbers come from, stated next to the numbers themselves.
+            The CiteBox further down says the same, but a reader (or an AI
+            summarising the page) should not have to scroll past the whole
+            chart to find out these are long-term normals, not a forecast. */}
+        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
+          Climate averages for 2011–2020 (NASA POWER / ERA5) — typical conditions for the month, not a forecast.{" "}
+          <Link href="/data-sources" className="underline hover:text-brand-600">
+            How we source this
+          </Link>
+          .
+        </p>
         <InsightList className="mt-5" title={insightsHeading("en", i)} items={insights} />
         {facts.length > 0 && (
           <p className="mt-3 inline-flex flex-wrap gap-2">
@@ -305,11 +323,22 @@ export default async function CityMonthPage(props: PageProps) {
             ) : (
               <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Compare the months in the chart above to find your ideal window.</p>
             )}
+            {/* This page answers one month. Whole-year questions ("best time
+                to visit {city}", "best time to visit {country}") belong on the
+                guide and the country hub, so both are linked by name — a month
+                page was being returned for country-wide queries because
+                nothing pointed at the pages that actually answer them. */}
             <Link
               href={`/guides/best-time-to-visit/${country.slug}/${city.slug}`}
               className="mt-4 inline-block text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300"
             >
               Best time to visit {city.name} →
+            </Link>
+            <Link
+              href={`/guides/best-time-to-visit/${country.slug}`}
+              className="mt-2 block text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300"
+            >
+              Best time to visit {country.name} — all {country.cities.length} cities compared →
             </Link>
           </section>
         </div>

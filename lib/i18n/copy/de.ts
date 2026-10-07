@@ -80,6 +80,11 @@ export const de: Copy = {
     `Im ${M[x.m]} ist es ${inC(x.city)} meist ${TEMP[x.temp]}, mit Tageshöchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen Tiefstwerten um ${x.lo}°C (${x.loF}°F). Es fallen im Schnitt etwa ${x.mm} mm Regen (${RAIN[x.rain]}), und der Himmel ist ${SKY[x.sky]}. Die Höchstwerte sind ${cmp(x.dPrev, (x.m + 11) % 12)} und ${cmp(x.dNext, (x.m + 1) % 12)}.`,
   monthSummaryAlt: (x) =>
     `Mit Höchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen ${x.lo}°C (${x.loF}°F) ist der ${M[x.m]} ${inC(x.city)} meist ${TEMP[x.temp]}. Über den Monat fallen rund ${x.mm} mm Regen (${RAIN[x.rain]}), der Himmel ist ${SKY[x.sky]}.`,
+  monthSummaryAlt2: (x) =>
+    `${capI(IN[x.m]!)} fallen ${inC(x.city)} rund ${x.mm} mm Regen (${RAIN[x.rain]}), bei einem Himmel, der ${SKY[x.sky]} ist. Tagsüber liegen die Werte bei etwa ${x.hi}°C (${x.hiF}°F), nachts bei rund ${x.lo}°C (${x.loF}°F) — insgesamt ${TEMP[x.temp]}.`,
+  monthSummaryAlt3: (x) =>
+    `Wie warm ist es ${inC(x.city)} ${IN[x.m]}? Tagsüber etwa ${x.hi}°C (${x.hiF}°F), nachts rund ${x.lo}°C (${x.loF}°F) — also ${TEMP[x.temp]}. Im Monatsmittel fallen etwa ${x.mm} mm Regen (${RAIN[x.rain]}), und der Himmel ist ${SKY[x.sky]}.`,
+  monthSources: "Klimamittel 2011–2020 (NASA POWER / ERA5) — typische Werte für den Monat, keine Vorhersage.",
   factWarmest: (c, m) => `Der ${M[m]} ist meist der wärmste Monat ${inC(c)}.`,
   factCoolest: (c, m) => `Der ${M[m]} ist meist der kühlste Monat ${inC(c)}.`,
   factDriest: "Meist der trockenste Monat des Jahres.",

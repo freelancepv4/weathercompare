@@ -230,6 +230,15 @@ export const paths = {
   faq: (l: AnyLocale) => (l === "en" ? "/faq" : `/${l}/${ROUTING[l].faq}`),
   bestTime: (l: AnyLocale, country: string, city: string) =>
     l === "en" ? `/guides/best-time-to-visit/${country}/${city}` : `/${l}/${ROUTING[l].bestTime}/${country}/${city}`,
+  /**
+   * Country-level "best time to visit" hub, one level above the city guides:
+   * /guides/best-time-to-visit/spain, /de/beste-reisezeit/spain.
+   * Search Console showed country-shaped queries ("beste reisezeit panama",
+   * "quando andare in lettonia") landing on an arbitrary city or on a plain
+   * country forecast page, because no page answered them directly.
+   */
+  bestTimeCountry: (l: AnyLocale, country: string) =>
+    l === "en" ? `/guides/best-time-to-visit/${country}` : `/${l}/${ROUTING[l].bestTime}/${country}`,
   prefix,
 };
 
@@ -244,7 +253,8 @@ export type PageRef =
   | { kind: "today" }
   | { kind: "tomorrow" }
   | { kind: "faq" }
-  | { kind: "bestTime"; country: string; city: string };
+  | { kind: "bestTime"; country: string; city: string }
+  | { kind: "bestTimeCountry"; country: string };
 
 export function pathFor(l: AnyLocale, ref: PageRef): string {
   switch (ref.kind) {
@@ -270,6 +280,8 @@ export function pathFor(l: AnyLocale, ref: PageRef): string {
       return paths.faq(l);
     case "bestTime":
       return paths.bestTime(l, ref.country, ref.city);
+    case "bestTimeCountry":
+      return paths.bestTimeCountry(l, ref.country);
   }
 }
 
@@ -300,6 +312,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
     if (a === "weather-tomorrow" && !b) return { locale, ref: { kind: "tomorrow" } };
     if (a === "faq" && !b) return { locale, ref: { kind: "faq" } };
     if (a === "guides" && b === "best-time-to-visit" && c && d && !parts[4]) return { locale, ref: { kind: "bestTime", country: c, city: d } };
+    if (a === "guides" && b === "best-time-to-visit" && c && !d) return { locale, ref: { kind: "bestTimeCountry", country: c } };
     return null;
   }
   const r = ROUTING[locale];
@@ -315,6 +328,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
   if (a === r.tomorrow && !b) return { locale, ref: { kind: "tomorrow" } };
   if (a === r.faq && !b) return { locale, ref: { kind: "faq" } };
   if (a === r.bestTime && b && c && !d) return { locale, ref: { kind: "bestTime", country: b, city: c } };
+  if (a === r.bestTime && b && !c) return { locale, ref: { kind: "bestTimeCountry", country: b } };
   return { locale, ref: { kind: "home" } };
 }
 

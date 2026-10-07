@@ -70,6 +70,11 @@ export const en: Copy = {
     `${M[a.m]} in ${a.city} is typically ${TEMP[a.temp]}, with daytime highs around ${a.hi}°C (${a.hiF}°F) and night-time lows near ${a.lo}°C (${a.loF}°F). The month usually brings about ${a.mm} mm of rain (${RAIN[a.rain]}) and is ${SKY[a.sky]}. Highs are ${cmp(a.dPrev, M[(a.m + 11) % 12]!)} and ${cmp(a.dNext, M[(a.m + 1) % 12]!)}.`,
   monthSummaryAlt: (a) =>
     `Expect ${TEMP[a.temp]} weather in ${a.city} in ${M[a.m]}: afternoons reach about ${a.hi}°C (${a.hiF}°F) and nights drop to around ${a.lo}°C (${a.loF}°F). Roughly ${a.mm} mm of rain falls over the month (${RAIN[a.rain]}), with skies ${SKY[a.sky]}.`,
+  monthSummaryAlt2: (a) =>
+    `Around ${a.mm} mm of rain falls on ${a.city} through ${M[a.m]} (${RAIN[a.rain]}), under skies that are ${SKY[a.sky]}. Daytime temperatures settle near ${a.hi}°C (${a.hiF}°F) and fall to about ${a.lo}°C (${a.loF}°F) after dark — ${TEMP[a.temp]} for most visitors.`,
+  monthSummaryAlt3: (a) =>
+    `How warm is ${a.city} in ${M[a.m]}? Expect about ${a.hi}°C (${a.hiF}°F) by day and ${a.lo}°C (${a.loF}°F) at night, which counts as ${TEMP[a.temp]}. Rain averages ${a.mm} mm across the month (${RAIN[a.rain]}) and the sky is ${SKY[a.sky]}.`,
+  monthSources: "Climate averages for 2011–2020 (NASA POWER / ERA5) — typical conditions for the month, not a forecast.",
   factWarmest: (c, m) => `${M[m]} is usually ${c}'s warmest month.`,
   factCoolest: (c, m) => `${M[m]} is usually ${c}'s coolest month.`,
   factDriest: "Usually the driest month of the year.",

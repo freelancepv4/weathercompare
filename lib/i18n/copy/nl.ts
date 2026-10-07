@@ -83,6 +83,11 @@ export const nl: Copy = {
     `In ${M[x.m]} is het ${inC(x.city)} meestal ${TEMP[x.temp]}, met maxima rond ${x.hi}°C (${x.hiF}°F) en nachtelijke minima rond ${x.lo}°C (${x.loF}°F). Er valt gemiddeld zo'n ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}. De maxima zijn ${cmp(x.dPrev, (x.m + 11) % 12)} en ${cmp(x.dNext, (x.m + 1) % 12)}.`,
   monthSummaryAlt: (x) =>
     `Met maxima rond ${x.hi}°C (${x.hiF}°F) en nachten van zo'n ${x.lo}°C (${x.loF}°F) is ${M[x.m]} ${inC(x.city)} meestal ${TEMP[x.temp]}. Over de hele maand valt ongeveer ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}.`,
+  monthSummaryAlt2: (x) =>
+    `In ${M[x.m]} valt er ${inC(x.city)} ongeveer ${x.mm} mm regen (${RAIN[x.rain]}), bij een lucht die ${SKY[x.sky]} is. Overdag blijft het rond ${x.hi}°C (${x.hiF}°F) en 's nachts zakt het naar zo'n ${x.lo}°C (${x.loF}°F): een ${TEMP[x.temp]} maand.`,
+  monthSummaryAlt3: (x) =>
+    `Hoe warm is het ${inC(x.city)} in ${M[x.m]}? Overdag ongeveer ${x.hi}°C (${x.hiF}°F) en 's nachts zo'n ${x.lo}°C (${x.loF}°F), dus ${TEMP[x.temp]}. Er valt gemiddeld ${x.mm} mm regen in de maand (${RAIN[x.rain]}) en het is ${SKY[x.sky]}.`,
+  monthSources: "Klimaatgemiddelden 2011–2020 (NASA POWER / ERA5) — typische waarden voor de maand, geen verwachting.",
   factWarmest: (c, m) => `${cap(M[m]!)} is meestal de warmste maand ${inC(c)}.`,
   factCoolest: (c, m) => `${cap(M[m]!)} is meestal de koelste maand ${inC(c)}.`,
   factDriest: "Meestal de droogste maand van het jaar.",

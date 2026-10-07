@@ -18,6 +18,7 @@ import { getCopy, describeIdx, packingKeys, bestMonths, joinList, toF } from "@/
 import { ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
 import { bestTimeCopy, goodMonthFaq } from "@/lib/i18n/bestTime";
+import { bestTimeCountryCopy } from "@/lib/i18n/bestTimeCountry";
 import { keywordsFor } from "@/lib/i18n/keywords";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
 
@@ -114,7 +115,16 @@ export default async function LocalizedMonthPage(props: PageProps) {
     dPrev: r(hi - climate.tMax[prev]!),
     dNext: r(hi - climate.tMax[next]!),
   };
-  const summary = pick(`${country.slug}/${city.slug}/${i}:summary`, [copy.monthSummary, copy.monthSummaryAlt])(summaryArgs);
+  // Four opening structures rather than two. monthSummaryAlt2/3 are optional
+  // on Copy, so a language that has not filled them in yet simply falls back
+  // to the first two instead of breaking the build.
+  const summaryPool = [
+    copy.monthSummary,
+    copy.monthSummaryAlt,
+    copy.monthSummaryAlt2 ?? copy.monthSummary,
+    copy.monthSummaryAlt3 ?? copy.monthSummaryAlt,
+  ];
+  const summary = pick(`${country.slug}/${city.slug}/${i}:summary`, summaryPool)(summaryArgs);
   const packing = packingKeys(climate, i).map((k) => copy.pack[k]);
   const insights = renderInsights(
     locale,
@@ -187,6 +197,10 @@ export default async function LocalizedMonthPage(props: PageProps) {
         </p>
         <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{copy.monthH1(cn, i)}</h1>
         <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">{summary}</p>
+        {/* Where the numbers come from, stated next to the numbers themselves
+            (the CiteBox further down repeats it, but only after the chart).
+            Optional on Copy, so a language without the line renders nothing. */}
+        {copy.monthSources && <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">{copy.monthSources}</p>}
         <InsightList className="mt-5" title={insightsHeading(locale, i)} items={insights} />
         {facts.length > 0 && (
           <p className="mt-3 inline-flex flex-wrap gap-2">
@@ -227,6 +241,15 @@ export default async function LocalizedMonthPage(props: PageProps) {
             className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-5 py-2.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200"
           >
             <CalendarDays size={16} aria-hidden="true" /> {bestTimeCopy(locale).h1(cn)}
+          </Link>
+          {/* Up to the country hub. A single month page was being returned for
+              whole-country queries ("beste reisezeit panama"); this gives
+              those queries an internal target with matching anchor text. */}
+          <Link
+            href={paths.bestTimeCountry(locale, country.slug)}
+            className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-5 py-2.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200"
+          >
+            <Compass size={16} aria-hidden="true" /> {bestTimeCountryCopy(locale).h1(kn)}
           </Link>
         </div>
 

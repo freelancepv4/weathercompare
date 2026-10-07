@@ -73,6 +73,11 @@ export const es: Copy = {
     `En ${M[x.m]}, el tiempo en ${x.city} suele ser ${TEMP[x.temp]}, con máximas de unos ${x.hi}°C (${x.hiF}°F) y mínimas nocturnas cercanas a ${x.lo}°C (${x.loF}°F). Caen de media unos ${x.mm} mm de lluvia (${RAIN[x.rain]}) y el cielo está ${SKY[x.sky]}. Las máximas son ${cmp(x.dPrev, (x.m + 11) % 12)} y ${cmp(x.dNext, (x.m + 1) % 12)}.`,
   monthSummaryAlt: (x) =>
     `Con máximas cercanas a ${x.hi}°C (${x.hiF}°F) y noches en torno a ${x.lo}°C (${x.loF}°F), ${M[x.m]} es un mes ${TEMP[x.temp]} en ${x.city}. A lo largo del mes caen unos ${x.mm} mm de lluvia (${RAIN[x.rain]}) y el cielo suele estar ${SKY[x.sky]}.`,
+  monthSummaryAlt2: (x) =>
+    `En ${x.city} caen unos ${x.mm} mm de lluvia durante ${M[x.m]} (${RAIN[x.rain]}), con un cielo ${SKY[x.sky]}. Las temperaturas se mantienen cerca de ${x.hi}°C (${x.hiF}°F) de día y bajan hasta unos ${x.lo}°C (${x.loF}°F) por la noche: un mes ${TEMP[x.temp]}.`,
+  monthSummaryAlt3: (x) =>
+    `¿Qué temperatura hace en ${x.city} en ${M[x.m]}? Unos ${x.hi}°C (${x.hiF}°F) durante el día y unos ${x.lo}°C (${x.loF}°F) por la noche, lo que se considera ${TEMP[x.temp]}. La lluvia media del mes es de unos ${x.mm} mm (${RAIN[x.rain]}) y el cielo está ${SKY[x.sky]}.`,
+  monthSources: "Medias climáticas de 2011–2020 (NASA POWER / ERA5): condiciones típicas del mes, no una previsión.",
   factWarmest: (c, m) => `${cap(M[m]!)} suele ser el mes más caluroso en ${c}.`,
   factCoolest: (c, m) => `${cap(M[m]!)} suele ser el mes más frío en ${c}.`,
   factDriest: "Suele ser el mes más seco del año.",

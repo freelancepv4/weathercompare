@@ -147,6 +147,31 @@ export interface Copy {
   monthSummary: (a: MonthSummaryArgs) => string;
   /** A second sentence structure, so month pages don't all read alike. */
   monthSummaryAlt: (a: MonthSummaryArgs) => string;
+  /**
+   * Third and fourth sentence structures. Four openings instead of two
+   * halves how often two month pages picked by the same hash bucket read
+   * alike — with ~175k month pages, two variants was not enough spread.
+   * Optional so a language can be added without filling every variant: the
+   * month pages fall back to the first two (see the summary pool there).
+   */
+  monthSummaryAlt2?: (a: MonthSummaryArgs) => string;
+  /**
+   * Deliberately opens as a question-and-answer ("How warm is X in May?
+   * About 24°C by day…"), because that is the literal shape of the queries
+   * these pages already rank for — "hoe warm is het in lissabon in oktober",
+   * "qué temperatura hace en…", "how cold will it be in october" — and the
+   * answer sentence is what a snippet or an AI answer can lift verbatim.
+   */
+  monthSummaryAlt3?: (a: MonthSummaryArgs) => string;
+  /**
+   * Visible provenance line under the month-page H1: which dataset the
+   * averages come from, over which period, and that they are long-term
+   * normals rather than a forecast. City pages already carry the equivalent
+   * (citySources); month pages only stated their source down in the CiteBox,
+   * far below the numbers people actually read. Optional, so a language
+   * without it simply renders no line.
+   */
+  monthSources?: string;
   factWarmest: (city: string, m: number) => string;
   factCoolest: (city: string, m: number) => string;
   factDriest: string;

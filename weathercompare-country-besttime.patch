@@ -1,0 +1,2285 @@
+From 014d8a662f5eb6c71aff5bc4210aa85f38adf965 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Wed, 7 Oct 2026 11:23:54 +0200
+Subject: [PATCH] Add country-level best-time pages; fix variant hash and
+ content variety
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+Country-shaped queries had no page to land on. Search Console showed
+"beste reisezeit panama" answered by Panama City Beach in Florida,
+"polen beste reisezeit" by Szczecin, "quando andare in lettonia" by a
+plain country forecast page, and "beste reisezeit fortaleza" by that
+city's July page — a single month answering a whole-year question.
+
+- New /guides/best-time-to-visit/{country} and /{lang}/{bestTime}/{country}
+  for 225 countries in 8 languages. Headline figures average the
+  destinations travellers actually ask about rather than every town, and
+  each page reports its own within-country spread (Japan: Ishigaki 21°C
+  vs Sapporo -4°C in January), which is different for every country.
+- The hubs link to all 1,822 city best-time pages by name, which is the
+  structural fix for month pages outranking them; month pages now also
+  link up to the hub.
+- pick() mixed the FNV hash before the modulo. FNV-1a's low bit is the
+  XOR-parity of the input, so pick(seed+":a",2) and pick(seed+":b",2)
+  were perfectly correlated: the three "independent" choices on a city
+  page were one coin flip, and 1,800 city pages rendered 2 distinct
+  paragraphs instead of 8. Now 48, worst-case repetition 55.6% -> 3.0%.
+- Four month-summary openings per language instead of two, one of them
+  shaped as a question and its answer to match the queries these pages
+  already receive; visible climate-source line on month pages.
+
+No preposition is ever placed in front of a country name: these strings
+serve 225 countries and every language inflects differently ("au Japon",
+"aux Pays-Bas", "in die Türkei", "w Hiszpanii"), so headings use
+apposition and body text refers back to "the country".
+
+Verified: tsc --noEmit clean, next build clean (4,414 pages), on-demand
+rendering checked for Panama/Poland/Latvia/Japan in en/de/it/fr.
+---
+ .../[country]/[city]/[month]/page.tsx         |  25 +-
+ app/[lang]/[section]/[country]/page.tsx       |  46 +-
+ .../best-time-to-visit/[country]/page.tsx     |  75 ++
+ app/guides/best-time-to-visit/page.tsx        |  24 +-
+ app/weather/[country]/[city]/[month]/page.tsx |  33 +-
+ components/BestTimeCountryView.tsx            | 363 +++++++++
+ lib/content/cityProfile.ts                    | 120 ++-
+ lib/content/countryClimate.ts                 | 275 +++++++
+ lib/content/insights.ts                       |  22 +-
+ lib/i18n/bestTimeCountry.ts                   | 732 ++++++++++++++++++
+ lib/i18n/copy/de.ts                           |   5 +
+ lib/i18n/copy/en.ts                           |   5 +
+ lib/i18n/copy/es.ts                           |   5 +
+ lib/i18n/copy/fr.ts                           |   5 +
+ lib/i18n/copy/it.ts                           |   5 +
+ lib/i18n/copy/nl.ts                           |   5 +
+ lib/i18n/copy/pl.ts                           |   5 +
+ lib/i18n/copy/pt.ts                           |   5 +
+ lib/i18n/copy/types.ts                        |  25 +
+ lib/i18n/routing.ts                           |  16 +-
+ lib/sitemapEntries.ts                         |  14 +-
+ 21 files changed, 1778 insertions(+), 32 deletions(-)
+ create mode 100644 app/guides/best-time-to-visit/[country]/page.tsx
+ create mode 100644 components/BestTimeCountryView.tsx
+ create mode 100644 lib/content/countryClimate.ts
+ create mode 100644 lib/i18n/bestTimeCountry.ts
+
+diff --git a/app/[lang]/[section]/[country]/[city]/[month]/page.tsx b/app/[lang]/[section]/[country]/[city]/[month]/page.tsx
+index 5aaa42e..77e1d3b 100644
+--- a/app/[lang]/[section]/[country]/[city]/[month]/page.tsx
++++ b/app/[lang]/[section]/[country]/[city]/[month]/page.tsx
+@@ -18,6 +18,7 @@ import { getCopy, describeIdx, packingKeys, bestMonths, joinList, toF } from "@/
+ import { ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
+ import { cityName, countryName } from "@/lib/i18n/places";
+ import { bestTimeCopy, goodMonthFaq } from "@/lib/i18n/bestTime";
++import { bestTimeCountryCopy } from "@/lib/i18n/bestTimeCountry";
+ import { keywordsFor } from "@/lib/i18n/keywords";
+ import { localizedMetadata } from "@/lib/i18n/pageMeta";
+ 
+@@ -114,7 +115,16 @@ export default async function LocalizedMonthPage(props: PageProps) {
+     dPrev: r(hi - climate.tMax[prev]!),
+     dNext: r(hi - climate.tMax[next]!),
+   };
+-  const summary = pick(`${country.slug}/${city.slug}/${i}:summary`, [copy.monthSummary, copy.monthSummaryAlt])(summaryArgs);
++  // Four opening structures rather than two. monthSummaryAlt2/3 are optional
++  // on Copy, so a language that has not filled them in yet simply falls back
++  // to the first two instead of breaking the build.
++  const summaryPool = [
++    copy.monthSummary,
++    copy.monthSummaryAlt,
++    copy.monthSummaryAlt2 ?? copy.monthSummary,
++    copy.monthSummaryAlt3 ?? copy.monthSummaryAlt,
++  ];
++  const summary = pick(`${country.slug}/${city.slug}/${i}:summary`, summaryPool)(summaryArgs);
+   const packing = packingKeys(climate, i).map((k) => copy.pack[k]);
+   const insights = renderInsights(
+     locale,
+@@ -187,6 +197,10 @@ export default async function LocalizedMonthPage(props: PageProps) {
+         </p>
+         <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{copy.monthH1(cn, i)}</h1>
+         <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">{summary}</p>
++        {/* Where the numbers come from, stated next to the numbers themselves
++            (the CiteBox further down repeats it, but only after the chart).
++            Optional on Copy, so a language without the line renders nothing. */}
++        {copy.monthSources && <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">{copy.monthSources}</p>}
+         <InsightList className="mt-5" title={insightsHeading(locale, i)} items={insights} />
+         {facts.length > 0 && (
+           <p className="mt-3 inline-flex flex-wrap gap-2">
+@@ -228,6 +242,15 @@ export default async function LocalizedMonthPage(props: PageProps) {
+           >
+             <CalendarDays size={16} aria-hidden="true" /> {bestTimeCopy(locale).h1(cn)}
+           </Link>
++          {/* Up to the country hub. A single month page was being returned for
++              whole-country queries ("beste reisezeit panama"); this gives
++              those queries an internal target with matching anchor text. */}
++          <Link
++            href={paths.bestTimeCountry(locale, country.slug)}
++            className="inline-flex items-center gap-2 rounded-full border border-emerald-200 bg-emerald-50 px-5 py-2.5 text-sm font-semibold text-emerald-800 hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-200"
++          >
++            <Compass size={16} aria-hidden="true" /> {bestTimeCountryCopy(locale).h1(kn)}
++          </Link>
+         </div>
+ 
+         <ShareBar
+diff --git a/app/[lang]/[section]/[country]/page.tsx b/app/[lang]/[section]/[country]/page.tsx
+index 9582eec..7ea484c 100644
+--- a/app/[lang]/[section]/[country]/page.tsx
++++ b/app/[lang]/[section]/[country]/page.tsx
+@@ -15,9 +15,22 @@ import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
+ import { CONTENT_LOCALES, ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
+ import { cityName, countryName } from "@/lib/i18n/places";
+ import { localizedMetadata } from "@/lib/i18n/pageMeta";
++import { BestTimeCountryView } from "@/components/BestTimeCountryView";
++import { analyseCountryClimate, countriesWithClimate } from "@/lib/content/countryClimate";
++import { bestTimeCountryCopy } from "@/lib/i18n/bestTimeCountry";
+ 
+ export const dynamic = "force-static";
+-export const dynamicParams = false;
++// Was `false`. The country-level best-time hub added below exists for 225
++// countries in 7 languages; pre-rendering all of them would roughly double
++// this route's share of the build for pages most of which are rarely hit.
++// Instead the busiest ones are pre-built and the rest render on first
++// request and are then cached — the same trade the English guides make.
++// Unknown sections still 404: resolve() returns null and the page calls
++// notFound().
++export const dynamicParams = true;
++
++/** Country best-time hubs pre-rendered per language (largest countries first). */
++const PREBUILT_BEST_TIME_COUNTRIES = 40;
+ 
+ interface PageProps {
+   params: Promise<{ lang: string; section: string; country: string }>;
+@@ -25,13 +38,21 @@ interface PageProps {
+ 
+ export function generateStaticParams() {
+   const hasClimate = citiesWithClimate().length > 0;
++  const bestTimeCountries = countriesWithClimate(countries)
++    .slice()
++    .sort((a, b) => b.cities.length - a.cities.length)
++    .slice(0, PREBUILT_BEST_TIME_COUNTRIES);
+   return CONTENT_LOCALES.flatMap((lang) => [
+     ...countries.map((c) => ({ lang, section: ROUTING[lang].weather, country: c.slug })),
+     ...(hasClimate ? ROUTING[lang].monthSlugs.map((m) => ({ lang, section: ROUTING[lang].whereToGo, country: m })) : []),
++    ...bestTimeCountries.map((c) => ({ lang, section: ROUTING[lang].bestTime, country: c.slug })),
+   ]);
+ }
+ 
+-type Resolved = { locale: ContentLocale; kind: "country"; country: CountrySeed } | { locale: ContentLocale; kind: "whereToGo"; month: number };
++type Resolved =
++  | { locale: ContentLocale; kind: "country"; country: CountrySeed }
++  | { locale: ContentLocale; kind: "whereToGo"; month: number }
++  | { locale: ContentLocale; kind: "bestTimeCountry"; country: CountrySeed };
+ 
+ function resolve(p: Awaited<PageProps["params"]>): Resolved | null {
+   if (!isContentLocale(p.lang)) return null;
+@@ -44,6 +65,12 @@ function resolve(p: Awaited<PageProps["params"]>): Resolved | null {
+     const month = r.monthSlugs.indexOf(p.country);
+     return month >= 0 ? { locale: p.lang, kind: "whereToGo", month } : null;
+   }
++  // /de/beste-reisezeit/spain — the country hub. The city guides at
++  // /de/beste-reisezeit/spain/tenerife are handled one level deeper.
++  if (p.section === r.bestTime) {
++    const country = countries.find((c) => c.slug === p.country);
++    return country && analyseCountryClimate(country) ? { locale: p.lang, kind: "bestTimeCountry", country } : null;
++  }
+   return null;
+ }
+ 
+@@ -57,6 +84,20 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
+     const cities = x.country.cities.slice(0, 5).map((c) => cityName(c.slug, c.name, x.locale));
+     return localizedMetadata(x.locale, { kind: "country", country: x.country.slug }, copy.countryTitle(k), copy.countryDesc(k, joinList(x.locale, cities)));
+   }
++  if (x.kind === "bestTimeCountry") {
++    const analysis = analyseCountryClimate(x.country);
++    if (!analysis) return {};
++    const t = bestTimeCountryCopy(x.locale);
++    const k = countryName(x.country.slug, x.country.name, x.locale);
++    const best = joinList(x.locale, analysis.best.map((m) => monthInfo(x.locale).monthNames[m]!));
++    return localizedMetadata(
++      x.locale,
++      { kind: "bestTimeCountry", country: x.country.slug },
++      t.title(k),
++      t.desc(k, best, analysis.bestLo, analysis.bestHi),
++      { keywords: t.keywords(k) }
++    );
++  }
+   return localizedMetadata(x.locale, { kind: "whereToGo", month: x.month }, copy.whereTitle(x.month), copy.whereDesc(x.month));
+ }
+ 
+@@ -64,6 +105,7 @@ export default async function SlugPage(props: PageProps) {
+   const params = await props.params;
+   const x = resolve(params);
+   if (!x) notFound();
++  if (x.kind === "bestTimeCountry") return <BestTimeCountryView locale={x.locale} country={x.country} />;
+   return x.kind === "country" ? <CountryView locale={x.locale} country={x.country} /> : <WhereToGoView locale={x.locale} month={x.month} />;
+ }
+ 
+diff --git a/app/guides/best-time-to-visit/[country]/page.tsx b/app/guides/best-time-to-visit/[country]/page.tsx
+new file mode 100644
+index 0000000..11f0e31
+--- /dev/null
++++ b/app/guides/best-time-to-visit/[country]/page.tsx
+@@ -0,0 +1,75 @@
++import type { Metadata } from "next";
++import { notFound } from "next/navigation";
++import { findCountry, countries } from "@/config/world";
++import { siteConfig } from "@/config/site";
++import { BestTimeCountryView } from "@/components/BestTimeCountryView";
++import { analyseCountryClimate, countriesWithClimate } from "@/lib/content/countryClimate";
++import { bestTimeCountryCopy } from "@/lib/i18n/bestTimeCountry";
++import { joinList } from "@/lib/i18n/copy";
++import { monthInfo } from "@/lib/i18n/routing";
++import { hreflang } from "@/lib/i18n/pageMeta";
++import { seoTitle, seoDescription } from "@/lib/seo";
++
++/**
++ * /guides/best-time-to-visit/{country} — the country-level hub.
++ *
++ * Sits one level above the city guides that already live at
++ * /guides/best-time-to-visit/{country}/{city}. Search Console showed
++ * country-shaped queries ("beste reisezeit panama", "polen beste reisezeit",
++ * "quando andare in lettonia") being answered by whichever single city page
++ * happened to rank — Panama City Beach in Florida for Panama, Szczecin for
++ * Poland — because nothing on the site answered at country level.
++ *
++ * Built from climate normals only, so it is fully static like the city
++ * guides. A handful of the largest countries are pre-rendered; the rest
++ * render on first request and are then cached.
++ */
++export const revalidate = false;
++export const dynamicParams = true;
++
++interface PageProps {
++  params: Promise<{ country: string }>;
++}
++
++/**
++ * Pre-build the countries with the most cities — the ones most likely to be
++ * hit first. Everything else is generated on demand (dynamicParams), which
++ * keeps the build from growing by 225 extra pages per language.
++ */
++export function generateStaticParams() {
++  return countriesWithClimate(countries)
++    .slice()
++    .sort((a, b) => b.cities.length - a.cities.length)
++    .slice(0, 40)
++    .map((c) => ({ country: c.slug }));
++}
++
++export async function generateMetadata(props: PageProps): Promise<Metadata> {
++  const { country: slug } = await props.params;
++  const country = findCountry(slug);
++  if (!country) return {};
++  const analysis = analyseCountryClimate(country);
++  if (!analysis) return {};
++  const t = bestTimeCountryCopy("en");
++  const best = joinList("en", analysis.best.map((m) => monthInfo("en").monthNames[m]!));
++  const title = t.title(country.name);
++  const description = t.desc(country.name, best, analysis.bestLo, analysis.bestHi);
++  const url = `${siteConfig.url}/guides/best-time-to-visit/${country.slug}`;
++  return {
++    title: seoTitle(title),
++    description: seoDescription(description),
++    keywords: t.keywords(country.name),
++    alternates: { canonical: url, ...hreflang({ kind: "bestTimeCountry", country: country.slug }) },
++    openGraph: { type: "website", siteName: siteConfig.name, title, description, url },
++    twitter: { card: "summary_large_image", title, description },
++  };
++}
++
++export default async function BestTimeToVisitCountryPage(props: PageProps) {
++  const { country: slug } = await props.params;
++  const country = findCountry(slug);
++  if (!country) notFound();
++  // No climate records for any city here — nothing honest to put on the page.
++  if (!analyseCountryClimate(country)) notFound();
++  return <BestTimeCountryView locale="en" country={country} />;
++}
+diff --git a/app/guides/best-time-to-visit/page.tsx b/app/guides/best-time-to-visit/page.tsx
+index ff6efb7..2a78025 100644
+--- a/app/guides/best-time-to-visit/page.tsx
++++ b/app/guides/best-time-to-visit/page.tsx
+@@ -58,13 +58,23 @@ export default function BestTimeToVisitIndexPage() {
+ 
+       <div className="space-y-12">
+         {countries.map((country) => (
+-          <CityGrid
+-            key={country.slug}
+-            title={country.name}
+-            items={country.cities.map((city) => ({ country, city }))}
+-            climate={climateHighsFor(country.cities.map((city) => ({ country, city })))}
+-            hrefFor={(c, city) => `/guides/best-time-to-visit/${c.slug}/${city.slug}`}
+-          />
++          <div key={country.slug}>
++            <CityGrid
++              title={country.name}
++              items={country.cities.map((city) => ({ country, city }))}
++              climate={climateHighsFor(country.cities.map((city) => ({ country, city })))}
++              hrefFor={(c, city) => `/guides/best-time-to-visit/${c.slug}/${city.slug}`}
++            />
++            {/* Entry point for the country-level question. The city grid above
++                answers "when should I go to Seville"; this answers "when
++                should I go to Spain", which is a different search. */}
++            <Link
++              href={`/guides/best-time-to-visit/${country.slug}`}
++              className="mt-3 inline-block text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300"
++            >
++              Best time to visit {country.name}: every city compared →
++            </Link>
++          </div>
+         ))}
+       </div>
+     </div>
+diff --git a/app/weather/[country]/[city]/[month]/page.tsx b/app/weather/[country]/[city]/[month]/page.tsx
+index 289aa14..5810774 100644
+--- a/app/weather/[country]/[city]/[month]/page.tsx
++++ b/app/weather/[country]/[city]/[month]/page.tsx
+@@ -135,14 +135,21 @@ export default async function CityMonthPage(props: PageProps) {
+     return `${Math.abs(diff)}°C ${diff > 0 ? "warmer" : "cooler"} than ${other}`;
+   };
+ 
+-  // Three sentence structures, picked per page, so hundreds of month pages
+-  // don't all open with the identical sentence.
++  // Five sentence structures, picked per page, so hundreds of month pages
++  // don't all open with the identical sentence. The last two lead with rain
++  // and with a direct question-and-answer: Search Console shows these pages
++  // already pick up impressions for literal questions ("how cold will it be
++  // in october", "does it rain a lot in january", "what is the weather like
++  // in {city} in {month}"), and an opening that answers in the first line is
++  // what a snippet or an AI answer can quote back.
+   const seed = `${country.slug}/${city.slug}/${i}`;
+   const cmpLine = `Daytime highs are ${compare(hi, prevHi, prev.name)} and ${compare(hi, nextHi, next.name)}.`;
+   const summary = pick(`${seed}:summary`, [
+     `${month.name} in ${city.name} is typically ${feel.temp}, with average daytime highs around ${r(hi)}°C (${toF(hi)}°F) and night-time lows near ${r(lo)}°C (${toF(lo)}°F). The month usually brings about ${rain} mm of rain (${feel.rain}) and is ${feel.sky}. ${cmpLine}`,
+     `Expect ${feel.temp} weather in ${city.name} in ${month.name}: afternoons reach about ${r(hi)}°C (${toF(hi)}°F), while nights drop to around ${r(lo)}°C (${toF(lo)}°F). Around ${rain} mm of rain falls over the month (${feel.rain}), and skies are ${feel.sky}. ${cmpLine}`,
+     `With highs near ${r(hi)}°C (${toF(hi)}°F) and lows around ${r(lo)}°C (${toF(lo)}°F), ${month.name} feels ${feel.temp} in ${city.name}. Rainfall averages about ${rain} mm (${feel.rain}) and the sky is ${feel.sky}. ${cmpLine}`,
++    `Around ${rain} mm of rain falls on ${city.name} through ${month.name} (${feel.rain}), under skies that are ${feel.sky}. Daytime temperatures settle near ${r(hi)}°C (${toF(hi)}°F) and drop to about ${r(lo)}°C (${toF(lo)}°F) after dark — ${feel.temp} for most visitors. ${cmpLine}`,
++    `How warm is ${city.name} in ${month.name}? Expect about ${r(hi)}°C (${toF(hi)}°F) by day and ${r(lo)}°C (${toF(lo)}°F) at night, which counts as ${feel.temp}. Rain averages ${rain} mm across the month (${feel.rain}) and the sky is ${feel.sky}. ${cmpLine}`,
+   ]);
+   const insights = renderInsights(
+     "en",
+@@ -226,6 +233,17 @@ export default async function CityMonthPage(props: PageProps) {
+           {city.name} weather in {month.name}
+         </h1>
+         <p className="mt-4 text-base leading-relaxed text-slate-600 dark:text-slate-300">{summary}</p>
++        {/* Where the numbers come from, stated next to the numbers themselves.
++            The CiteBox further down says the same, but a reader (or an AI
++            summarising the page) should not have to scroll past the whole
++            chart to find out these are long-term normals, not a forecast. */}
++        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
++          Climate averages for 2011–2020 (NASA POWER / ERA5) — typical conditions for the month, not a forecast.{" "}
++          <Link href="/data-sources" className="underline hover:text-brand-600">
++            How we source this
++          </Link>
++          .
++        </p>
+         <InsightList className="mt-5" title={insightsHeading("en", i)} items={insights} />
+         {facts.length > 0 && (
+           <p className="mt-3 inline-flex flex-wrap gap-2">
+@@ -305,12 +323,23 @@ export default async function CityMonthPage(props: PageProps) {
+             ) : (
+               <p className="mt-3 text-sm text-slate-600 dark:text-slate-300">Compare the months in the chart above to find your ideal window.</p>
+             )}
++            {/* This page answers one month. Whole-year questions ("best time
++                to visit {city}", "best time to visit {country}") belong on the
++                guide and the country hub, so both are linked by name — a month
++                page was being returned for country-wide queries because
++                nothing pointed at the pages that actually answer them. */}
+             <Link
+               href={`/guides/best-time-to-visit/${country.slug}/${city.slug}`}
+               className="mt-4 inline-block text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300"
+             >
+               Best time to visit {city.name} →
+             </Link>
++            <Link
++              href={`/guides/best-time-to-visit/${country.slug}`}
++              className="mt-2 block text-xs font-semibold text-brand-600 hover:underline dark:text-brand-300"
++            >
++              Best time to visit {country.name} — all {country.cities.length} cities compared →
++            </Link>
+           </section>
+         </div>
+ 
+diff --git a/components/BestTimeCountryView.tsx b/components/BestTimeCountryView.tsx
+new file mode 100644
+index 0000000..83b9656
+--- /dev/null
++++ b/components/BestTimeCountryView.tsx
+@@ -0,0 +1,363 @@
++import Link from "next/link";
++import { CalendarDays, MapPin, Thermometer, CloudRain, Info } from "lucide-react";
++import type { CountrySeed } from "@/config/world";
++import { siteConfig } from "@/config/site";
++import { analyseCountryClimate, type CountryVerdict } from "@/lib/content/countryClimate";
++import { bestTimeCountryCopy } from "@/lib/i18n/bestTimeCountry";
++import { getCopy, joinList } from "@/lib/i18n/copy";
++import { paths, monthInfo, type AnyLocale } from "@/lib/i18n/routing";
++import { cityName, countryName } from "@/lib/i18n/places";
++import { Breadcrumb } from "@/components/Breadcrumb";
++import { ShareBar } from "@/components/ShareBar";
++
++/** How many cities to show before folding the rest into a <details>. */
++const CITY_ROWS_VISIBLE = 12;
++
++const VERDICT_TONE: Record<CountryVerdict, string> = {
++  ideal: "bg-emerald-50 text-emerald-800 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-200 dark:border-emerald-500/20",
++  good: "bg-sky-50 text-sky-800 border-sky-200 dark:bg-sky-500/10 dark:text-sky-200 dark:border-sky-500/20",
++  hot: "bg-orange-50 text-orange-800 border-orange-200 dark:bg-orange-500/10 dark:text-orange-200 dark:border-orange-500/20",
++  rainy: "bg-indigo-50 text-indigo-800 border-indigo-200 dark:bg-indigo-500/10 dark:text-indigo-200 dark:border-indigo-500/20",
++  cold: "bg-slate-100 text-slate-700 border-slate-200 dark:bg-white/5 dark:text-slate-300 dark:border-white/10",
++};
++
++export function BestTimeCountryView({ locale, country }: { locale: AnyLocale; country: CountrySeed }) {
++  const analysis = analyseCountryClimate(country);
++  if (!analysis) return null;
++
++  const t = bestTimeCountryCopy(locale);
++  const copy = getCopy(locale);
++  const kn = countryName(country.slug, country.name, locale);
++  const mn = monthInfo(locale).monthNames;
++  // "in July" / "im Juli" / "a luglio" / "w lipcu" — the prepositional form.
++  // Several languages inflect the month after a preposition, so sentences
++  // that need one are given this rather than the bare name.
++  const mIn = monthInfo(locale).inMonth;
++  const name = (c: { slug: string; name: string }) => cityName(c.slug, c.name, locale);
++
++  const bestList = joinList(locale, analysis.best.map((m) => mn[m]!));
++  const shoulderList = joinList(locale, analysis.shoulder.map((m) => mn[m]!));
++  const url = `${siteConfig.url}${paths.bestTimeCountry(locale, country.slug)}`;
++  const answer = t.answer(bestList, analysis.bestHi, analysis.bestLo, analysis.bestRain);
++
++  // "Is {month} a good time?" is asked most about the peak month ("is august
++  // a good time to visit spain"), and the warmest month is stable across
++  // rebuilds — unlike "the current month", which would freeze at build time
++  // on a statically rendered page.
++  const focusMonth = analysis.warmest;
++
++  const faq: Array<{ question: string; answer: string }> = [
++    { question: t.qBest(kn), answer: t.aBest(bestList, analysis.bestHi, analysis.bestLo, analysis.bestRain) },
++    {
++      question: t.qWarmest(kn),
++      answer: t.aWarmest(mn[analysis.warmest]!, analysis.tMax[analysis.warmest]!, mn[analysis.coolest]!, analysis.tMax[analysis.coolest]!),
++    },
++    {
++      question: t.qRain(kn),
++      answer: t.aRain(mn[analysis.wettest]!, analysis.precipMm[analysis.wettest]!, mn[analysis.driest]!, analysis.precipMm[analysis.driest]!),
++    },
++    {
++      question: t.qQuiet(kn),
++      answer: analysis.shoulder.length > 0 ? t.aQuiet(shoulderList, bestList) : t.aQuietNone(bestList),
++    },
++    ...(analysis.spread
++      ? [
++          {
++            question: t.qWhereWarm(kn, mIn[analysis.spread.month]!),
++            answer: t.aWhereWarm(
++              name(analysis.spread.warm.city),
++              analysis.spread.warm.hi,
++              name(analysis.spread.cool.city),
++              analysis.spread.cool.hi,
++              mIn[analysis.spread.month]!
++            ),
++          },
++        ]
++      : []),
++    {
++      question: t.qMonthGood(kn, mn[focusMonth]!),
++      answer: t.aMonthGood(
++        mn[focusMonth]!,
++        analysis.tMax[focusMonth]!,
++        analysis.tMin[focusMonth]!,
++        analysis.precipMm[focusMonth]!,
++        analysis.best.includes(focusMonth),
++        bestList
++      ),
++    },
++  ];
++
++  const jsonLd = [
++    {
++      "@context": "https://schema.org",
++      "@type": "BreadcrumbList",
++      itemListElement: [
++        { "@type": "ListItem", position: 1, name: copy.home, item: `${siteConfig.url}${paths.home(locale)}` },
++        { "@type": "ListItem", position: 2, name: kn, item: `${siteConfig.url}${paths.country(locale, country.slug)}` },
++        { "@type": "ListItem", position: 3, name: t.breadcrumb, item: url },
++      ],
++    },
++    {
++      "@context": "https://schema.org",
++      "@type": "Article",
++      headline: t.h1(kn),
++      description: answer,
++      inLanguage: locale,
++      url,
++      author: { "@type": "Organization", name: siteConfig.name, url: siteConfig.url },
++      publisher: { "@type": "Organization", name: siteConfig.name },
++    },
++    {
++      "@context": "https://schema.org",
++      "@type": "FAQPage",
++      mainEntity: faq.map((f) => ({ "@type": "Question", name: f.question, acceptedAnswer: { "@type": "Answer", text: f.answer } })),
++    },
++  ];
++
++  const visibleCities = analysis.cityBest.slice(0, CITY_ROWS_VISIBLE);
++  const hiddenCities = analysis.cityBest.slice(CITY_ROWS_VISIBLE);
++
++  const cityRow = (row: (typeof analysis.cityBest)[number]) => (
++    <tr key={row.city.slug} className="border-b border-slate-100 last:border-0 dark:border-white/5">
++      <td className="py-2.5 pr-3">
++        <Link href={paths.bestTime(locale, country.slug, row.city.slug)} className="font-medium text-brand-700 hover:underline dark:text-brand-300">
++          {name(row.city)}
++        </Link>
++      </td>
++      <td className="py-2.5 pr-3 text-slate-600 dark:text-slate-300">{joinList(locale, row.best.map((m) => mn[m]!))}</td>
++      <td className="py-2.5 text-right tabular-nums text-slate-600 dark:text-slate-300">
++        {row.hi}° / {row.lo}°C
++      </td>
++    </tr>
++  );
++
++  return (
++    <div className="container-page py-8 sm:py-10">
++      {/* eslint-disable-next-line react/no-danger */}
++      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
++      <Breadcrumb
++        items={[
++          { label: copy.home, href: paths.home(locale) },
++          { label: kn, href: paths.country(locale, country.slug) },
++          { label: t.breadcrumb },
++        ]}
++      />
++
++      <article className="mx-auto max-w-4xl">
++        <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-widest text-emerald-600 dark:text-emerald-300">
++          <CalendarDays size={14} aria-hidden="true" /> {t.eyebrow}
++        </p>
++        <h1 className="mt-2 text-3xl font-bold text-slate-900 dark:text-white sm:text-4xl">{t.h1(kn)}</h1>
++
++        {/* The direct answer, first thing on the page: this is what a snippet
++            or an AI summary lifts, and what the country-shaped queries ask. */}
++        <p className="mt-4 text-lg leading-relaxed text-slate-700 dark:text-slate-200">{answer}</p>
++        <p className="mt-3 text-sm leading-relaxed text-slate-500 dark:text-slate-400">
++          {t.basis(analysis.representative.length, joinList(locale, analysis.representative.map((x) => name(x.city))))}
++        </p>
++        <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
++          {t.sources}{" "}
++          <Link href="/data-sources" className="underline hover:text-brand-600">
++            {t.sourcesLink}
++          </Link>
++          .
++        </p>
++
++        <ShareBar className="mt-5" url={url} title={t.h1(kn)} />
++
++        {/* Regional spread — the section that is genuinely different for every
++            country, and the honest answer to a country-wide question. */}
++        <section className="mt-10" aria-labelledby="spread-heading">
++          <h2 id="spread-heading" className="flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-white">
++            <MapPin size={18} className="text-brand-500" aria-hidden="true" /> {t.spreadH}
++          </h2>
++          {analysis.spread ? (
++            <>
++              <p className="mt-3 text-base leading-relaxed text-slate-600 dark:text-slate-300">
++                {t.spreadLead(mIn[analysis.spread.month]!, analysis.spread.gap)}{" "}
++                {t.spreadDetail(
++                  name(analysis.spread.warm.city),
++                  analysis.spread.warm.hi,
++                  name(analysis.spread.cool.city),
++                  analysis.spread.cool.hi
++                )}
++              </p>
++              <div className="mt-4 grid gap-3 sm:grid-cols-2">
++                <div className="rounded-xl2 border border-orange-200 bg-orange-50 p-4 dark:border-orange-500/20 dark:bg-orange-500/10">
++                  <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-orange-700 dark:text-orange-300">
++                    <Thermometer size={13} aria-hidden="true" /> {mn[analysis.spread.month]}
++                  </p>
++                  <p className="mt-1 text-2xl font-bold text-orange-900 dark:text-orange-100">{analysis.spread.warm.hi}°C</p>
++                  <Link
++                    href={paths.bestTime(locale, country.slug, analysis.spread.warm.city.slug)}
++                    className="text-sm font-medium text-orange-800 hover:underline dark:text-orange-200"
++                  >
++                    {name(analysis.spread.warm.city)}
++                  </Link>
++                </div>
++                <div className="rounded-xl2 border border-sky-200 bg-sky-50 p-4 dark:border-sky-500/20 dark:bg-sky-500/10">
++                  <p className="flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-sky-700 dark:text-sky-300">
++                    <Thermometer size={13} aria-hidden="true" /> {mn[analysis.spread.month]}
++                  </p>
++                  <p className="mt-1 text-2xl font-bold text-sky-900 dark:text-sky-100">{analysis.spread.cool.hi}°C</p>
++                  <Link
++                    href={paths.bestTime(locale, country.slug, analysis.spread.cool.city.slug)}
++                    className="text-sm font-medium text-sky-800 hover:underline dark:text-sky-200"
++                  >
++                    {name(analysis.spread.cool.city)}
++                  </Link>
++                </div>
++              </div>
++              <p className="mt-4 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{t.spreadAdvice}</p>
++            </>
++          ) : (
++            <p className="mt-3 text-base leading-relaxed text-slate-600 dark:text-slate-300">{t.noSpread}</p>
++          )}
++        </section>
++
++        {/* Season by season */}
++        <section className="mt-10" aria-labelledby="seasons-heading">
++          <h2 id="seasons-heading" className="text-xl font-bold text-slate-900 dark:text-white">
++            {t.seasonsH}
++          </h2>
++          <div className="mt-4 grid gap-3 sm:grid-cols-2">
++            {analysis.seasons.map((s) => (
++              <div
++                key={s.months.join("-")}
++                className={`rounded-xl2 border p-4 ${VERDICT_TONE[s.verdict]}`}
++              >
++                <div className="flex items-baseline justify-between gap-2">
++                  <p className="text-sm font-bold">{t.seasonRange(mn[s.months[0]!]!, mn[s.months[s.months.length - 1]!]!)}</p>
++                  <span className="text-xs font-semibold uppercase tracking-wide">{t.verdict[s.verdict]}</span>
++                </div>
++                <p className="mt-1 text-sm tabular-nums opacity-90">
++                  {s.hi}° / {s.lo}°C · {s.rain} mm
++                </p>
++                <p className="mt-2 text-sm leading-relaxed opacity-90">{t.verdictText[s.verdict]}</p>
++              </div>
++            ))}
++          </div>
++        </section>
++
++        {/* Month table */}
++        <section className="mt-10" aria-labelledby="months-heading">
++          <h2 id="months-heading" className="text-xl font-bold text-slate-900 dark:text-white">
++            {t.tableH(kn)}
++          </h2>
++          <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{t.tableIntro}</p>
++          <div className="mt-4 overflow-x-auto rounded-xl3 border border-slate-200 dark:border-white/10">
++            <table className="w-full min-w-[32rem] text-sm">
++              <thead className="bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500 dark:bg-white/5 dark:text-slate-400">
++                <tr>
++                  {t.cols.map((c, i) => (
++                    <th key={c} scope="col" className={`px-4 py-2.5 font-semibold ${i === 0 ? "" : "text-right"}`}>
++                      {c}
++                    </th>
++                  ))}
++                </tr>
++              </thead>
++              <tbody>
++                {mn.map((label, m) => {
++                  const isBest = analysis.best.includes(m);
++                  return (
++                    <tr
++                      key={label}
++                      className={`border-t border-slate-100 dark:border-white/5 ${isBest ? "bg-emerald-50/60 dark:bg-emerald-500/10" : ""}`}
++                    >
++                      <th scope="row" className="px-4 py-2.5 text-left font-medium text-slate-800 dark:text-slate-100">
++                        <Link href={paths.whereToGo(locale, m)} className="hover:underline">
++                          {label}
++                        </Link>
++                        {isBest && <span className="ml-2 text-xs font-semibold text-emerald-700 dark:text-emerald-300">★</span>}
++                      </th>
++                      <td className="px-4 py-2.5 text-right tabular-nums text-slate-700 dark:text-slate-200">{analysis.tMax[m]}°C</td>
++                      <td className="px-4 py-2.5 text-right tabular-nums text-slate-600 dark:text-slate-300">{analysis.tMin[m]}°C</td>
++                      <td className="px-4 py-2.5 text-right tabular-nums text-slate-600 dark:text-slate-300">{analysis.precipMm[m]} mm</td>
++                      <td className="px-4 py-2.5 text-right tabular-nums text-slate-500 dark:text-slate-400">{analysis.cloud[m]}%</td>
++                    </tr>
++                  );
++                })}
++              </tbody>
++            </table>
++          </div>
++        </section>
++
++        {/* City-by-city: the hub links that stop a single month page from
++            having to answer a whole-country question on its own. */}
++        <section className="mt-10" aria-labelledby="cities-heading">
++          <h2 id="cities-heading" className="text-xl font-bold text-slate-900 dark:text-white">
++            {t.citiesH}
++          </h2>
++          <p className="mt-2 text-sm leading-relaxed text-slate-500 dark:text-slate-400">{t.citiesIntro(analysis.cityBest.length)}</p>
++          <div className="mt-4 overflow-x-auto rounded-xl3 border border-slate-200 p-4 dark:border-white/10">
++            <table className="w-full min-w-[28rem] text-sm">
++              <thead className="text-left text-xs uppercase tracking-wide text-slate-500 dark:text-slate-400">
++                <tr>
++                  <th scope="col" className="pb-2 font-semibold">
++                    {t.cityCols[0]}
++                  </th>
++                  <th scope="col" className="pb-2 font-semibold">
++                    {t.cityCols[1]}
++                  </th>
++                  <th scope="col" className="pb-2 text-right font-semibold">
++                    {t.cityCols[2]}
++                  </th>
++                </tr>
++              </thead>
++              <tbody>{visibleCities.map(cityRow)}</tbody>
++            </table>
++            {hiddenCities.length > 0 && (
++              <details className="mt-3">
++                <summary className="cursor-pointer text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300">
++                  {t.cityMore(analysis.cityBest.length)}
++                </summary>
++                <table className="mt-2 w-full min-w-[28rem] text-sm">
++                  <tbody>{hiddenCities.map(cityRow)}</tbody>
++                </table>
++              </details>
++            )}
++          </div>
++        </section>
++
++        {/* FAQ — the literal question shapes these pages receive. */}
++        <section className="mt-10" aria-labelledby="faq-heading">
++          <h2 id="faq-heading" className="text-xl font-bold text-slate-900 dark:text-white">
++            {t.faqH}
++          </h2>
++          <div className="mt-4 space-y-3">
++            {faq.map((f) => (
++              <details key={f.question} className="rounded-xl2 border border-slate-200 bg-white p-4 dark:border-white/10 dark:bg-surface-dark-subtle">
++                <summary className="cursor-pointer text-sm font-semibold text-slate-900 dark:text-white">{f.question}</summary>
++                <p className="mt-2 text-sm leading-relaxed text-slate-600 dark:text-slate-300">{f.answer}</p>
++              </details>
++            ))}
++          </div>
++        </section>
++
++        <section className="mt-10" aria-labelledby="cta-heading">
++          <h2 id="cta-heading" className="text-xl font-bold text-slate-900 dark:text-white">
++            {t.ctaH}
++          </h2>
++          <div className="mt-4 flex flex-wrap gap-3">
++            <Link
++              href={paths.country(locale, country.slug)}
++              className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-700"
++            >
++              <CloudRain size={16} aria-hidden="true" /> {t.ctaForecast}
++            </Link>
++            <Link
++              href={paths.whereToGo(locale, analysis.best[0]!)}
++              className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 hover:border-brand-300 hover:text-brand-700 dark:border-white/10 dark:bg-surface-dark-subtle dark:text-slate-200"
++            >
++              <CalendarDays size={16} aria-hidden="true" /> {t.ctaWhere}
++            </Link>
++          </div>
++          <p className="mt-6 flex items-start gap-2 text-xs leading-relaxed text-slate-400 dark:text-slate-500">
++            <Info size={14} className="mt-0.5 shrink-0" aria-hidden="true" />
++            <span>{t.sources}</span>
++          </p>
++        </section>
++      </article>
++    </div>
++  );
++}
+diff --git a/lib/content/cityProfile.ts b/lib/content/cityProfile.ts
+index e7e1994..b40f388 100644
+--- a/lib/content/cityProfile.ts
++++ b/lib/content/cityProfile.ts
+@@ -34,83 +34,171 @@ const list = (and: string) => (a: string[]) => (a.length <= 1 ? a.join("") : `${
+ 
+ const T: Record<AnyLocale, T> = {
+   en: {
+-    climate: [(c, l) => `${c} has ${l}.`, (c, l) => `Climate-wise, ${c} has ${l}.`],
++    climate: [
++      (c, l) => `${c} has ${l}.`,
++      (c, l) => `Climate-wise, ${c} has ${l}.`,
++      (c, l) => `${c} sits in ${l}.`,
++      (c, l) => `${c} is classed as having ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `The warmest month is ${w}, with highs around ${hi}°C; the coolest is ${co}, when nights average ${lo}°C. ${we} is usually the wettest month (about ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `Expect the most heat in ${w} (about ${hi}°C by day) and the chilliest nights in ${co} (around ${lo}°C). Most rain falls in ${we}, roughly ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `${w} tops the year at about ${hi}°C by day, while ${co} brings the coldest nights at roughly ${lo}°C. The wettest stretch is ${we}, with around ${mm} mm.`,
+     ],
+     dry: (c) => `Rain is scarce in ${c} all year round.`,
+-    near: [(c, l) => `The nearest places with their own forecast page are ${l}.`, (c, l) => `Close to ${c}, you can also check ${l}.`],
++    near: [
++      (c, l) => `The nearest places with their own forecast page are ${l}.`,
++      (c, l) => `Close to ${c}, you can also check ${l}.`,
++      (c, l) => `Nearby forecasts worth a look: ${l}.`,
++      (c, l) => `Within easy reach of ${c}: ${l}.`,
++    ],
+     join: list("and"),
+   },
+   it: {
+-    climate: [(c, l) => `${c} ha ${l}.`, (c, l) => `Dal punto di vista del clima, ${c} ha ${l}.`],
++    climate: [
++      (c, l) => `${c} ha ${l}.`,
++      (c, l) => `Dal punto di vista del clima, ${c} ha ${l}.`,
++      (c, l) => `${c} rientra in ${l}.`,
++      (c, l) => `Il clima di ${c} è ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `Il mese più caldo è ${w}, con massime intorno ai ${hi}°C; il più fresco è ${co}, con minime notturne di circa ${lo}°C. Il mese più piovoso è di solito ${we} (circa ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `Il caldo maggiore arriva a ${w} (circa ${hi}°C di giorno), le notti più fredde a ${co} (circa ${lo}°C). La pioggia si concentra a ${we}, circa ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `${w} chiude l'anno in testa con circa ${hi}°C di giorno, mentre ${co} porta le notti più fredde, intorno ai ${lo}°C. Il periodo più piovoso è ${we}, con circa ${mm} mm.`,
+     ],
+     dry: (c) => `A ${c} piove poco in tutti i mesi dell'anno.`,
+-    near: [(c, l) => `Le località vicine con previsioni proprie sono ${l}.`, (c, l) => `Vicino a ${c} puoi controllare anche ${l}.`],
++    near: [
++      (c, l) => `Le località vicine con previsioni proprie sono ${l}.`,
++      (c, l) => `Vicino a ${c} puoi controllare anche ${l}.`,
++      (c, l) => `Previsioni nei dintorni: ${l}.`,
++      (c, l) => `A breve distanza da ${c}: ${l}.`,
++    ],
+     join: list("e"),
+   },
+   de: {
+-    climate: [(c, l) => `${c} hat ${l}.`, (c, l) => `Klimatisch gesehen hat ${c} ${l}.`],
++    climate: [
++      (c, l) => `${c} hat ${l}.`,
++      (c, l) => `Klimatisch gesehen hat ${c} ${l}.`,
++      (c, l) => `${c} liegt in ${l}.`,
++      (c, l) => `Das Klima in ${c} ist ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `Wärmster Monat ist der ${w} mit Höchstwerten um ${hi}°C, kühlster der ${co} mit Nächten um ${lo}°C. Am meisten regnet es meist im ${we} (etwa ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `Die größte Hitze bringt der ${w} (tagsüber etwa ${hi}°C), die kältesten Nächte der ${co} (rund ${lo}°C). Der meiste Regen fällt im ${we}, rund ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `An der Spitze des Jahres steht der ${w} mit rund ${hi}°C am Tag, die kältesten Nächte bringt der ${co} mit etwa ${lo}°C. Am nassesten ist der ${we} mit rund ${mm} mm.`,
+     ],
+     dry: (c) => `In ${c} regnet es das ganze Jahr über wenig.`,
+-    near: [(c, l) => `Die nächstgelegenen Orte mit eigener Vorhersage: ${l}.`, (c, l) => `In der Nähe von ${c} lohnt auch ein Blick auf ${l}.`],
++    near: [
++      (c, l) => `Die nächstgelegenen Orte mit eigener Vorhersage: ${l}.`,
++      (c, l) => `In der Nähe von ${c} lohnt auch ein Blick auf ${l}.`,
++      (c, l) => `Vorhersagen aus der Umgebung: ${l}.`,
++      (c, l) => `Nur einen Katzensprung von ${c} entfernt: ${l}.`,
++    ],
+     join: list("und"),
+   },
+   fr: {
+-    climate: [(c, l) => `${c} a ${l}.`, (c, l) => `Côté climat, ${c} connaît ${l}.`],
++    climate: [
++      (c, l) => `${c} a ${l}.`,
++      (c, l) => `Côté climat, ${c} connaît ${l}.`,
++      (c, l) => `${c} relève de ${l}.`,
++      (c, l) => `Le climat de ${c} est ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `Le mois le plus chaud est ${w}, avec des maximales vers ${hi} °C ; le plus frais est ${co}, avec des nuits autour de ${lo} °C. Le mois le plus pluvieux est en général ${we} (environ ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `La chaleur culmine en ${w} (environ ${hi} °C en journée) et les nuits les plus froides tombent en ${co} (autour de ${lo} °C). C'est en ${we} qu'il pleut le plus, environ ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `${w} domine l'année avec près de ${hi} °C en journée, tandis que ${co} apporte les nuits les plus froides, autour de ${lo} °C. La période la plus arrosée est ${we}, avec environ ${mm} mm.`,
+     ],
+     dry: (c) => `Il pleut peu à ${c} tout au long de l'année.`,
+-    near: [(c, l) => `Les lieux les plus proches avec leur propre prévision : ${l}.`, (c, l) => `Près de ${c}, consultez aussi ${l}.`],
++    near: [
++      (c, l) => `Les lieux les plus proches avec leur propre prévision : ${l}.`,
++      (c, l) => `Près de ${c}, consultez aussi ${l}.`,
++      (c, l) => `Prévisions aux alentours : ${l}.`,
++      (c, l) => `À courte distance de ${c} : ${l}.`,
++    ],
+     join: list("et"),
+   },
+   es: {
+-    climate: [(c, l) => `${c} tiene ${l}.`, (c, l) => `En cuanto al clima, ${c} tiene ${l}.`],
++    climate: [
++      (c, l) => `${c} tiene ${l}.`,
++      (c, l) => `En cuanto al clima, ${c} tiene ${l}.`,
++      (c, l) => `${c} se enmarca en ${l}.`,
++      (c, l) => `El clima de ${c} es ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `El mes más cálido es ${w}, con máximas de unos ${hi}°C; el más fresco es ${co}, con mínimas nocturnas de unos ${lo}°C. El más lluvioso suele ser ${we} (unos ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `El mayor calor llega en ${w} (unos ${hi}°C de día) y las noches más frías en ${co} (unos ${lo}°C). La lluvia se concentra en ${we}, con unos ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `${w} encabeza el año con unos ${hi}°C de día, mientras que ${co} deja las noches más frías, en torno a ${lo}°C. La época más húmeda es ${we}, con unos ${mm} mm.`,
+     ],
+     dry: (c) => `En ${c} llueve poco durante todo el año.`,
+-    near: [(c, l) => `Las localidades más cercanas con previsión propia son ${l}.`, (c, l) => `Cerca de ${c} también puedes consultar ${l}.`],
++    near: [
++      (c, l) => `Las localidades más cercanas con previsión propia son ${l}.`,
++      (c, l) => `Cerca de ${c} también puedes consultar ${l}.`,
++      (c, l) => `Previsiones en los alrededores: ${l}.`,
++      (c, l) => `A poca distancia de ${c}: ${l}.`,
++    ],
+     join: list("y"),
+   },
+   pt: {
+-    climate: [(c, l) => `${c} tem ${l}.`, (c, l) => `Em termos de clima, ${c} tem ${l}.`],
++    climate: [
++      (c, l) => `${c} tem ${l}.`,
++      (c, l) => `Em termos de clima, ${c} tem ${l}.`,
++      (c, l) => `${c} insere-se em ${l}.`,
++      (c, l) => `O clima de ${c} é ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `O mês mais quente é ${w}, com máximas perto dos ${hi}°C; o mais fresco é ${co}, com noites à volta dos ${lo}°C. O mais chuvoso costuma ser ${we} (cerca de ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `O calor atinge o pico em ${w} (cerca de ${hi}°C de dia) e as noites mais frias chegam em ${co} (perto de ${lo}°C). A chuva concentra-se em ${we}, cerca de ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `${w} lidera o ano com cerca de ${hi}°C durante o dia, enquanto ${co} traz as noites mais frias, à volta dos ${lo}°C. A época mais húmida é ${we}, com cerca de ${mm} mm.`,
+     ],
+     dry: (c) => `Chove pouco em ${c} ao longo de todo o ano.`,
+-    near: [(c, l) => `Os locais mais próximos com previsão própria são ${l}.`, (c, l) => `Perto de ${c}, veja também ${l}.`],
++    near: [
++      (c, l) => `Os locais mais próximos com previsão própria são ${l}.`,
++      (c, l) => `Perto de ${c}, veja também ${l}.`,
++      (c, l) => `Previsões nas redondezas: ${l}.`,
++      (c, l) => `A curta distância de ${c}: ${l}.`,
++    ],
+     join: list("e"),
+   },
+   nl: {
+-    climate: [(c, l) => `${c} heeft ${l}.`, (c, l) => `Qua klimaat heeft ${c} ${l}.`],
++    climate: [
++      (c, l) => `${c} heeft ${l}.`,
++      (c, l) => `Qua klimaat heeft ${c} ${l}.`,
++      (c, l) => `${c} valt onder ${l}.`,
++      (c, l) => `Het klimaat van ${c} is ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `De warmste maand is ${w}, met maxima rond ${hi}°C; de koelste is ${co}, met nachten rond ${lo}°C. De natste maand is meestal ${we} (zo'n ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `De meeste warmte valt in ${w} (overdag zo'n ${hi}°C), de koudste nachten in ${co} (rond ${lo}°C). De meeste regen valt in ${we}, ongeveer ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `${w} voert het jaar aan met zo'n ${hi}°C overdag, terwijl ${co} de koudste nachten brengt, rond ${lo}°C. De natste periode is ${we}, met ongeveer ${mm} mm.`,
+     ],
+     dry: (c) => `In ${c} valt het hele jaar weinig regen.`,
+-    near: [(c, l) => `De dichtstbijzijnde plaatsen met een eigen verwachting: ${l}.`, (c, l) => `In de buurt van ${c} kun je ook ${l} bekijken.`],
++    near: [
++      (c, l) => `De dichtstbijzijnde plaatsen met een eigen verwachting: ${l}.`,
++      (c, l) => `In de buurt van ${c} kun je ook ${l} bekijken.`,
++      (c, l) => `Verwachtingen in de omgeving: ${l}.`,
++      (c, l) => `Op korte afstand van ${c}: ${l}.`,
++    ],
+     join: list("en"),
+   },
+   pl: {
+-    climate: [(c, l) => `${c}: ${l}.`, (c, l) => `Klimat (${c}): ${l}.`],
++    climate: [
++      (c, l) => `${c}: ${l}.`,
++      (c, l) => `Klimat (${c}): ${l}.`,
++      (c, l) => `${c} – ${l}.`,
++      (c, l) => `Dla ${c} charakterystyczne jest ${l}.`,
++    ],
+     months: [
+       (c, w, hi, co, lo, we, mm) => `Najcieplejszy miesiąc to ${w} (maksima około ${hi}°C), najchłodniejszy to ${co} (noce około ${lo}°C). Najwięcej deszczu przynosi zwykle ${we} (około ${mm} mm).`,
+       (c, w, hi, co, lo, we, mm) => `Najgoręcej jest, gdy przychodzi ${w} (w dzień około ${hi}°C), najzimniejsze noce przynosi ${co} (około ${lo}°C). Najwięcej pada, gdy trwa ${we} – około ${mm} mm.`,
++      (c, w, hi, co, lo, we, mm) => `Na czele roku stoi ${w} z temperaturą około ${hi}°C w dzień, a najzimniejsze noce przypadają na ${co} (około ${lo}°C). Najbardziej mokry okres to ${we} – około ${mm} mm.`,
+     ],
+     dry: (c) => `${c}: przez cały rok pada niewiele.`,
+-    near: [(c, l) => `Najbliższe miejscowości z własną prognozą: ${l}.`, (c, l) => `W pobliżu warto sprawdzić także: ${l}.`],
++    near: [
++      (c, l) => `Najbliższe miejscowości z własną prognozą: ${l}.`,
++      (c, l) => `W pobliżu warto sprawdzić także: ${l}.`,
++      (c, l) => `Prognozy w okolicy: ${l}.`,
++      (c, l) => `Niedaleko ${c}: ${l}.`,
++    ],
+     join: list("i"),
+   },
+ };
+diff --git a/lib/content/countryClimate.ts b/lib/content/countryClimate.ts
+new file mode 100644
+index 0000000..9269d93
+--- /dev/null
++++ b/lib/content/countryClimate.ts
+@@ -0,0 +1,275 @@
++/**
++ * Country-level climate analysis for the "best time to visit {country}"
++ * pages.
++ *
++ * Why this exists separately from lib/i18n/bestTime.ts: that module answers
++ * "when should I go to Rome?" from one city's normals. A country is not one
++ * climate. Averaging all 171 Spanish cities would produce a number that
++ * describes nowhere — Tenerife and Burgos are not the same holiday. So this
++ * module does two different things:
++ *
++ *  1. Headline figures come from a REPRESENTATIVE subset — the destinations
++ *     travellers actually ask about (the `featured` flag, then population) —
++ *     so "the best time to visit Spain" reflects Barcelona and Málaga rather
++ *     than an unweighted mean of every town in the dataset.
++ *  2. The spread is reported explicitly. For each month we measure how far
++ *     apart the country's warmest and coolest cities are, and surface the
++ *     month where that gap is widest. That single fact ("in January, Las
++ *     Palmas averages 21°C while Burgos manages 8°C") is the honest answer
++ *     to a country-level question, and it is different for every country —
++ *     which is exactly what a page built from a template cannot fake.
++ *
++ * Everything here is derived from the 2011–2020 normals in lib/data; no
++ * forecast data and no editorial input, so it is safe to render statically.
++ */
++import type { CitySeed, CountrySeed } from "@/config/world";
++import { citiesByImportance } from "@/config/world";
++import { getCityClimate } from "@/lib/data/climate";
++import type { CityClimate } from "@/lib/data/months";
++import { scoreMonth } from "@/lib/tripScore";
++
++/** How many cities feed the country's headline averages. */
++const REPRESENTATIVE_MAX = 8;
++/** Below this many °C, the within-country spread is not worth a paragraph. */
++const SPREAD_MIN_C = 4;
++
++export type CountryVerdict = "ideal" | "good" | "hot" | "rainy" | "cold";
++
++export interface CityWithClimate {
++  city: CitySeed;
++  climate: CityClimate;
++}
++
++export interface CountrySpread {
++  /** Month where the country's cities differ most (0–11). */
++  month: number;
++  warm: { city: CitySeed; hi: number };
++  cool: { city: CitySeed; hi: number };
++  /** Rounded °C difference between those two. */
++  gap: number;
++}
++
++export interface CountrySeason {
++  /** Month indices, e.g. [11, 0, 1] for Dec–Feb. */
++  months: number[];
++  hi: number;
++  lo: number;
++  rain: number;
++  verdict: CountryVerdict;
++}
++
++export interface CityBestMonths {
++  city: CitySeed;
++  best: number[];
++  /** Average high across that city's best months. */
++  hi: number;
++  /** Average low across that city's best months. */
++  lo: number;
++}
++
++export interface CountryClimateAnalysis {
++  /** Cities behind the headline figures, most important first. */
++  representative: CityWithClimate[];
++  /** Every city in the country that has climate normals. */
++  all: CityWithClimate[];
++  /** Country-level monthly means, Jan..Dec, from `representative`. */
++  tMax: number[];
++  tMin: number[];
++  precipMm: number[];
++  cloud: number[];
++  /** The three months that score best for warm/mild travel weather. */
++  best: number[];
++  /** Average high / low / rainfall across those best months. */
++  bestHi: number;
++  bestLo: number;
++  bestRain: number;
++  warmest: number;
++  coolest: number;
++  wettest: number;
++  driest: number;
++  sunniest: number;
++  /** Months adjacent to the best ones — the quieter shoulder window. */
++  shoulder: number[];
++  /** Null when the country has too few cities, or they are all alike. */
++  spread: CountrySpread | null;
++  /** Dec–Feb, Mar–May, Jun–Aug, Sep–Nov on the country averages. */
++  seasons: CountrySeason[];
++  /** Per-city best months, for the comparison table. Most important first. */
++  cityBest: CityBestMonths[];
++}
++
++const r0 = (n: number) => Math.round(n);
++const mean = (xs: number[]) => xs.reduce((s, x) => s + x, 0) / xs.length;
++const argmax = (xs: number[]) => xs.reduce((b, v, i) => (v > xs[b]! ? i : b), 0);
++const argmin = (xs: number[]) => xs.reduce((b, v, i) => (v < xs[b]! ? i : b), 0);
++
++/** Every city in a country that has climate normals, most important first. */
++export function countryCitiesWithClimate(country: CountrySeed): CityWithClimate[] {
++  const out: CityWithClimate[] = [];
++  for (const city of citiesByImportance(country)) {
++    const climate = getCityClimate(country.slug, city.slug);
++    if (climate) out.push({ city, climate });
++  }
++  return out;
++}
++
++/**
++ * The cities a traveller means when they say the country's name: curated
++ * core cities and flagged holiday destinations first, then the largest
++ * places. Falls back to the importance order when nothing is flagged.
++ */
++function representativeCities(all: CityWithClimate[]): CityWithClimate[] {
++  const flagged = all.filter((x) => x.city.core || x.city.featured);
++  const pool = flagged.length >= 3 ? flagged : all;
++  return pool.slice(0, REPRESENTATIVE_MAX);
++}
++
++/** Monthly mean of one climate field across several cities. */
++function monthlyMean(items: CityWithClimate[], field: keyof CityClimate): number[] {
++  return Array.from({ length: 12 }, (_, m) => mean(items.map((x) => x.climate[field][m]!)));
++}
++
++/** The three best travel-weather months, by the same scorer the city pages use. */
++function bestMonthsOf(c: CityClimate): number[] {
++  return Array.from({ length: 12 }, (_, m) => ({ m, s: Math.max(scoreMonth(c, m, "warm"), scoreMonth(c, m, "mild")) }))
++    .sort((a, b) => b.s - a.s)
++    .slice(0, 3)
++    .map((x) => x.m)
++    .sort((a, b) => a - b);
++}
++
++/**
++ * Months directly before and after the best window: similar weather, fewer
++ * people.
++ *
++ * Adjacency alone is not enough. In Spain the months either side of the best
++ * window are April, July, August and October — but July and August are the
++ * busiest and hottest of the year, so calling them a quiet shoulder would be
++ * actively wrong. Months that are too hot or too cold to enjoy are therefore
++ * dropped, which leaves the genuine in-between months (April and October for
++ * Spain, June and October for Japan).
++ */
++function shoulderOf(best: number[], tMax: number[]): number[] {
++  const set = new Set(best);
++  const out = new Set<number>();
++  for (const m of best) {
++    for (const adj of [(m + 11) % 12, (m + 1) % 12]) {
++      if (set.has(adj)) continue;
++      const hi = tMax[adj]!;
++      if (hi >= 30 || hi < 12) continue;
++      out.add(adj);
++    }
++  }
++  return [...out].sort((a, b) => a - b);
++}
++
++/**
++ * The month in which this country's cities are furthest apart, with the two
++ * cities at either end. Returns null for one-city countries or for countries
++ * that really are uniform — better to say nothing than to dress up a 2°C
++ * difference as regional variety.
++ */
++function spreadOf(all: CityWithClimate[]): CountrySpread | null {
++  if (all.length < 3) return null;
++  let best: CountrySpread | null = null;
++  for (let m = 0; m < 12; m++) {
++    let warm = all[0]!;
++    let cool = all[0]!;
++    for (const x of all) {
++      if (x.climate.tMax[m]! > warm.climate.tMax[m]!) warm = x;
++      if (x.climate.tMax[m]! < cool.climate.tMax[m]!) cool = x;
++    }
++    const gap = warm.climate.tMax[m]! - cool.climate.tMax[m]!;
++    if (!best || gap > best.gap) {
++      best = {
++        month: m,
++        warm: { city: warm.city, hi: r0(warm.climate.tMax[m]!) },
++        cool: { city: cool.city, hi: r0(cool.climate.tMax[m]!) },
++        gap: r0(gap),
++      };
++    }
++  }
++  return best && best.gap >= SPREAD_MIN_C ? best : null;
++}
++
++function seasonsOf(tMax: number[], tMin: number[], precip: number[], best: number[]): CountrySeason[] {
++  const groups = [
++    [11, 0, 1],
++    [2, 3, 4],
++    [5, 6, 7],
++    [8, 9, 10],
++  ];
++  return groups.map((months) => {
++    const hi = mean(months.map((m) => tMax[m]!));
++    const lo = mean(months.map((m) => tMin[m]!));
++    const rain = mean(months.map((m) => precip[m]!));
++    const idealCount = months.filter((m) => best.includes(m)).length;
++    const verdict: CountryVerdict =
++      idealCount >= 2 ? "ideal" : hi >= 31 ? "hot" : rain >= 100 ? "rainy" : hi < 13 ? "cold" : "good";
++    return { months, hi: r0(hi), lo: r0(lo), rain: r0(rain), verdict };
++  });
++}
++
++/**
++ * Full analysis for one country. Returns null when no city in the country
++ * has climate normals, in which case the page should not be built at all.
++ */
++export function analyseCountryClimate(country: CountrySeed): CountryClimateAnalysis | null {
++  const all = countryCitiesWithClimate(country);
++  if (all.length === 0) return null;
++
++  const representative = representativeCities(all);
++  const tMax = monthlyMean(representative, "tMax");
++  const tMin = monthlyMean(representative, "tMin");
++  const precipMm = monthlyMean(representative, "precipMm");
++  const cloud = monthlyMean(representative, "cloud");
++
++  // Score the country as if it were one place built from the representative
++  // means — the same scorer the city pages use, so "best months" means the
++  // same thing everywhere on the site.
++  const countryClimate: CityClimate = {
++    tMax,
++    tMin,
++    precipMm,
++    humidity: monthlyMean(representative, "humidity"),
++    cloud,
++  };
++  const best = bestMonthsOf(countryClimate);
++
++  const cityBest: CityBestMonths[] = all.map(({ city, climate }) => {
++    const b = bestMonthsOf(climate);
++    return {
++      city,
++      best: b,
++      hi: r0(mean(b.map((m) => climate.tMax[m]!))),
++      lo: r0(mean(b.map((m) => climate.tMin[m]!))),
++    };
++  });
++
++  return {
++    representative,
++    all,
++    tMax: tMax.map(r0),
++    tMin: tMin.map(r0),
++    precipMm: precipMm.map(r0),
++    cloud: cloud.map(r0),
++    best,
++    bestHi: r0(mean(best.map((m) => tMax[m]!))),
++    bestLo: r0(mean(best.map((m) => tMin[m]!))),
++    bestRain: r0(mean(best.map((m) => precipMm[m]!))),
++    warmest: argmax(tMax),
++    coolest: argmin(tMax),
++    wettest: argmax(precipMm),
++    driest: argmin(precipMm),
++    sunniest: argmin(cloud),
++    shoulder: shoulderOf(best, tMax),
++    spread: spreadOf(all),
++    seasons: seasonsOf(tMax, tMin, precipMm, best),
++    cityBest,
++  };
++}
++
++/** Countries that have at least one city with climate normals. */
++export function countriesWithClimate(countries: CountrySeed[]): CountrySeed[] {
++  return countries.filter((c) => c.cities.some((city) => getCityClimate(c.slug, city.slug)));
++}
+diff --git a/lib/content/insights.ts b/lib/content/insights.ts
+index 7f41aa4..edca12d 100644
+--- a/lib/content/insights.ts
++++ b/lib/content/insights.ts
+@@ -45,9 +45,27 @@ export function hash(s: string): number {
+   return h >>> 0;
+ }
+ 
+-/** Deterministically pick one of several phrasings. */
++/**
++ * Deterministically pick one of several phrasings.
++ *
++ * The FNV hash above is mixed again before the modulo. FNV-1a multiplies by
++ * an odd constant, so the LOW BIT of its output is just the XOR-parity of the
++ * input — which meant `pick(seed + ":a", 2)` and `pick(seed + ":b", 2)` were
++ * perfectly correlated (they differ by a constant parity). Three two-way
++ * choices on a city page were therefore really one coin flip, and 1,800 city
++ * pages rendered only two distinct paragraphs instead of eight. The murmur3
++ * finalizer below spreads entropy into the low bits so each slot varies
++ * independently. Still fully deterministic: a page always renders the same
++ * text, neighbouring pages differ.
++ */
+ export function pick<T>(seed: string, options: T[]): T {
+-  return options[hash(seed) % options.length]!;
++  let h = hash(seed);
++  h ^= h >>> 16;
++  h = Math.imul(h, 2246822507);
++  h ^= h >>> 13;
++  h = Math.imul(h, 3266489909);
++  h = (h ^ (h >>> 16)) >>> 0;
++  return options[h % options.length]!;
+ }
+ 
+ const r = Math.round;
+diff --git a/lib/i18n/bestTimeCountry.ts b/lib/i18n/bestTimeCountry.ts
+new file mode 100644
+index 0000000..311c4f6
+--- /dev/null
++++ b/lib/i18n/bestTimeCountry.ts
+@@ -0,0 +1,732 @@
++/**
++ * Copy for the country-level "best time to visit" pages, in every language
++ * the site publishes.
++ *
++ * A deliberate grammatical decision runs through this whole file: no sentence
++ * ever puts a preposition in front of the country name. These pages are built
++ * for 225 countries from one set of strings, and every language the site
++ * serves inflects country names differently — "in Spagna" but "negli Stati
++ * Uniti", "en Espagne" but "au Japon" and "aux Pays-Bas", "nach Spanien" but
++ * "in die Türkei", and Polish declines the noun itself ("w Hiszpanii",
++ * "w Stanach Zjednoczonych"). A template that guesses would produce broken
++ * grammar on a long tail of countries, and broken grammar is exactly what
++ * makes a page read as machine-made.
++ *
++ * So headings use apposition ("Spanien: beste Reisezeit"), and body sentences
++ * refer back to "the country" / "das Land" / "il Paese" / "le pays" rather
++ * than repeating an inflected name. It costs a little elegance in the
++ * headline and buys correctness in all 225.
++ *
++ * Numbers come from lib/content/countryClimate.ts (2011–2020 normals).
++ */
++import type { CountryVerdict } from "@/lib/content/countryClimate";
++import type { AnyLocale } from "./routing";
++
++export interface BestTimeCountryCopy {
++  eyebrow: string;
++  /** <title> */
++  title: (k: string) => string;
++  /** <meta name="description"> */
++  desc: (k: string, best: string, lo: number, hi: number) => string;
++  keywords: (k: string) => string[];
++  h1: (k: string) => string;
++
++  /** Opening answer — written to be liftable verbatim as a snippet. */
++  answer: (best: string, hi: number, lo: number, rain: number) => string;
++  /** Says which cities the headline figures average, so the basis is visible. */
++  basis: (n: number, cities: string) => string;
++
++  /** The "a country is not one climate" section. */
++  spreadH: string;
++  /** `monthIn` is the "in {month}" phrase (monthInfo().inMonth), not the bare name. */
++  spreadLead: (monthIn: string, gap: number) => string;
++  spreadDetail: (warmCity: string, warmHi: number, coolCity: string, coolHi: number) => string;
++  spreadAdvice: string;
++  /** Shown instead, for countries whose cities really are alike. */
++  noSpread: string;
++
++  seasonsH: string;
++  seasonRange: (from: string, to: string) => string;
++  verdict: Record<CountryVerdict, string>;
++  verdictText: Record<CountryVerdict, string>;
++
++  tableH: (k: string) => string;
++  tableIntro: string;
++  cols: [string, string, string, string, string];
++
++  citiesH: string;
++  citiesIntro: (n: number) => string;
++  cityCols: [string, string, string];
++  cityMore: (n: number) => string;
++
++  faqH: string;
++  qBest: (k: string) => string;
++  aBest: (best: string, hi: number, lo: number, rain: number) => string;
++  qWarmest: (k: string) => string;
++  aWarmest: (warm: string, warmHi: number, cool: string, coolHi: number) => string;
++  qRain: (k: string) => string;
++  aRain: (wet: string, wetMm: number, dry: string, dryMm: number) => string;
++  qQuiet: (k: string) => string;
++  aQuiet: (shoulder: string, best: string) => string;
++  aQuietNone: (best: string) => string;
++  qWhereWarm: (k: string, monthIn: string) => string;
++  aWhereWarm: (warmCity: string, warmHi: number, coolCity: string, coolHi: number, monthIn: string) => string;
++  qMonthGood: (k: string, month: string) => string;
++  aMonthGood: (month: string, hi: number, lo: number, mm: number, isBest: boolean, best: string) => string;
++
++  sources: string;
++  sourcesLink: string;
++  ctaH: string;
++  ctaForecast: string;
++  ctaWhere: string;
++  ctaCities: string;
++  breadcrumb: string;
++}
++
++const EN: BestTimeCountryCopy = {
++  eyebrow: "Country climate guide",
++  title: (k) => `Best Time to Visit ${k}: Month by Month`,
++  desc: (k, best, lo, hi) =>
++    `The best time to visit ${k} is ${best}, with highs near ${hi}°C and lows near ${lo}°C. Month-by-month averages, the quiet shoulder season, and where in the country stays warmest.`,
++  keywords: (k) => [
++    `best time to visit ${k}`,
++    `when to go to ${k}`,
++    `${k} weather by month`,
++    `${k} climate`,
++    `hottest month in ${k}`,
++    `rainiest month in ${k}`,
++    `cheapest time to visit ${k}`,
++  ],
++  h1: (k) => `${k}: the best time to visit`,
++  answer: (best, hi, lo, rain) =>
++    `The best months are ${best}, when daytime highs average ${hi}°C, nights settle around ${lo}°C and roughly ${rain} mm of rain falls in a month. That is the window with the most reliable weather across the country's main destinations.`,
++  basis: (n, cities) =>
++    `These headline figures average the ${n} destinations travellers ask about most — ${cities} — rather than every town on the map, so they describe the trip most people are actually planning.`,
++  spreadH: "One country, more than one climate",
++  spreadLead: (monthIn, gap) =>
++    `The gap is widest ${monthIn}, when the warmest and coolest places in the country are about ${gap}°C apart.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} averages ${warmHi}°C that month, while ${coolCity} reaches only ${coolHi}°C.`,
++  spreadAdvice:
++    "So the honest answer to \"when should I go?\" depends on where you are landing. Pick the city you are actually flying into from the table below and use its months, not the national average.",
++  noSpread:
++    "The country is compact enough that its cities share one broadly similar pattern, so the months above hold wherever you base yourself.",
++  seasonsH: "Season by season",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Best window", good: "Workable", hot: "Very hot", rainy: "Wet", cold: "Cold" },
++  verdictText: {
++    ideal: "The sweet spot: warm enough to be outside all day, without the peak-season extremes.",
++    good: "Perfectly travellable, just short of the best weather of the year.",
++    hot: "Hot enough that midday sightseeing becomes hard work — plan early starts and long lunches.",
++    rainy: "The wettest stretch of the year. Rain rarely cancels a trip, but it will shape the itinerary.",
++    cold: "Cold season. Worth it for winter scenery, quiet cities and low prices, not for beach weather.",
++  },
++  tableH: (k) => `${k} weather by month`,
++  tableIntro:
++    "Average daily high and low, monthly rainfall and cloud cover, from 2011–2020 records across the destinations listed above.",
++  cols: ["Month", "Avg high", "Avg low", "Rainfall", "Cloud"],
++  citiesH: "Best months, city by city",
++  citiesIntro: (n) =>
++    `The national picture hides a lot. Here is every one of the ${n} places in the country with climate records, and the three months that score best in each.`,
++  cityCols: ["City", "Best months", "Typical highs then"],
++  cityMore: (n) => `Show all ${n} cities`,
++  faqH: "Common questions",
++  qBest: (k) => `When is the best time to visit ${k}?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. Across the country's main destinations those months average highs of ${hi}°C, lows of ${lo}°C and about ${rain} mm of rain, which is the most dependable combination of the year.`,
++  qWarmest: (k) => `What is the hottest month in ${k}?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm}, averaging ${warmHi}°C by day. The coolest is ${cool} at about ${coolHi}°C, so the year swings roughly ${Math.abs(warmHi - coolHi)}°C between the two.`,
++  qRain: (k) => `Which month is wettest in ${k}?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet}, with around ${wetMm} mm on average. The driest month is ${dry} at about ${dryMm} mm. Monthly totals say how much falls, not how many days it rains — a wet month can still be mostly sunny with a few heavy afternoons.`,
++  qQuiet: (k) => `When is the quietest time to visit ${k}?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder} — the months either side of the ${best} peak. You trade a few degrees for noticeably thinner crowds and lower prices, which is usually the better deal.`,
++  aQuietNone: (best) =>
++    `There is no comfortable shoulder month here: conditions move fairly sharply from the ${best} window into weather most visitors would rather avoid.`,
++  qWhereWarm: (k, monthIn) => `Where in ${k} is warmest ${monthIn}?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `${warmCity}, averaging ${warmHi}°C ${monthIn}, against ${coolHi}°C in ${coolCity}. If warmth is the priority that month, head for ${warmCity} rather than relying on the national average.`,
++  qMonthGood: (k, month) => `Is ${month} a good time to visit ${k}?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Yes. ${month} is one of the three best months of the year, averaging ${hi}°C by day, ${lo}°C at night and about ${mm} mm of rain.`
++      : `${month} averages ${hi}°C by day, ${lo}°C at night and about ${mm} mm of rain. It is travellable, but ${best} are the stronger months if your dates are flexible.`,
++  sources:
++    "Averages calculated from NASA POWER / ERA5 reanalysis, 2011–2020. These are long-term climate normals, not a forecast.",
++  sourcesLink: "How we source this",
++  ctaH: "Plan the actual trip",
++  ctaForecast: "Live 14-day forecast",
++  ctaWhere: "Where to go this month",
++  ctaCities: "All cities in this country",
++  breadcrumb: "Best time to visit",
++};
++
++const ES: BestTimeCountryCopy = {
++  eyebrow: "Guía climática del país",
++  title: (k) => `${k}: mejor época para viajar, mes a mes`,
++  desc: (k, best, lo, hi) =>
++    `La mejor época para viajar a ${k} es ${best}, con máximas de ${hi}°C y mínimas de ${lo}°C. Medias mes a mes, la temporada media y qué zona del país es más cálida.`,
++  keywords: (k) => [
++    `mejor época para viajar a ${k}`,
++    `cuándo viajar a ${k}`,
++    `clima de ${k} mes a mes`,
++    `${k} clima`,
++    `mes más caluroso de ${k}`,
++    `mes más lluvioso de ${k}`,
++  ],
++  h1: (k) => `${k}: la mejor época para viajar`,
++  answer: (best, hi, lo, rain) =>
++    `Los mejores meses son ${best}: las máximas rondan los ${hi}°C, las noches se quedan cerca de ${lo}°C y caen unos ${rain} mm de lluvia al mes. Es la ventana con el tiempo más fiable en los principales destinos del país.`,
++  basis: (n, cities) =>
++    `Estas cifras promedian los ${n} destinos por los que más se pregunta — ${cities} — y no todos los municipios del mapa, así que describen el viaje que la mayoría está planeando de verdad.`,
++  spreadH: "Un país, más de un clima",
++  spreadLead: (monthIn, gap) =>
++    `La diferencia es mayor ${monthIn}, cuando entre el punto más cálido y el más fresco del país hay unos ${gap}°C.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} promedia ${warmHi}°C ese mes, mientras que ${coolCity} se queda en ${coolHi}°C.`,
++  spreadAdvice:
++    "Así que la respuesta honesta a «¿cuándo voy?» depende de dónde aterrices. Busca en la tabla de abajo la ciudad a la que vas de verdad y usa sus meses, no la media nacional.",
++  noSpread:
++    "El país es lo bastante compacto como para que sus ciudades compartan un patrón parecido, así que los meses de arriba valen te alojes donde te alojes.",
++  seasonsH: "Estación por estación",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Mejor momento", good: "Correcto", hot: "Mucho calor", rainy: "Lluvioso", cold: "Frío" },
++  verdictText: {
++    ideal: "El punto justo: calor suficiente para estar fuera todo el día, sin los extremos de la temporada alta.",
++    good: "Perfectamente viajable, aunque sin llegar al mejor tiempo del año.",
++    hot: "Tanto calor que visitar a mediodía cuesta: madruga y alarga las comidas.",
++    rainy: "La época más húmeda del año. La lluvia rara vez cancela un viaje, pero sí condiciona el plan.",
++    cold: "Temporada fría. Merece la pena por el paisaje invernal, las ciudades tranquilas y los precios bajos, no por la playa.",
++  },
++  tableH: (k) => `El clima de ${k} mes a mes`,
++  tableIntro:
++    "Máxima y mínima media diaria, lluvia mensual y nubosidad, según los registros de 2011–2020 en los destinos citados arriba.",
++  cols: ["Mes", "Máx. media", "Mín. media", "Lluvia", "Nubes"],
++  citiesH: "Los mejores meses, ciudad a ciudad",
++  citiesIntro: (n) =>
++    `La media nacional esconde mucho. Aquí están las ${n} localidades del país con registros climáticos y los tres meses que mejor puntúan en cada una.`,
++  cityCols: ["Ciudad", "Mejores meses", "Máximas entonces"],
++  cityMore: (n) => `Ver las ${n} ciudades`,
++  faqH: "Preguntas frecuentes",
++  qBest: (k) => `¿Cuál es la mejor época para viajar a ${k}?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. En los principales destinos del país esos meses promedian máximas de ${hi}°C, mínimas de ${lo}°C y unos ${rain} mm de lluvia, la combinación más fiable del año.`,
++  qWarmest: (k) => `¿Cuál es el mes más caluroso de ${k}?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm}, con una media de ${warmHi}°C de día. El más fresco es ${cool}, en torno a ${coolHi}°C, así que el año oscila unos ${Math.abs(warmHi - coolHi)}°C entre ambos.`,
++  qRain: (k) => `¿Cuál es el mes más lluvioso de ${k}?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet}, con unos ${wetMm} mm de media. El más seco es ${dry}, con unos ${dryMm} mm. El total mensual dice cuánta agua cae, no cuántos días llueve: un mes húmedo puede ser soleado con alguna tarde de tormenta.`,
++  qQuiet: (k) => `¿Cuándo hay menos gente en ${k}?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder}, los meses justo antes y después del pico de ${best}. Pierdes un par de grados y ganas bastante menos gente y precios más bajos, que suele compensar.`,
++  aQuietNone: (best) =>
++    `Aquí no hay un mes intermedio cómodo: se pasa bastante rápido de la ventana de ${best} a un tiempo que la mayoría prefiere evitar.`,
++  qWhereWarm: (k, monthIn) => `¿Qué zona de ${k} es más cálida ${monthIn}?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `${warmCity}, con una media de ${warmHi}°C ${monthIn}, frente a los ${coolHi}°C de ${coolCity}. Si ese mes buscas calor, ve a ${warmCity} en lugar de fiarte de la media nacional.`,
++  qMonthGood: (k, month) => `¿Es ${month} buena época para viajar a ${k}?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Sí. ${month} es uno de los tres mejores meses del año: ${hi}°C de día, ${lo}°C de noche y unos ${mm} mm de lluvia.`
++      : `En ${month} se promedian ${hi}°C de día, ${lo}°C de noche y unos ${mm} mm de lluvia. Se puede viajar, pero ${best} son mejores meses si tienes fechas flexibles.`,
++  sources:
++    "Medias calculadas a partir del reanálisis NASA POWER / ERA5, 2011–2020. Son normales climáticas a largo plazo, no una previsión.",
++  sourcesLink: "De dónde salen estos datos",
++  ctaH: "Planifica el viaje de verdad",
++  ctaForecast: "Previsión a 14 días",
++  ctaWhere: "Dónde viajar este mes",
++  ctaCities: "Todas las ciudades del país",
++  breadcrumb: "Mejor época para viajar",
++};
++
++const IT: BestTimeCountryCopy = {
++  eyebrow: "Guida al clima del Paese",
++  title: (k) => `${k}: quando andare, mese per mese`,
++  desc: (k, best, lo, hi) =>
++    `Il periodo migliore per andare in ${k} è ${best}, con massime di ${hi}°C e minime di ${lo}°C. Medie mese per mese, la stagione intermedia e le zone più calde del Paese.`,
++  keywords: (k) => [
++    `quando andare ${k}`,
++    `periodo migliore ${k}`,
++    `clima ${k} mese per mese`,
++    `${k} clima`,
++    `mese più caldo ${k}`,
++    `mese più piovoso ${k}`,
++  ],
++  h1: (k) => `${k}: quando andare`,
++  answer: (best, hi, lo, rain) =>
++    `I mesi migliori sono ${best}: le massime si aggirano sui ${hi}°C, le notti restano intorno ai ${lo}°C e cadono circa ${rain} mm di pioggia al mese. È la finestra con il tempo più affidabile nelle principali mete del Paese.`,
++  basis: (n, cities) =>
++    `Queste cifre fanno la media delle ${n} mete più richieste — ${cities} — e non di ogni centro sulla mappa: descrivono quindi il viaggio che la maggior parte delle persone sta davvero programmando.`,
++  spreadH: "Un Paese, più di un clima",
++  spreadLead: (monthIn, gap) =>
++    `Il divario è massimo ${monthIn}, quando tra il punto più caldo e quello più fresco del Paese corrono circa ${gap}°C.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} segna in media ${warmHi}°C in quel mese, mentre ${coolCity} si ferma a ${coolHi}°C.`,
++  spreadAdvice:
++    "La risposta onesta alla domanda «quando parto?» dipende quindi da dove atterri. Cerca nella tabella qui sotto la città in cui vai davvero e usa i suoi mesi, non la media nazionale.",
++  noSpread:
++    "Il Paese è abbastanza compatto da avere città con un andamento simile: i mesi qui sopra valgono ovunque tu ti fermi.",
++  seasonsH: "Stagione per stagione",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Periodo migliore", good: "Accettabile", hot: "Molto caldo", rainy: "Piovoso", cold: "Freddo" },
++  verdictText: {
++    ideal: "Il punto giusto: caldo a sufficienza per stare fuori tutto il giorno, senza gli eccessi dell'alta stagione.",
++    good: "Si viaggia benissimo, pur senza il tempo migliore dell'anno.",
++    hot: "Così caldo che visitare a mezzogiorno diventa faticoso: partenze presto e pranzi lunghi.",
++    rainy: "Il periodo più umido dell'anno. La pioggia raramente annulla un viaggio, ma ne cambia il programma.",
++    cold: "Stagione fredda. Vale per i paesaggi invernali, le città tranquille e i prezzi bassi, non per il mare.",
++  },
++  tableH: (k) => `Il clima ${k} mese per mese`,
++  tableIntro:
++    "Massima e minima media giornaliera, pioggia mensile e nuvolosità, dai dati 2011–2020 delle mete elencate sopra.",
++  cols: ["Mese", "Max media", "Min media", "Pioggia", "Nuvole"],
++  citiesH: "I mesi migliori, città per città",
++  citiesIntro: (n) =>
++    `La media nazionale nasconde molto. Ecco tutte le ${n} località del Paese con dati climatici e i tre mesi che ottengono il punteggio migliore in ciascuna.`,
++  cityCols: ["Città", "Mesi migliori", "Massime in quei mesi"],
++  cityMore: (n) => `Mostra tutte le ${n} città`,
++  faqH: "Domande frequenti",
++  qBest: (k) => `${k}: qual è il periodo migliore per andare?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. Nelle principali mete del Paese quei mesi registrano in media massime di ${hi}°C, minime di ${lo}°C e circa ${rain} mm di pioggia: la combinazione più affidabile dell'anno.`,
++  qWarmest: (k) => `${k}: qual è il mese più caldo?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm}, con una media di ${warmHi}°C di giorno. Il più fresco è ${cool}, intorno ai ${coolHi}°C: l'anno oscilla quindi di circa ${Math.abs(warmHi - coolHi)}°C tra i due.`,
++  qRain: (k) => `${k}: qual è il mese più piovoso?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet}, con circa ${wetMm} mm di media. Il più secco è ${dry}, con circa ${dryMm} mm. Il totale mensile dice quanta acqua cade, non quanti giorni piove: un mese umido può restare soleggiato con qualche pomeriggio di temporale.`,
++  qQuiet: (k) => `${k}: quando c'è meno gente?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder}, i mesi subito prima e subito dopo il picco di ${best}. Rinunci a qualche grado e guadagni molta meno folla e prezzi più bassi: di solito conviene.`,
++  aQuietNone: (best) =>
++    `Qui non esiste un mese intermedio comodo: si passa in fretta dalla finestra di ${best} a un tempo che la maggior parte dei viaggiatori preferisce evitare.`,
++  qWhereWarm: (k, monthIn) => `${k}: dove fa più caldo ${monthIn}?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `${warmCity}, con una media di ${warmHi}°C ${monthIn}, contro i ${coolHi}°C di ${coolCity}. Se in quel mese cerchi il caldo, punta su ${warmCity} invece di fidarti della media nazionale.`,
++  qMonthGood: (k, month) => `${k}: ${month} è un buon periodo per andare?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Sì. ${month} è uno dei tre mesi migliori dell'anno: ${hi}°C di giorno, ${lo}°C di notte e circa ${mm} mm di pioggia.`
++      : `${month} segna in media ${hi}°C di giorno, ${lo}°C di notte e circa ${mm} mm di pioggia. Si viaggia, ma ${best} sono mesi migliori se le date sono flessibili.`,
++  sources:
++    "Medie calcolate dal reanalysis NASA POWER / ERA5, 2011–2020. Sono medie climatiche di lungo periodo, non una previsione.",
++  sourcesLink: "Da dove vengono questi dati",
++  ctaH: "Organizza il viaggio vero",
++  ctaForecast: "Previsioni a 15 giorni",
++  ctaWhere: "Dove andare questo mese",
++  ctaCities: "Tutte le città del Paese",
++  breadcrumb: "Quando andare",
++};
++
++const DE: BestTimeCountryCopy = {
++  eyebrow: "Klimaguide zum Land",
++  title: (k) => `${k}: beste Reisezeit, Monat für Monat`,
++  desc: (k, best, lo, hi) =>
++    `Die beste Reisezeit für ${k}: ${best}, mit Höchstwerten um ${hi}°C und Tiefstwerten um ${lo}°C. Monatswerte, die ruhige Nebensaison und die wärmsten Regionen des Landes.`,
++  keywords: (k) => [
++    `beste Reisezeit ${k}`,
++    `wann nach ${k} reisen`,
++    `${k} Klima`,
++    `${k} Klimatabelle`,
++    `wärmster Monat ${k}`,
++    `regenreichster Monat ${k}`,
++  ],
++  h1: (k) => `${k}: beste Reisezeit`,
++  answer: (best, hi, lo, rain) =>
++    `Die besten Monate sind ${best}: tagsüber im Mittel ${hi}°C, nachts rund ${lo}°C, dazu etwa ${rain} mm Regen im Monat. Das ist der Zeitraum mit dem verlässlichsten Wetter in den wichtigsten Reisezielen des Landes.`,
++  basis: (n, cities) =>
++    `Die Eckwerte mitteln die ${n} Ziele, nach denen am häufigsten gefragt wird — ${cities} — und nicht jeden Ort auf der Karte. Sie beschreiben also die Reise, die die meisten tatsächlich planen.`,
++  spreadH: "Ein Land, mehr als ein Klima",
++  spreadLead: (monthIn, gap) =>
++    `Am größten ist der Unterschied ${monthIn}: Zwischen dem wärmsten und dem kühlsten Ort des Landes liegen dann rund ${gap}°C.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} kommt in diesem Monat im Mittel auf ${warmHi}°C, ${coolCity} dagegen nur auf ${coolHi}°C.`,
++  spreadAdvice:
++    "Die ehrliche Antwort auf „Wann soll ich hin?“ hängt also davon ab, wo Sie landen. Suchen Sie in der Tabelle unten die Stadt heraus, in die Sie wirklich fliegen, und richten Sie sich nach deren Monaten statt nach dem Landesmittel.",
++  noSpread:
++    "Das Land ist kompakt genug, dass seine Städte einem ähnlichen Muster folgen: Die Monate oben gelten überall.",
++  seasonsH: "Jahreszeit für Jahreszeit",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Beste Zeit", good: "Brauchbar", hot: "Sehr heiß", rainy: "Regnerisch", cold: "Kalt" },
++  verdictText: {
++    ideal: "Der Idealfall: warm genug, um den ganzen Tag draußen zu sein, ohne die Extreme der Hochsaison.",
++    good: "Gut bereisbar, wenn auch nicht das beste Wetter des Jahres.",
++    hot: "So heiß, dass Sightseeing mittags zur Arbeit wird — früh starten, lange Mittagspause.",
++    rainy: "Die nasseste Zeit des Jahres. Regen kippt selten eine Reise, prägt aber das Programm.",
++    cold: "Kalte Jahreszeit. Lohnt sich für Winterlandschaften, ruhige Städte und niedrige Preise, nicht für Strandwetter.",
++  },
++  tableH: (k) => `Klimatabelle ${k}`,
++  tableIntro:
++    "Mittlere Tageshöchst- und Tiefstwerte, Monatsniederschlag und Bewölkung, aus den Aufzeichnungen 2011–2020 für die oben genannten Ziele.",
++  cols: ["Monat", "Ø max", "Ø min", "Niederschlag", "Bewölkung"],
++  citiesH: "Die besten Monate, Stadt für Stadt",
++  citiesIntro: (n) =>
++    `Das Landesmittel verdeckt viel. Hier sind alle ${n} Orte des Landes mit Klimaaufzeichnungen und die drei Monate, die dort jeweils am besten abschneiden.`,
++  cityCols: ["Stadt", "Beste Monate", "Höchstwerte dann"],
++  cityMore: (n) => `Alle ${n} Städte anzeigen`,
++  faqH: "Häufige Fragen",
++  qBest: (k) => `${k}: Wann ist die beste Reisezeit?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. In den wichtigsten Zielen des Landes liegen diese Monate im Mittel bei ${hi}°C am Tag, ${lo}°C in der Nacht und etwa ${rain} mm Regen — die verlässlichste Kombination des Jahres.`,
++  qWarmest: (k) => `${k}: Welcher ist der wärmste Monat?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm} mit durchschnittlich ${warmHi}°C am Tag. Am kühlsten ist ${cool} mit etwa ${coolHi}°C; über das Jahr sind das rund ${Math.abs(warmHi - coolHi)}°C Unterschied.`,
++  qRain: (k) => `${k}: In welchem Monat regnet es am meisten?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet} mit rund ${wetMm} mm im Mittel. Am trockensten ist ${dry} mit etwa ${dryMm} mm. Die Monatssumme sagt, wie viel fällt, nicht an wie vielen Tagen: Ein nasser Monat kann überwiegend sonnig sein, mit einzelnen kräftigen Nachmittagen.`,
++  qQuiet: (k) => `${k}: Wann ist am wenigsten los?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder} — die Monate direkt vor und nach der Hauptzeit ${best}. Sie geben ein paar Grad ab und bekommen spürbar weniger Andrang und niedrigere Preise, was sich meist lohnt.`,
++  aQuietNone: (best) =>
++    `Einen bequemen Zwischenmonat gibt es hier nicht: Es geht recht abrupt von der Zeit um ${best} in Wetter über, das die meisten lieber meiden.`,
++  qWhereWarm: (k, monthIn) => `${k}: Wo ist es ${monthIn} am wärmsten?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `In ${warmCity}, mit durchschnittlich ${warmHi}°C ${monthIn}, gegenüber ${coolHi}°C in ${coolCity}. Wenn es in diesem Monat warm sein soll, fahren Sie nach ${warmCity}, statt sich auf das Landesmittel zu verlassen.`,
++  qMonthGood: (k, month) => `${k}: Ist ${month} eine gute Reisezeit?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Ja. ${month} gehört zu den drei besten Monaten des Jahres: im Mittel ${hi}°C am Tag, ${lo}°C nachts und etwa ${mm} mm Regen.`
++      : `${month} bringt im Mittel ${hi}°C am Tag, ${lo}°C nachts und etwa ${mm} mm Regen. Reisen lässt sich gut, aber ${best} sind die stärkeren Monate, wenn die Termine flexibel sind.`,
++  sources:
++    "Mittelwerte aus der NASA-POWER-/ERA5-Reanalyse, 2011–2020. Es sind langjährige Klimamittel, keine Vorhersage.",
++  sourcesLink: "Woher diese Daten stammen",
++  ctaH: "Die Reise konkret planen",
++  ctaForecast: "14-Tage-Vorhersage",
++  ctaWhere: "Wohin in diesem Monat",
++  ctaCities: "Alle Orte des Landes",
++  breadcrumb: "Beste Reisezeit",
++};
++
++const FR: BestTimeCountryCopy = {
++  eyebrow: "Guide climatique du pays",
++  title: (k) => `${k} : quand partir, mois par mois`,
++  desc: (k, best, lo, hi) =>
++    `La meilleure période pour partir : ${best}, avec des maximales de ${hi}°C et des minimales de ${lo}°C. Moyennes mois par mois, la basse saison et les régions les plus chaudes de ${k}.`,
++  keywords: (k) => [
++    `quand partir ${k}`,
++    `meilleure période ${k}`,
++    `climat ${k} mois par mois`,
++    `${k} climat`,
++    `mois le plus chaud ${k}`,
++    `mois le plus pluvieux ${k}`,
++  ],
++  h1: (k) => `${k} : quand partir`,
++  answer: (best, hi, lo, rain) =>
++    `Les meilleurs mois sont ${best} : les maximales tournent autour de ${hi}°C, les nuits restent proches de ${lo}°C et il tombe environ ${rain} mm de pluie par mois. C'est la fenêtre au temps le plus fiable dans les principales destinations du pays.`,
++  basis: (n, cities) =>
++    `Ces chiffres moyennent les ${n} destinations les plus demandées — ${cities} — et non chaque commune de la carte : ils décrivent donc le voyage que la plupart des gens préparent réellement.`,
++  spreadH: "Un pays, plusieurs climats",
++  spreadLead: (monthIn, gap) =>
++    `L'écart est maximal ${monthIn} : environ ${gap}°C séparent alors l'endroit le plus chaud du plus frais.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} affiche en moyenne ${warmHi}°C ce mois-là, quand ${coolCity} plafonne à ${coolHi}°C.`,
++  spreadAdvice:
++    "La réponse honnête à « quand partir ? » dépend donc de l'endroit où vous atterrissez. Repérez dans le tableau ci-dessous la ville où vous allez vraiment et fiez-vous à ses mois, pas à la moyenne nationale.",
++  noSpread:
++    "Le pays est assez compact pour que ses villes suivent un schéma voisin : les mois ci-dessus valent où que vous logiez.",
++  seasonsH: "Saison par saison",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Meilleure période", good: "Correct", hot: "Très chaud", rainy: "Pluvieux", cold: "Froid" },
++  verdictText: {
++    ideal: "Le bon équilibre : assez chaud pour rester dehors toute la journée, sans les excès de la haute saison.",
++    good: "Tout à fait praticable, sans atteindre le meilleur temps de l'année.",
++    hot: "Si chaud que visiter à midi devient pénible : départs matinaux et longues pauses déjeuner.",
++    rainy: "La période la plus humide de l'année. La pluie annule rarement un voyage, mais elle en change le programme.",
++    cold: "Saison froide. Elle vaut pour les paysages d'hiver, les villes calmes et les prix bas, pas pour la plage.",
++  },
++  tableH: (k) => `Climat de ${k} mois par mois`,
++  tableIntro:
++    "Maximales et minimales moyennes, pluie mensuelle et nébulosité, d'après les relevés 2011–2020 des destinations citées plus haut.",
++  cols: ["Mois", "Max moy.", "Min moy.", "Pluie", "Nuages"],
++  citiesH: "Les meilleurs mois, ville par ville",
++  citiesIntro: (n) =>
++    `La moyenne nationale cache beaucoup de choses. Voici les ${n} localités du pays disposant de relevés climatiques et les trois mois les mieux notés dans chacune.`,
++  cityCols: ["Ville", "Meilleurs mois", "Maximales alors"],
++  cityMore: (n) => `Afficher les ${n} villes`,
++  faqH: "Questions fréquentes",
++  qBest: (k) => `${k} : quelle est la meilleure période pour partir ?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. Dans les principales destinations du pays, ces mois affichent en moyenne ${hi}°C le jour, ${lo}°C la nuit et environ ${rain} mm de pluie : la combinaison la plus fiable de l'année.`,
++  qWarmest: (k) => `${k} : quel est le mois le plus chaud ?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm}, avec ${warmHi}°C en moyenne dans la journée. Le plus frais est ${cool}, autour de ${coolHi}°C : l'année varie donc d'environ ${Math.abs(warmHi - coolHi)}°C entre les deux.`,
++  qRain: (k) => `${k} : quel est le mois le plus pluvieux ?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet}, avec environ ${wetMm} mm en moyenne. Le plus sec est ${dry}, autour de ${dryMm} mm. Le cumul mensuel dit la quantité d'eau, pas le nombre de jours de pluie : un mois humide peut rester ensoleillé avec quelques gros après-midi.`,
++  qQuiet: (k) => `${k} : quand y a-t-il le moins de monde ?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder}, les mois juste avant et juste après le pic de ${best}. Vous cédez quelques degrés et gagnez nettement moins d'affluence et des prix plus bas : le calcul est souvent gagnant.`,
++  aQuietNone: (best) =>
++    `Il n'y a pas ici de mois intermédiaire confortable : on passe assez vite de la fenêtre de ${best} à un temps que la plupart préfèrent éviter.`,
++  qWhereWarm: (k, monthIn) => `${k} : où fait-il le plus chaud ${monthIn} ?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `À ${warmCity}, avec ${warmHi}°C de moyenne ${monthIn}, contre ${coolHi}°C à ${coolCity}. Si vous cherchez la chaleur ce mois-là, visez ${warmCity} plutôt que de vous fier à la moyenne nationale.`,
++  qMonthGood: (k, month) => `${k} : ${month} est-il une bonne période ?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Oui. ${month} fait partie des trois meilleurs mois de l'année : ${hi}°C le jour, ${lo}°C la nuit et environ ${mm} mm de pluie.`
++      : `${month} donne en moyenne ${hi}°C le jour, ${lo}°C la nuit et environ ${mm} mm de pluie. C'est faisable, mais ${best} restent de meilleurs mois si vos dates sont souples.`,
++  sources:
++    "Moyennes calculées à partir de la réanalyse NASA POWER / ERA5, 2011–2020. Ce sont des normales climatiques, pas une prévision.",
++  sourcesLink: "D'où viennent ces données",
++  ctaH: "Préparer le voyage pour de vrai",
++  ctaForecast: "Prévisions à 15 jours",
++  ctaWhere: "Où partir ce mois-ci",
++  ctaCities: "Toutes les villes du pays",
++  breadcrumb: "Quand partir",
++};
++
++const PT: BestTimeCountryCopy = {
++  eyebrow: "Guia climático do país",
++  title: (k) => `${k}: melhor altura para viajar, mês a mês`,
++  desc: (k, best, lo, hi) =>
++    `A melhor altura para viajar para ${k} é ${best}, com máximas de ${hi}°C e mínimas de ${lo}°C. Médias mês a mês, a época intermédia e as zonas mais quentes do país.`,
++  keywords: (k) => [
++    `melhor altura para viajar para ${k}`,
++    `quando ir a ${k}`,
++    `clima de ${k} mês a mês`,
++    `${k} clima`,
++    `mês mais quente de ${k}`,
++    `mês mais chuvoso de ${k}`,
++  ],
++  h1: (k) => `${k}: a melhor altura para viajar`,
++  answer: (best, hi, lo, rain) =>
++    `Os melhores meses são ${best}: as máximas rondam os ${hi}°C, as noites ficam perto dos ${lo}°C e caem cerca de ${rain} mm de chuva por mês. É a janela com o tempo mais fiável nos principais destinos do país.`,
++  basis: (n, cities) =>
++    `Estes valores fazem a média dos ${n} destinos mais procurados — ${cities} — e não de todas as localidades do mapa, pelo que descrevem a viagem que a maioria está mesmo a planear.`,
++  spreadH: "Um país, mais do que um clima",
++  spreadLead: (monthIn, gap) =>
++    `A diferença é maior ${monthIn}, quando o ponto mais quente e o mais fresco do país distam cerca de ${gap}°C.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} regista em média ${warmHi}°C nesse mês, enquanto ${coolCity} fica pelos ${coolHi}°C.`,
++  spreadAdvice:
++    "A resposta honesta a «quando devo ir?» depende, portanto, de onde aterra. Procure na tabela abaixo a cidade para onde vai mesmo e use os meses dela, não a média nacional.",
++  noSpread:
++    "O país é suficientemente compacto para que as suas cidades sigam um padrão parecido: os meses acima valem onde quer que fique.",
++  seasonsH: "Estação a estação",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Melhor altura", good: "Aceitável", hot: "Muito quente", rainy: "Chuvoso", cold: "Frio" },
++  verdictText: {
++    ideal: "O equilíbrio certo: quente o suficiente para estar na rua todo o dia, sem os extremos da época alta.",
++    good: "Perfeitamente viável, ainda que sem o melhor tempo do ano.",
++    hot: "Tão quente que visitar ao meio-dia custa: saídas cedo e almoços longos.",
++    rainy: "A altura mais húmida do ano. A chuva raramente cancela uma viagem, mas molda o programa.",
++    cold: "Época fria. Compensa pelas paisagens de inverno, cidades tranquilas e preços baixos, não pela praia.",
++  },
++  tableH: (k) => `O clima de ${k} mês a mês`,
++  tableIntro:
++    "Máxima e mínima média diária, chuva mensal e nebulosidade, a partir dos registos de 2011–2020 dos destinos indicados acima.",
++  cols: ["Mês", "Máx. média", "Mín. média", "Chuva", "Nuvens"],
++  citiesH: "Os melhores meses, cidade a cidade",
++  citiesIntro: (n) =>
++    `A média nacional esconde muito. Aqui ficam as ${n} localidades do país com registos climáticos e os três meses com melhor pontuação em cada uma.`,
++  cityCols: ["Cidade", "Melhores meses", "Máximas nessa altura"],
++  cityMore: (n) => `Ver as ${n} cidades`,
++  faqH: "Perguntas frequentes",
++  qBest: (k) => `Qual é a melhor altura para viajar para ${k}?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. Nos principais destinos do país, esses meses registam em média ${hi}°C de dia, ${lo}°C de noite e cerca de ${rain} mm de chuva — a combinação mais fiável do ano.`,
++  qWarmest: (k) => `Qual é o mês mais quente de ${k}?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm}, com uma média de ${warmHi}°C durante o dia. O mais fresco é ${cool}, perto dos ${coolHi}°C, pelo que o ano oscila cerca de ${Math.abs(warmHi - coolHi)}°C entre os dois.`,
++  qRain: (k) => `Qual é o mês mais chuvoso de ${k}?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet}, com cerca de ${wetMm} mm em média. O mais seco é ${dry}, com cerca de ${dryMm} mm. O total mensal diz quanta água cai, não em quantos dias chove: um mês húmido pode ser solarengo com algumas tardes fortes.`,
++  qQuiet: (k) => `Quando há menos gente em ${k}?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder}, os meses mesmo antes e depois do pico de ${best}. Abdica de uns graus e ganha bastante menos gente e preços mais baixos, o que costuma compensar.`,
++  aQuietNone: (best) =>
++    `Aqui não há um mês intermédio confortável: passa-se depressa da janela de ${best} para um tempo que a maioria prefere evitar.`,
++  qWhereWarm: (k, monthIn) => `Onde é mais quente em ${k} ${monthIn}?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `${warmCity}, com uma média de ${warmHi}°C ${monthIn}, contra ${coolHi}°C em ${coolCity}. Se nesse mês procura calor, vá para ${warmCity} em vez de confiar na média nacional.`,
++  qMonthGood: (k, month) => `${month} é boa altura para viajar para ${k}?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Sim. ${month} é um dos três melhores meses do ano: ${hi}°C de dia, ${lo}°C de noite e cerca de ${mm} mm de chuva.`
++      : `${month} regista em média ${hi}°C de dia, ${lo}°C de noite e cerca de ${mm} mm de chuva. Dá para viajar, mas ${best} são meses melhores se as datas forem flexíveis.`,
++  sources:
++    "Médias calculadas a partir da reanálise NASA POWER / ERA5, 2011–2020. São normais climáticas de longo prazo, não uma previsão.",
++  sourcesLink: "De onde vêm estes dados",
++  ctaH: "Planear a viagem a sério",
++  ctaForecast: "Previsão a 15 dias",
++  ctaWhere: "Para onde viajar este mês",
++  ctaCities: "Todas as cidades do país",
++  breadcrumb: "Melhor altura para viajar",
++};
++
++const NL: BestTimeCountryCopy = {
++  eyebrow: "Klimaatgids van het land",
++  title: (k) => `${k}: beste reistijd, maand voor maand`,
++  desc: (k, best, lo, hi) =>
++    `De beste reistijd voor ${k} is ${best}, met maxima rond ${hi}°C en minima rond ${lo}°C. Maandgemiddelden, het rustige tussenseizoen en waar het in het land het warmst is.`,
++  keywords: (k) => [
++    `beste reistijd ${k}`,
++    `wanneer naar ${k}`,
++    `${k} klimaat`,
++    `klimaat ${k} per maand`,
++    `warmste maand ${k}`,
++    `natste maand ${k}`,
++  ],
++  h1: (k) => `${k}: de beste reistijd`,
++  answer: (best, hi, lo, rain) =>
++    `De beste maanden zijn ${best}: overdag gemiddeld ${hi}°C, 's nachts rond ${lo}°C en zo'n ${rain} mm regen per maand. Dat is de periode met het betrouwbaarste weer in de belangrijkste bestemmingen van het land.`,
++  basis: (n, cities) =>
++    `Deze kerncijfers middelen de ${n} bestemmingen waar het vaakst naar gevraagd wordt — ${cities} — en niet elke plaats op de kaart. Ze beschrijven dus de reis die de meeste mensen echt plannen.`,
++  spreadH: "Eén land, meer dan één klimaat",
++  spreadLead: (monthIn, gap) =>
++    `Het verschil is het grootst ${monthIn}: dan zit er zo'n ${gap}°C tussen de warmste en de koelste plek van het land.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} komt die maand gemiddeld op ${warmHi}°C, terwijl ${coolCity} op ${coolHi}°C blijft steken.`,
++  spreadAdvice:
++    "Het eerlijke antwoord op \"wanneer moet ik gaan?\" hangt dus af van waar je landt. Zoek in de tabel hieronder de stad waar je echt naartoe gaat en ga uit van die maanden, niet van het landelijk gemiddelde.",
++  noSpread:
++    "Het land is compact genoeg dat de steden een vergelijkbaar patroon volgen: de maanden hierboven gelden overal.",
++  seasonsH: "Seizoen voor seizoen",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Beste periode", good: "Prima", hot: "Erg heet", rainy: "Nat", cold: "Koud" },
++  verdictText: {
++    ideal: "Precies goed: warm genoeg om de hele dag buiten te zijn, zonder de uitersten van het hoogseizoen.",
++    good: "Uitstekend te doen, al is het niet het beste weer van het jaar.",
++    hot: "Zo heet dat rondlopen midden op de dag zwaar wordt — vroeg beginnen en lang lunchen.",
++    rainy: "De natste periode van het jaar. Regen gooit zelden een reis om, maar bepaalt wel het programma.",
++    cold: "Koud seizoen. De moeite waard voor winterlandschappen, rustige steden en lage prijzen, niet voor strandweer.",
++  },
++  tableH: (k) => `Het klimaat van ${k} per maand`,
++  tableIntro:
++    "Gemiddelde maxima en minima, maandelijkse neerslag en bewolking, op basis van de metingen van 2011–2020 voor de hierboven genoemde bestemmingen.",
++  cols: ["Maand", "Gem. max", "Gem. min", "Regen", "Bewolking"],
++  citiesH: "De beste maanden, stad voor stad",
++  citiesIntro: (n) =>
++    `Het landelijk gemiddelde verbergt veel. Hier staan alle ${n} plaatsen in het land met klimaatgegevens en de drie maanden die er per plaats het beste scoren.`,
++  cityCols: ["Stad", "Beste maanden", "Maxima dan"],
++  cityMore: (n) => `Alle ${n} steden tonen`,
++  faqH: "Veelgestelde vragen",
++  qBest: (k) => `Wat is de beste reistijd voor ${k}?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. In de belangrijkste bestemmingen van het land komen die maanden gemiddeld op ${hi}°C overdag, ${lo}°C 's nachts en zo'n ${rain} mm regen — de betrouwbaarste combinatie van het jaar.`,
++  qWarmest: (k) => `Wat is de warmste maand in ${k}?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm}, met gemiddeld ${warmHi}°C overdag. De koelste is ${cool} met ongeveer ${coolHi}°C, dus over het jaar zit er zo'n ${Math.abs(warmHi - coolHi)}°C tussen.`,
++  qRain: (k) => `In welke maand regent het het meest in ${k}?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet}, met gemiddeld zo'n ${wetMm} mm. De droogste maand is ${dry} met ongeveer ${dryMm} mm. Het maandtotaal zegt hoeveel er valt, niet op hoeveel dagen: een natte maand kan grotendeels zonnig zijn met een paar stevige middagen.`,
++  qQuiet: (k) => `Wanneer is het het rustigst in ${k}?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder} — de maanden net voor en net na de drukte van ${best}. Je levert een paar graden in en krijgt merkbaar minder drukte en lagere prijzen terug, wat meestal gunstig uitpakt.`,
++  aQuietNone: (best) =>
++    `Een comfortabele tussenmaand is er hier niet: het gaat vrij abrupt van de periode rond ${best} over in weer dat de meeste reizigers liever mijden.`,
++  qWhereWarm: (k, monthIn) => `Waar is het in ${k} het warmst ${monthIn}?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `In ${warmCity}, gemiddeld ${warmHi}°C ${monthIn}, tegen ${coolHi}°C in ${coolCity}. Wil je die maand warmte, ga dan naar ${warmCity} in plaats van op het landelijk gemiddelde te vertrouwen.`,
++  qMonthGood: (k, month) => `Is ${month} een goede tijd om naar ${k} te gaan?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Ja. ${month} hoort bij de drie beste maanden van het jaar: ${hi}°C overdag, ${lo}°C 's nachts en zo'n ${mm} mm regen.`
++      : `${month} komt gemiddeld op ${hi}°C overdag, ${lo}°C 's nachts en zo'n ${mm} mm regen. Het kan prima, maar ${best} zijn sterkere maanden als je data flexibel zijn.`,
++  sources:
++    "Gemiddelden berekend uit de NASA POWER / ERA5-reanalyse, 2011–2020. Dit zijn langjarige klimaatgemiddelden, geen verwachting.",
++  sourcesLink: "Waar deze gegevens vandaan komen",
++  ctaH: "De reis echt plannen",
++  ctaForecast: "Verwachting voor 14 dagen",
++  ctaWhere: "Waar naartoe deze maand",
++  ctaCities: "Alle plaatsen in het land",
++  breadcrumb: "Beste reistijd",
++};
++
++const PL: BestTimeCountryCopy = {
++  eyebrow: "Przewodnik klimatyczny po kraju",
++  title: (k) => `${k}: kiedy jechać, miesiąc po miesiącu`,
++  desc: (k, best, lo, hi) =>
++    `Najlepszy termin wyjazdu (${k}): ${best}, z maksimami około ${hi}°C i minimami około ${lo}°C. Średnie miesięczne, spokojny sezon przejściowy i najcieplejsze regiony kraju.`,
++  keywords: (k) => [
++    `kiedy jechać ${k}`,
++    `najlepszy termin wyjazdu ${k}`,
++    `klimat ${k}`,
++    `pogoda ${k} miesiąc po miesiącu`,
++    `najcieplejszy miesiąc ${k}`,
++    `najbardziej deszczowy miesiąc ${k}`,
++  ],
++  h1: (k) => `${k}: kiedy jechać`,
++  answer: (best, hi, lo, rain) =>
++    `Najlepsze miesiące to ${best}: w dzień średnio ${hi}°C, w nocy około ${lo}°C, a deszczu spada około ${rain} mm miesięcznie. To okres z najbardziej przewidywalną pogodą w głównych kierunkach w tym kraju.`,
++  basis: (n, cities) =>
++    `Te wartości uśredniają ${n} najczęściej wyszukiwanych kierunków — ${cities} — a nie każdą miejscowość na mapie, więc opisują wyjazd, który faktycznie planuje większość osób.`,
++  spreadH: "Jeden kraj, więcej niż jeden klimat",
++  spreadLead: (monthIn, gap) =>
++    `Różnica jest największa ${monthIn}: najcieplejsze i najchłodniejsze miejsce w kraju dzieli wtedy około ${gap}°C.`,
++  spreadDetail: (warmCity, warmHi, coolCity, coolHi) =>
++    `${warmCity} notuje w tym miesiącu średnio ${warmHi}°C, podczas gdy ${coolCity} zatrzymuje się na ${coolHi}°C.`,
++  spreadAdvice:
++    "Uczciwa odpowiedź na pytanie „kiedy jechać?” zależy więc od tego, gdzie lądujesz. Znajdź w tabeli poniżej miasto, do którego naprawdę lecisz, i kieruj się jego miesiącami, a nie średnią krajową.",
++  noSpread:
++    "Kraj jest na tyle niewielki, że jego miasta mają zbliżony przebieg pogody: miesiące powyżej sprawdzą się wszędzie.",
++  seasonsH: "Pora roku po porze roku",
++  seasonRange: (from, to) => `${from}–${to}`,
++  verdict: { ideal: "Najlepszy okres", good: "Do przyjęcia", hot: "Bardzo gorąco", rainy: "Deszczowo", cold: "Zimno" },
++  verdictText: {
++    ideal: "Złoty środek: wystarczająco ciepło, by spędzić cały dzień na zewnątrz, bez skrajności szczytu sezonu.",
++    good: "Podróżuje się dobrze, choć to nie najlepsza pogoda w roku.",
++    hot: "Tak gorąco, że zwiedzanie w południe męczy — wcześnie zaczynaj i rób długie przerwy.",
++    rainy: "Najwilgotniejszy okres roku. Deszcz rzadko przekreśla wyjazd, ale zmienia plan dnia.",
++    cold: "Chłodna pora. Warto dla zimowych krajobrazów, spokojnych miast i niskich cen, nie dla plaży.",
++  },
++  tableH: (k) => `Klimat (${k}) miesiąc po miesiącu`,
++  tableIntro:
++    "Średnie dobowe maksima i minima, miesięczne opady i zachmurzenie, na podstawie danych z lat 2011–2020 dla wymienionych wyżej kierunków.",
++  cols: ["Miesiąc", "Śr. maks.", "Śr. min.", "Opady", "Zachmurzenie"],
++  citiesH: "Najlepsze miesiące, miasto po mieście",
++  citiesIntro: (n) =>
++    `Średnia krajowa wiele ukrywa. Poniżej wszystkie ${n} miejscowości w kraju z danymi klimatycznymi i trzy miesiące, które wypadają w nich najlepiej.`,
++  cityCols: ["Miasto", "Najlepsze miesiące", "Maksima w tym czasie"],
++  cityMore: (n) => `Pokaż wszystkie miasta (${n})`,
++  faqH: "Częste pytania",
++  qBest: (k) => `Kiedy najlepiej jechać (${k})?`,
++  aBest: (best, hi, lo, rain) =>
++    `${best}. W głównych kierunkach w tym kraju miesiące te mają średnio ${hi}°C w dzień, ${lo}°C w nocy i około ${rain} mm deszczu — to najbardziej przewidywalne połączenie w roku.`,
++  qWarmest: (k) => `Który miesiąc jest najcieplejszy (${k})?`,
++  aWarmest: (warm, warmHi, cool, coolHi) =>
++    `${warm}, średnio ${warmHi}°C w dzień. Najchłodniejszy jest ${cool}, około ${coolHi}°C, więc w skali roku różnica wynosi mniej więcej ${Math.abs(warmHi - coolHi)}°C.`,
++  qRain: (k) => `W którym miesiącu pada najwięcej (${k})?`,
++  aRain: (wet, wetMm, dry, dryMm) =>
++    `${wet}, średnio około ${wetMm} mm. Najsuchszy jest ${dry}, około ${dryMm} mm. Suma miesięczna mówi, ile wody spadnie, a nie przez ile dni pada: mokry miesiąc bywa w większości słoneczny, z kilkoma ulewnymi popołudniami.`,
++  qQuiet: (k) => `Kiedy jest najmniej turystów (${k})?`,
++  aQuiet: (shoulder, best) =>
++    `${shoulder} — miesiące tuż przed szczytem (${best}) i zaraz po nim. Oddajesz kilka stopni, a zyskujesz wyraźnie mniejsze tłumy i niższe ceny, co zwykle się opłaca.`,
++  aQuietNone: (best) =>
++    `Nie ma tu wygodnego miesiąca przejściowego: dość szybko przechodzi się od okresu ${best} do pogody, której większość woli unikać.`,
++  qWhereWarm: (k, monthIn) => `Gdzie jest najcieplej (${k}) ${monthIn}?`,
++  aWhereWarm: (warmCity, warmHi, coolCity, coolHi, monthIn) =>
++    `${warmCity}, średnio ${warmHi}°C ${monthIn}, wobec ${coolHi}°C w mieście ${coolCity}. Jeśli w tym miesiącu zależy ci na cieple, wybierz ${warmCity}, zamiast polegać na średniej krajowej.`,
++  qMonthGood: (k, month) => `Czy ${month} to dobry termin na wyjazd (${k})?`,
++  aMonthGood: (month, hi, lo, mm, isBest, best) =>
++    isBest
++      ? `Tak. ${month} należy do trzech najlepszych miesięcy w roku: ${hi}°C w dzień, ${lo}°C w nocy i około ${mm} mm deszczu.`
++      : `${month} to średnio ${hi}°C w dzień, ${lo}°C w nocy i około ${mm} mm deszczu. Da się podróżować, ale ${best} wypadają lepiej, jeśli masz elastyczne terminy.`,
++  sources:
++    "Średnie obliczone na podstawie reanalizy NASA POWER / ERA5, 2011–2020. To wieloletnie normy klimatyczne, a nie prognoza.",
++  sourcesLink: "Skąd pochodzą te dane",
++  ctaH: "Zaplanuj wyjazd na serio",
++  ctaForecast: "Prognoza na 16 dni",
++  ctaWhere: "Gdzie jechać w tym miesiącu",
++  ctaCities: "Wszystkie miejscowości w kraju",
++  breadcrumb: "Kiedy jechać",
++};
++
++const BY_LOCALE: Record<AnyLocale, BestTimeCountryCopy> = {
++  en: EN,
++  es: ES,
++  it: IT,
++  de: DE,
++  fr: FR,
++  pt: PT,
++  nl: NL,
++  pl: PL,
++};
++
++export function bestTimeCountryCopy(locale: AnyLocale): BestTimeCountryCopy {
++  return BY_LOCALE[locale] ?? EN;
++}
+diff --git a/lib/i18n/copy/de.ts b/lib/i18n/copy/de.ts
+index e40e7e9..f2235e9 100644
+--- a/lib/i18n/copy/de.ts
++++ b/lib/i18n/copy/de.ts
+@@ -80,6 +80,11 @@ export const de: Copy = {
+     `Im ${M[x.m]} ist es ${inC(x.city)} meist ${TEMP[x.temp]}, mit Tageshöchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen Tiefstwerten um ${x.lo}°C (${x.loF}°F). Es fallen im Schnitt etwa ${x.mm} mm Regen (${RAIN[x.rain]}), und der Himmel ist ${SKY[x.sky]}. Die Höchstwerte sind ${cmp(x.dPrev, (x.m + 11) % 12)} und ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+   monthSummaryAlt: (x) =>
+     `Mit Höchstwerten um ${x.hi}°C (${x.hiF}°F) und nächtlichen ${x.lo}°C (${x.loF}°F) ist der ${M[x.m]} ${inC(x.city)} meist ${TEMP[x.temp]}. Über den Monat fallen rund ${x.mm} mm Regen (${RAIN[x.rain]}), der Himmel ist ${SKY[x.sky]}.`,
++  monthSummaryAlt2: (x) =>
++    `${capI(IN[x.m]!)} fallen ${inC(x.city)} rund ${x.mm} mm Regen (${RAIN[x.rain]}), bei einem Himmel, der ${SKY[x.sky]} ist. Tagsüber liegen die Werte bei etwa ${x.hi}°C (${x.hiF}°F), nachts bei rund ${x.lo}°C (${x.loF}°F) — insgesamt ${TEMP[x.temp]}.`,
++  monthSummaryAlt3: (x) =>
++    `Wie warm ist es ${inC(x.city)} ${IN[x.m]}? Tagsüber etwa ${x.hi}°C (${x.hiF}°F), nachts rund ${x.lo}°C (${x.loF}°F) — also ${TEMP[x.temp]}. Im Monatsmittel fallen etwa ${x.mm} mm Regen (${RAIN[x.rain]}), und der Himmel ist ${SKY[x.sky]}.`,
++  monthSources: "Klimamittel 2011–2020 (NASA POWER / ERA5) — typische Werte für den Monat, keine Vorhersage.",
+   factWarmest: (c, m) => `Der ${M[m]} ist meist der wärmste Monat ${inC(c)}.`,
+   factCoolest: (c, m) => `Der ${M[m]} ist meist der kühlste Monat ${inC(c)}.`,
+   factDriest: "Meist der trockenste Monat des Jahres.",
+diff --git a/lib/i18n/copy/en.ts b/lib/i18n/copy/en.ts
+index ec0d73d..e530c5c 100644
+--- a/lib/i18n/copy/en.ts
++++ b/lib/i18n/copy/en.ts
+@@ -70,6 +70,11 @@ export const en: Copy = {
+     `${M[a.m]} in ${a.city} is typically ${TEMP[a.temp]}, with daytime highs around ${a.hi}°C (${a.hiF}°F) and night-time lows near ${a.lo}°C (${a.loF}°F). The month usually brings about ${a.mm} mm of rain (${RAIN[a.rain]}) and is ${SKY[a.sky]}. Highs are ${cmp(a.dPrev, M[(a.m + 11) % 12]!)} and ${cmp(a.dNext, M[(a.m + 1) % 12]!)}.`,
+   monthSummaryAlt: (a) =>
+     `Expect ${TEMP[a.temp]} weather in ${a.city} in ${M[a.m]}: afternoons reach about ${a.hi}°C (${a.hiF}°F) and nights drop to around ${a.lo}°C (${a.loF}°F). Roughly ${a.mm} mm of rain falls over the month (${RAIN[a.rain]}), with skies ${SKY[a.sky]}.`,
++  monthSummaryAlt2: (a) =>
++    `Around ${a.mm} mm of rain falls on ${a.city} through ${M[a.m]} (${RAIN[a.rain]}), under skies that are ${SKY[a.sky]}. Daytime temperatures settle near ${a.hi}°C (${a.hiF}°F) and fall to about ${a.lo}°C (${a.loF}°F) after dark — ${TEMP[a.temp]} for most visitors.`,
++  monthSummaryAlt3: (a) =>
++    `How warm is ${a.city} in ${M[a.m]}? Expect about ${a.hi}°C (${a.hiF}°F) by day and ${a.lo}°C (${a.loF}°F) at night, which counts as ${TEMP[a.temp]}. Rain averages ${a.mm} mm across the month (${RAIN[a.rain]}) and the sky is ${SKY[a.sky]}.`,
++  monthSources: "Climate averages for 2011–2020 (NASA POWER / ERA5) — typical conditions for the month, not a forecast.",
+   factWarmest: (c, m) => `${M[m]} is usually ${c}'s warmest month.`,
+   factCoolest: (c, m) => `${M[m]} is usually ${c}'s coolest month.`,
+   factDriest: "Usually the driest month of the year.",
+diff --git a/lib/i18n/copy/es.ts b/lib/i18n/copy/es.ts
+index b32a5e7..30c346f 100644
+--- a/lib/i18n/copy/es.ts
++++ b/lib/i18n/copy/es.ts
+@@ -73,6 +73,11 @@ export const es: Copy = {
+     `En ${M[x.m]}, el tiempo en ${x.city} suele ser ${TEMP[x.temp]}, con máximas de unos ${x.hi}°C (${x.hiF}°F) y mínimas nocturnas cercanas a ${x.lo}°C (${x.loF}°F). Caen de media unos ${x.mm} mm de lluvia (${RAIN[x.rain]}) y el cielo está ${SKY[x.sky]}. Las máximas son ${cmp(x.dPrev, (x.m + 11) % 12)} y ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+   monthSummaryAlt: (x) =>
+     `Con máximas cercanas a ${x.hi}°C (${x.hiF}°F) y noches en torno a ${x.lo}°C (${x.loF}°F), ${M[x.m]} es un mes ${TEMP[x.temp]} en ${x.city}. A lo largo del mes caen unos ${x.mm} mm de lluvia (${RAIN[x.rain]}) y el cielo suele estar ${SKY[x.sky]}.`,
++  monthSummaryAlt2: (x) =>
++    `En ${x.city} caen unos ${x.mm} mm de lluvia durante ${M[x.m]} (${RAIN[x.rain]}), con un cielo ${SKY[x.sky]}. Las temperaturas se mantienen cerca de ${x.hi}°C (${x.hiF}°F) de día y bajan hasta unos ${x.lo}°C (${x.loF}°F) por la noche: un mes ${TEMP[x.temp]}.`,
++  monthSummaryAlt3: (x) =>
++    `¿Qué temperatura hace en ${x.city} en ${M[x.m]}? Unos ${x.hi}°C (${x.hiF}°F) durante el día y unos ${x.lo}°C (${x.loF}°F) por la noche, lo que se considera ${TEMP[x.temp]}. La lluvia media del mes es de unos ${x.mm} mm (${RAIN[x.rain]}) y el cielo está ${SKY[x.sky]}.`,
++  monthSources: "Medias climáticas de 2011–2020 (NASA POWER / ERA5): condiciones típicas del mes, no una previsión.",
+   factWarmest: (c, m) => `${cap(M[m]!)} suele ser el mes más caluroso en ${c}.`,
+   factCoolest: (c, m) => `${cap(M[m]!)} suele ser el mes más frío en ${c}.`,
+   factDriest: "Suele ser el mes más seco del año.",
+diff --git a/lib/i18n/copy/fr.ts b/lib/i18n/copy/fr.ts
+index 8aa68ea..3f67f08 100644
+--- a/lib/i18n/copy/fr.ts
++++ b/lib/i18n/copy/fr.ts
+@@ -75,6 +75,11 @@ export const fr: Copy = {
+     `${cap(IN[x.m]!)}, le temps ${a(x.city)} est généralement ${TEMP[x.temp]}, avec des maximales autour de ${x.hi}°C (${x.hiF}°F) et des minimales nocturnes proches de ${x.lo}°C (${x.loF}°F). Il tombe en moyenne environ ${x.mm} mm de pluie (${RAIN[x.rain]}) et le ciel est ${SKY[x.sky]}. Les maximales sont ${cmp(x.dPrev, (x.m + 11) % 12)} et ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+   monthSummaryAlt: (x) =>
+     `Avec des maximales proches de ${x.hi}°C (${x.hiF}°F) et des nuits autour de ${x.lo}°C (${x.loF}°F), ${M[x.m]} est un mois ${TEMP[x.temp]} ${a(x.city)}. Il tombe environ ${x.mm} mm de pluie sur le mois (${RAIN[x.rain]}) et le ciel est ${SKY[x.sky]}.`,
++  monthSummaryAlt2: (x) =>
++    `${cap(IN[x.m]!)}, il tombe environ ${x.mm} mm de pluie ${a(x.city)} (${RAIN[x.rain]}), sous un ciel ${SKY[x.sky]}. Les températures tournent autour de ${x.hi}°C (${x.hiF}°F) en journée et descendent vers ${x.lo}°C (${x.loF}°F) la nuit : un mois ${TEMP[x.temp]}.`,
++  monthSummaryAlt3: (x) =>
++    `Quel temps fait-il ${a(x.city)} ${IN[x.m]} ? Environ ${x.hi}°C (${x.hiF}°F) le jour et ${x.lo}°C (${x.loF}°F) la nuit, soit un mois ${TEMP[x.temp]}. La pluie moyenne du mois est d'environ ${x.mm} mm (${RAIN[x.rain]}) et le ciel est ${SKY[x.sky]}.`,
++  monthSources: "Moyennes climatiques 2011–2020 (NASA POWER / ERA5) : conditions habituelles du mois, pas une prévision.",
+   factWarmest: (c, m) => `${cap(M[m]!)} est en général le mois le plus chaud ${a(c)}.`,
+   factCoolest: (c, m) => `${cap(M[m]!)} est en général le mois le plus frais ${a(c)}.`,
+   factDriest: "En général le mois le plus sec de l'année.",
+diff --git a/lib/i18n/copy/it.ts b/lib/i18n/copy/it.ts
+index 44f21a1..bf93b5e 100644
+--- a/lib/i18n/copy/it.ts
++++ b/lib/i18n/copy/it.ts
+@@ -74,6 +74,11 @@ export const it: Copy = {
+     `${cap(IN[x.m]!)} ${a(x.city)} il clima è in genere ${TEMP[x.temp]}, con massime intorno ai ${x.hi}°C (${x.hiF}°F) e minime notturne vicine ai ${x.lo}°C (${x.loF}°F). Cadono in media circa ${x.mm} mm di pioggia (${RAIN[x.rain]}) e il cielo è ${SKY[x.sky]}. Le massime sono ${cmp(x.dPrev, (x.m + 11) % 12)} e ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+   monthSummaryAlt: (x) =>
+     `Con massime vicine ai ${x.hi}°C (${x.hiF}°F) e minime intorno ai ${x.lo}°C (${x.loF}°F), ${M[x.m]} ${a(x.city)} è un mese ${TEMP[x.temp]}. Nel corso del mese cadono circa ${x.mm} mm di pioggia (${RAIN[x.rain]}) e il cielo è ${SKY[x.sky]}.`,
++  monthSummaryAlt2: (x) =>
++    `${cap(IN[x.m]!)} ${a(x.city)} cadono circa ${x.mm} mm di pioggia (${RAIN[x.rain]}), con un cielo ${SKY[x.sky]}. Le temperature restano vicine ai ${x.hi}°C (${x.hiF}°F) di giorno e scendono intorno ai ${x.lo}°C (${x.loF}°F) di notte: un mese ${TEMP[x.temp]}.`,
++  monthSummaryAlt3: (x) =>
++    `Che temperatura fa ${a(x.city)} ${IN[x.m]}? Circa ${x.hi}°C (${x.hiF}°F) di giorno e ${x.lo}°C (${x.loF}°F) di notte, quindi un mese ${TEMP[x.temp]}. La pioggia media del mese è di circa ${x.mm} mm (${RAIN[x.rain]}) e il cielo è ${SKY[x.sky]}.`,
++  monthSources: "Medie climatiche 2011–2020 (NASA POWER / ERA5): condizioni tipiche del mese, non una previsione.",
+   factWarmest: (c, m) => `${cap(M[m]!)} è di solito il mese più caldo ${a(c)}.`,
+   factCoolest: (c, m) => `${cap(M[m]!)} è di solito il mese più freddo ${a(c)}.`,
+   factDriest: "Di solito è il mese più secco dell'anno.",
+diff --git a/lib/i18n/copy/nl.ts b/lib/i18n/copy/nl.ts
+index 6ec81fc..156ec73 100644
+--- a/lib/i18n/copy/nl.ts
++++ b/lib/i18n/copy/nl.ts
+@@ -83,6 +83,11 @@ export const nl: Copy = {
+     `In ${M[x.m]} is het ${inC(x.city)} meestal ${TEMP[x.temp]}, met maxima rond ${x.hi}°C (${x.hiF}°F) en nachtelijke minima rond ${x.lo}°C (${x.loF}°F). Er valt gemiddeld zo'n ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}. De maxima zijn ${cmp(x.dPrev, (x.m + 11) % 12)} en ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+   monthSummaryAlt: (x) =>
+     `Met maxima rond ${x.hi}°C (${x.hiF}°F) en nachten van zo'n ${x.lo}°C (${x.loF}°F) is ${M[x.m]} ${inC(x.city)} meestal ${TEMP[x.temp]}. Over de hele maand valt ongeveer ${x.mm} mm regen (${RAIN[x.rain]}) en het is ${SKY[x.sky]}.`,
++  monthSummaryAlt2: (x) =>
++    `In ${M[x.m]} valt er ${inC(x.city)} ongeveer ${x.mm} mm regen (${RAIN[x.rain]}), bij een lucht die ${SKY[x.sky]} is. Overdag blijft het rond ${x.hi}°C (${x.hiF}°F) en 's nachts zakt het naar zo'n ${x.lo}°C (${x.loF}°F): een ${TEMP[x.temp]} maand.`,
++  monthSummaryAlt3: (x) =>
++    `Hoe warm is het ${inC(x.city)} in ${M[x.m]}? Overdag ongeveer ${x.hi}°C (${x.hiF}°F) en 's nachts zo'n ${x.lo}°C (${x.loF}°F), dus ${TEMP[x.temp]}. Er valt gemiddeld ${x.mm} mm regen in de maand (${RAIN[x.rain]}) en het is ${SKY[x.sky]}.`,
++  monthSources: "Klimaatgemiddelden 2011–2020 (NASA POWER / ERA5) — typische waarden voor de maand, geen verwachting.",
+   factWarmest: (c, m) => `${cap(M[m]!)} is meestal de warmste maand ${inC(c)}.`,
+   factCoolest: (c, m) => `${cap(M[m]!)} is meestal de koelste maand ${inC(c)}.`,
+   factDriest: "Meestal de droogste maand van het jaar.",
+diff --git a/lib/i18n/copy/pl.ts b/lib/i18n/copy/pl.ts
+index dbc2482..6483321 100644
+--- a/lib/i18n/copy/pl.ts
++++ b/lib/i18n/copy/pl.ts
+@@ -103,6 +103,11 @@ export const pl: Copy = {
+     `${cap(IN[x.m]!)} ${w(x.city)} jest zwykle ${TEMP[x.temp]}: w dzień około ${x.hi}°C (${x.hiF}°F), w nocy około ${x.lo}°C (${x.loF}°F). Spada średnio około ${x.mm} mm deszczu (${RAIN[x.rain]}), a na niebie ${SKY[x.sky]}. Temperatury maksymalne są ${cmp(x.dPrev, (x.m + 11) % 12)} i ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+   monthSummaryAlt: (x) =>
+     `Za dnia około ${x.hi}°C (${x.hiF}°F), nocą około ${x.lo}°C (${x.loF}°F) – ${IN[x.m]} ${w(x.city)} jest zwykle ${TEMP[x.temp]}. W ciągu miesiąca spada około ${x.mm} mm deszczu (${RAIN[x.rain]}), a na niebie ${SKY[x.sky]}.`,
++  monthSummaryAlt2: (x) =>
++    `${cap(IN[x.m]!)} ${w(x.city)} spada około ${x.mm} mm deszczu (${RAIN[x.rain]}), a na niebie ${SKY[x.sky]}. W dzień termometry pokazują około ${x.hi}°C (${x.hiF}°F), nocą około ${x.lo}°C (${x.loF}°F) – jest ${TEMP[x.temp]}.`,
++  monthSummaryAlt3: (x) =>
++    `Jaka pogoda panuje ${w(x.city)} ${IN[x.m]}? W dzień około ${x.hi}°C (${x.hiF}°F), w nocy około ${x.lo}°C (${x.loF}°F), czyli ${TEMP[x.temp]}. Średnio spada w tym miesiącu około ${x.mm} mm deszczu (${RAIN[x.rain]}), a na niebie ${SKY[x.sky]}.`,
++  monthSources: "Średnie klimatyczne z lat 2011–2020 (NASA POWER / ERA5) — typowe warunki dla tego miesiąca, nie prognoza.",
+   factWarmest: (c, m) => `${cap(M[m]!)} to zwykle najcieplejszy miesiąc ${w(c)}.`,
+   factCoolest: (c, m) => `${cap(M[m]!)} to zwykle najchłodniejszy miesiąc ${w(c)}.`,
+   factDriest: "Zwykle najsuchszy miesiąc w roku.",
+diff --git a/lib/i18n/copy/pt.ts b/lib/i18n/copy/pt.ts
+index 58218a5..9af13cb 100644
+--- a/lib/i18n/copy/pt.ts
++++ b/lib/i18n/copy/pt.ts
+@@ -81,6 +81,11 @@ export const pt: Copy = {
+     `Em ${M[x.m]}, o tempo ${em(x.city)} costuma ser ${TEMP[x.temp]}, com máximas de cerca de ${x.hi}°C (${x.hiF}°F) e mínimas noturnas perto de ${x.lo}°C (${x.loF}°F). Caem em média cerca de ${x.mm} mm de chuva (${RAIN[x.rain]}) e o céu está ${SKY[x.sky]}. As máximas são ${cmp(x.dPrev, (x.m + 11) % 12)} e ${cmp(x.dNext, (x.m + 1) % 12)}.`,
+   monthSummaryAlt: (x) =>
+     `Com máximas perto de ${x.hi}°C (${x.hiF}°F) e noites à volta de ${x.lo}°C (${x.loF}°F), ${M[x.m]} é um mês ${TEMP[x.temp]} ${em(x.city)}. Ao longo do mês caem cerca de ${x.mm} mm de chuva (${RAIN[x.rain]}) e o céu está ${SKY[x.sky]}.`,
++  monthSummaryAlt2: (x) =>
++    `Em ${M[x.m]} caem cerca de ${x.mm} mm de chuva ${em(x.city)} (${RAIN[x.rain]}), com o céu ${SKY[x.sky]}. As temperaturas ficam perto dos ${x.hi}°C (${x.hiF}°F) durante o dia e descem para cerca de ${x.lo}°C (${x.loF}°F) à noite: um mês ${TEMP[x.temp]}.`,
++  monthSummaryAlt3: (x) =>
++    `Como está o tempo ${em(x.city)} em ${M[x.m]}? Cerca de ${x.hi}°C (${x.hiF}°F) de dia e ${x.lo}°C (${x.loF}°F) de noite, ou seja, um mês ${TEMP[x.temp]}. A chuva média do mês ronda os ${x.mm} mm (${RAIN[x.rain]}) e o céu está ${SKY[x.sky]}.`,
++  monthSources: "Médias climáticas de 2011–2020 (NASA POWER / ERA5): condições típicas do mês, não uma previsão.",
+   factWarmest: (c, m) => `${cap(M[m]!)} é normalmente o mês mais quente ${em(c)}.`,
+   factCoolest: (c, m) => `${cap(M[m]!)} é normalmente o mês mais frio ${em(c)}.`,
+   factDriest: "Normalmente o mês mais seco do ano.",
+diff --git a/lib/i18n/copy/types.ts b/lib/i18n/copy/types.ts
+index 4220391..701d69b 100644
+--- a/lib/i18n/copy/types.ts
++++ b/lib/i18n/copy/types.ts
+@@ -147,6 +147,31 @@ export interface Copy {
+   monthSummary: (a: MonthSummaryArgs) => string;
+   /** A second sentence structure, so month pages don't all read alike. */
+   monthSummaryAlt: (a: MonthSummaryArgs) => string;
++  /**
++   * Third and fourth sentence structures. Four openings instead of two
++   * halves how often two month pages picked by the same hash bucket read
++   * alike — with ~175k month pages, two variants was not enough spread.
++   * Optional so a language can be added without filling every variant: the
++   * month pages fall back to the first two (see the summary pool there).
++   */
++  monthSummaryAlt2?: (a: MonthSummaryArgs) => string;
++  /**
++   * Deliberately opens as a question-and-answer ("How warm is X in May?
++   * About 24°C by day…"), because that is the literal shape of the queries
++   * these pages already rank for — "hoe warm is het in lissabon in oktober",
++   * "qué temperatura hace en…", "how cold will it be in october" — and the
++   * answer sentence is what a snippet or an AI answer can lift verbatim.
++   */
++  monthSummaryAlt3?: (a: MonthSummaryArgs) => string;
++  /**
++   * Visible provenance line under the month-page H1: which dataset the
++   * averages come from, over which period, and that they are long-term
++   * normals rather than a forecast. City pages already carry the equivalent
++   * (citySources); month pages only stated their source down in the CiteBox,
++   * far below the numbers people actually read. Optional, so a language
++   * without it simply renders no line.
++   */
++  monthSources?: string;
+   factWarmest: (city: string, m: number) => string;
+   factCoolest: (city: string, m: number) => string;
+   factDriest: string;
+diff --git a/lib/i18n/routing.ts b/lib/i18n/routing.ts
+index f61127d..4ecef60 100644
+--- a/lib/i18n/routing.ts
++++ b/lib/i18n/routing.ts
+@@ -230,6 +230,15 @@ export const paths = {
+   faq: (l: AnyLocale) => (l === "en" ? "/faq" : `/${l}/${ROUTING[l].faq}`),
+   bestTime: (l: AnyLocale, country: string, city: string) =>
+     l === "en" ? `/guides/best-time-to-visit/${country}/${city}` : `/${l}/${ROUTING[l].bestTime}/${country}/${city}`,
++  /**
++   * Country-level "best time to visit" hub, one level above the city guides:
++   * /guides/best-time-to-visit/spain, /de/beste-reisezeit/spain.
++   * Search Console showed country-shaped queries ("beste reisezeit panama",
++   * "quando andare in lettonia") landing on an arbitrary city or on a plain
++   * country forecast page, because no page answered them directly.
++   */
++  bestTimeCountry: (l: AnyLocale, country: string) =>
++    l === "en" ? `/guides/best-time-to-visit/${country}` : `/${l}/${ROUTING[l].bestTime}/${country}`,
+   prefix,
+ };
+ 
+@@ -244,7 +253,8 @@ export type PageRef =
+   | { kind: "today" }
+   | { kind: "tomorrow" }
+   | { kind: "faq" }
+-  | { kind: "bestTime"; country: string; city: string };
++  | { kind: "bestTime"; country: string; city: string }
++  | { kind: "bestTimeCountry"; country: string };
+ 
+ export function pathFor(l: AnyLocale, ref: PageRef): string {
+   switch (ref.kind) {
+@@ -270,6 +280,8 @@ export function pathFor(l: AnyLocale, ref: PageRef): string {
+       return paths.faq(l);
+     case "bestTime":
+       return paths.bestTime(l, ref.country, ref.city);
++    case "bestTimeCountry":
++      return paths.bestTimeCountry(l, ref.country);
+   }
+ }
+ 
+@@ -300,6 +312,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
+     if (a === "weather-tomorrow" && !b) return { locale, ref: { kind: "tomorrow" } };
+     if (a === "faq" && !b) return { locale, ref: { kind: "faq" } };
+     if (a === "guides" && b === "best-time-to-visit" && c && d && !parts[4]) return { locale, ref: { kind: "bestTime", country: c, city: d } };
++    if (a === "guides" && b === "best-time-to-visit" && c && !d) return { locale, ref: { kind: "bestTimeCountry", country: c } };
+     return null;
+   }
+   const r = ROUTING[locale];
+@@ -315,6 +328,7 @@ export function parsePath(pathname: string): { locale: AnyLocale; ref: PageRef }
+   if (a === r.tomorrow && !b) return { locale, ref: { kind: "tomorrow" } };
+   if (a === r.faq && !b) return { locale, ref: { kind: "faq" } };
+   if (a === r.bestTime && b && c && !d) return { locale, ref: { kind: "bestTime", country: b, city: c } };
++  if (a === r.bestTime && b && !c) return { locale, ref: { kind: "bestTimeCountry", country: b } };
+   return { locale, ref: { kind: "home" } };
+ }
+ 
+diff --git a/lib/sitemapEntries.ts b/lib/sitemapEntries.ts
+index f14ef8d..f0d95ae 100644
+--- a/lib/sitemapEntries.ts
++++ b/lib/sitemapEntries.ts
+@@ -2,6 +2,7 @@ import { siteConfig } from "@/config/site";
+ import { countries } from "@/config/world";
+ import { allGuides } from "@/lib/data/guides";
+ import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
++import { countriesWithClimate } from "@/lib/content/countryClimate";
+ import { CONTENT_LOCALES, paths } from "@/lib/i18n/routing";
+ 
+ /**
+@@ -88,6 +89,16 @@ function buildGroups(): Record<string, Entry[]> {
+     priority: city.core ? 0.7 : 0.6,
+   }));
+ 
++  // Country-level best-time hubs. Higher priority than the city guides below
++  // them: these are the pages that answer "best time to visit {country}",
++  // and they link down to every city, so they are the right entry point for
++  // a crawler working through this section.
++  const bestTimeCountryPages = countriesWithClimate(countries).map((country) => ({
++    url: `${siteConfig.url}/guides/best-time-to-visit/${country.slug}`,
++    changeFrequency: "monthly" as const,
++    priority: 0.8,
++  }));
++
+   const countryPages = [
+     { url: `${siteConfig.url}/weather`, changeFrequency: "weekly" as const, priority: 0.8 },
+     ...countries.map((country) => ({
+@@ -138,6 +149,7 @@ function buildGroups(): Record<string, Entry[]> {
+     { url: url(paths.faq(l)), changeFrequency: "monthly" as const, priority: 0.6 },
+     ...countries.map((c) => ({ url: url(paths.country(l, c.slug)), changeFrequency: "daily" as const, priority: 0.6 })),
+     ...countries.flatMap((c) => c.cities.map((city) => ({ url: url(paths.city(l, c.slug, city.slug)), changeFrequency: "daily" as const, priority: city.core ? 0.8 : 0.7 }))),
++    ...countriesWithClimate(countries).map((c) => ({ url: url(paths.bestTimeCountry(l, c.slug)), changeFrequency: "monthly" as const, priority: 0.8 })),
+     ...climateCities.map(({ country, city }) => ({ url: url(paths.bestTime(l, country.slug, city.slug)), changeFrequency: "monthly" as const, priority: 0.8 })),
+     ...(climateCities.length > 0
+       ? MONTHS.map((_, i) => ({ url: url(paths.whereToGo(l, i)), changeFrequency: "monthly" as const, priority: 0.7 }))
+@@ -149,7 +161,7 @@ function buildGroups(): Record<string, Entry[]> {
+     );
+ 
+   const groups: Record<string, Entry[]> = {
+-    en: [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeToVisitPages, ...whereToGoPages],
++    en: [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeCountryPages, ...bestTimeToVisitPages, ...whereToGoPages],
+     "en-months": monthPages,
+   };
+   for (const l of CONTENT_LOCALES) {
+-- 
+2.43.0
+

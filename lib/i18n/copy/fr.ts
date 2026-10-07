@@ -75,6 +75,11 @@ export const fr: Copy = {
     `${cap(IN[x.m]!)}, le temps ${a(x.city)} est généralement ${TEMP[x.temp]}, avec des maximales autour de ${x.hi}°C (${x.hiF}°F) et des minimales nocturnes proches de ${x.lo}°C (${x.loF}°F). Il tombe en moyenne environ ${x.mm} mm de pluie (${RAIN[x.rain]}) et le ciel est ${SKY[x.sky]}. Les maximales sont ${cmp(x.dPrev, (x.m + 11) % 12)} et ${cmp(x.dNext, (x.m + 1) % 12)}.`,
   monthSummaryAlt: (x) =>
     `Avec des maximales proches de ${x.hi}°C (${x.hiF}°F) et des nuits autour de ${x.lo}°C (${x.loF}°F), ${M[x.m]} est un mois ${TEMP[x.temp]} ${a(x.city)}. Il tombe environ ${x.mm} mm de pluie sur le mois (${RAIN[x.rain]}) et le ciel est ${SKY[x.sky]}.`,
+  monthSummaryAlt2: (x) =>
+    `${cap(IN[x.m]!)}, il tombe environ ${x.mm} mm de pluie ${a(x.city)} (${RAIN[x.rain]}), sous un ciel ${SKY[x.sky]}. Les températures tournent autour de ${x.hi}°C (${x.hiF}°F) en journée et descendent vers ${x.lo}°C (${x.loF}°F) la nuit : un mois ${TEMP[x.temp]}.`,
+  monthSummaryAlt3: (x) =>
+    `Quel temps fait-il ${a(x.city)} ${IN[x.m]} ? Environ ${x.hi}°C (${x.hiF}°F) le jour et ${x.lo}°C (${x.loF}°F) la nuit, soit un mois ${TEMP[x.temp]}. La pluie moyenne du mois est d'environ ${x.mm} mm (${RAIN[x.rain]}) et le ciel est ${SKY[x.sky]}.`,
+  monthSources: "Moyennes climatiques 2011–2020 (NASA POWER / ERA5) : conditions habituelles du mois, pas une prévision.",
   factWarmest: (c, m) => `${cap(M[m]!)} est en général le mois le plus chaud ${a(c)}.`,
   factCoolest: (c, m) => `${cap(M[m]!)} est en général le mois le plus frais ${a(c)}.`,
   factDriest: "En général le mois le plus sec de l'année.",

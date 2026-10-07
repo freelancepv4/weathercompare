@@ -58,13 +58,23 @@ export default function BestTimeToVisitIndexPage() {
 
       <div className="space-y-12">
         {countries.map((country) => (
-          <CityGrid
-            key={country.slug}
-            title={country.name}
-            items={country.cities.map((city) => ({ country, city }))}
-            climate={climateHighsFor(country.cities.map((city) => ({ country, city })))}
-            hrefFor={(c, city) => `/guides/best-time-to-visit/${c.slug}/${city.slug}`}
-          />
+          <div key={country.slug}>
+            <CityGrid
+              title={country.name}
+              items={country.cities.map((city) => ({ country, city }))}
+              climate={climateHighsFor(country.cities.map((city) => ({ country, city })))}
+              hrefFor={(c, city) => `/guides/best-time-to-visit/${c.slug}/${city.slug}`}
+            />
+            {/* Entry point for the country-level question. The city grid above
+                answers "when should I go to Seville"; this answers "when
+                should I go to Spain", which is a different search. */}
+            <Link
+              href={`/guides/best-time-to-visit/${country.slug}`}
+              className="mt-3 inline-block text-sm font-semibold text-brand-600 hover:underline dark:text-brand-300"
+            >
+              Best time to visit {country.name}: every city compared →
+            </Link>
+          </div>
         ))}
       </div>
     </div>

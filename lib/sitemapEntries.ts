@@ -2,6 +2,7 @@ import { siteConfig } from "@/config/site";
 import { countries } from "@/config/world";
 import { allGuides } from "@/lib/data/guides";
 import { citiesWithClimate, MONTHS } from "@/lib/data/climate";
+import { countriesWithClimate } from "@/lib/content/countryClimate";
 import { CONTENT_LOCALES, paths } from "@/lib/i18n/routing";
 
 /**
@@ -88,6 +89,16 @@ function buildGroups(): Record<string, Entry[]> {
     priority: city.core ? 0.7 : 0.6,
   }));
 
+  // Country-level best-time hubs. Higher priority than the city guides below
+  // them: these are the pages that answer "best time to visit {country}",
+  // and they link down to every city, so they are the right entry point for
+  // a crawler working through this section.
+  const bestTimeCountryPages = countriesWithClimate(countries).map((country) => ({
+    url: `${siteConfig.url}/guides/best-time-to-visit/${country.slug}`,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
+
   const countryPages = [
     { url: `${siteConfig.url}/weather`, changeFrequency: "weekly" as const, priority: 0.8 },
     ...countries.map((country) => ({
@@ -138,6 +149,7 @@ function buildGroups(): Record<string, Entry[]> {
     { url: url(paths.faq(l)), changeFrequency: "monthly" as const, priority: 0.6 },
     ...countries.map((c) => ({ url: url(paths.country(l, c.slug)), changeFrequency: "daily" as const, priority: 0.6 })),
     ...countries.flatMap((c) => c.cities.map((city) => ({ url: url(paths.city(l, c.slug, city.slug)), changeFrequency: "daily" as const, priority: city.core ? 0.8 : 0.7 }))),
+    ...countriesWithClimate(countries).map((c) => ({ url: url(paths.bestTimeCountry(l, c.slug)), changeFrequency: "monthly" as const, priority: 0.8 })),
     ...climateCities.map(({ country, city }) => ({ url: url(paths.bestTime(l, country.slug, city.slug)), changeFrequency: "monthly" as const, priority: 0.8 })),
     ...(climateCities.length > 0
       ? MONTHS.map((_, i) => ({ url: url(paths.whereToGo(l, i)), changeFrequency: "monthly" as const, priority: 0.7 }))
@@ -149,7 +161,7 @@ function buildGroups(): Record<string, Entry[]> {
     );
 
   const groups: Record<string, Entry[]> = {
-    en: [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeToVisitPages, ...whereToGoPages],
+    en: [...staticPages, ...countryPages, ...cityPages, ...guidePages, ...bestTimeCountryPages, ...bestTimeToVisitPages, ...whereToGoPages],
     "en-months": monthPages,
   };
   for (const l of CONTENT_LOCALES) {

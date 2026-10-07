@@ -45,9 +45,27 @@ export function hash(s: string): number {
   return h >>> 0;
 }
 
-/** Deterministically pick one of several phrasings. */
+/**
+ * Deterministically pick one of several phrasings.
+ *
+ * The FNV hash above is mixed again before the modulo. FNV-1a multiplies by
+ * an odd constant, so the LOW BIT of its output is just the XOR-parity of the
+ * input — which meant `pick(seed + ":a", 2)` and `pick(seed + ":b", 2)` were
+ * perfectly correlated (they differ by a constant parity). Three two-way
+ * choices on a city page were therefore really one coin flip, and 1,800 city
+ * pages rendered only two distinct paragraphs instead of eight. The murmur3
+ * finalizer below spreads entropy into the low bits so each slot varies
+ * independently. Still fully deterministic: a page always renders the same
+ * text, neighbouring pages differ.
+ */
 export function pick<T>(seed: string, options: T[]): T {
-  return options[hash(seed) % options.length]!;
+  let h = hash(seed);
+  h ^= h >>> 16;
+  h = Math.imul(h, 2246822507);
+  h ^= h >>> 13;
+  h = Math.imul(h, 3266489909);
+  h = (h ^ (h >>> 16)) >>> 0;
+  return options[h % options.length]!;
 }
 
 const r = Math.round;

@@ -15,9 +15,22 @@ import { getCopy, bestMonths, joinList } from "@/lib/i18n/copy";
 import { CONTENT_LOCALES, ROUTING, isContentLocale, paths, monthInfo, type ContentLocale } from "@/lib/i18n/routing";
 import { cityName, countryName } from "@/lib/i18n/places";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
+import { BestTimeCountryView } from "@/components/BestTimeCountryView";
+import { analyseCountryClimate, countriesWithClimate } from "@/lib/content/countryClimate";
+import { bestTimeCountryCopy } from "@/lib/i18n/bestTimeCountry";
 
 export const dynamic = "force-static";
-export const dynamicParams = false;
+// Was `false`. The country-level best-time hub added below exists for 225
+// countries in 7 languages; pre-rendering all of them would roughly double
+// this route's share of the build for pages most of which are rarely hit.
+// Instead the busiest ones are pre-built and the rest render on first
+// request and are then cached — the same trade the English guides make.
+// Unknown sections still 404: resolve() returns null and the page calls
+// notFound().
+export const dynamicParams = true;
+
+/** Country best-time hubs pre-rendered per language (largest countries first). */
+const PREBUILT_BEST_TIME_COUNTRIES = 40;
 
 interface PageProps {
   params: Promise<{ lang: string; section: string; country: string }>;
@@ -25,13 +38,21 @@ interface PageProps {
 
 export function generateStaticParams() {
   const hasClimate = citiesWithClimate().length > 0;
+  const bestTimeCountries = countriesWithClimate(countries)
+    .slice()
+    .sort((a, b) => b.cities.length - a.cities.length)
+    .slice(0, PREBUILT_BEST_TIME_COUNTRIES);
   return CONTENT_LOCALES.flatMap((lang) => [
     ...countries.map((c) => ({ lang, section: ROUTING[lang].weather, country: c.slug })),
     ...(hasClimate ? ROUTING[lang].monthSlugs.map((m) => ({ lang, section: ROUTING[lang].whereToGo, country: m })) : []),
+    ...bestTimeCountries.map((c) => ({ lang, section: ROUTING[lang].bestTime, country: c.slug })),
   ]);
 }
 
-type Resolved = { locale: ContentLocale; kind: "country"; country: CountrySeed } | { locale: ContentLocale; kind: "whereToGo"; month: number };
+type Resolved =
+  | { locale: ContentLocale; kind: "country"; country: CountrySeed }
+  | { locale: ContentLocale; kind: "whereToGo"; month: number }
+  | { locale: ContentLocale; kind: "bestTimeCountry"; country: CountrySeed };
 
 function resolve(p: Awaited<PageProps["params"]>): Resolved | null {
   if (!isContentLocale(p.lang)) return null;
@@ -43,6 +64,12 @@ function resolve(p: Awaited<PageProps["params"]>): Resolved | null {
   if (p.section === r.whereToGo) {
     const month = r.monthSlugs.indexOf(p.country);
     return month >= 0 ? { locale: p.lang, kind: "whereToGo", month } : null;
+  }
+  // /de/beste-reisezeit/spain — the country hub. The city guides at
+  // /de/beste-reisezeit/spain/tenerife are handled one level deeper.
+  if (p.section === r.bestTime) {
+    const country = countries.find((c) => c.slug === p.country);
+    return country && analyseCountryClimate(country) ? { locale: p.lang, kind: "bestTimeCountry", country } : null;
   }
   return null;
 }
@@ -57,6 +84,20 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     const cities = x.country.cities.slice(0, 5).map((c) => cityName(c.slug, c.name, x.locale));
     return localizedMetadata(x.locale, { kind: "country", country: x.country.slug }, copy.countryTitle(k), copy.countryDesc(k, joinList(x.locale, cities)));
   }
+  if (x.kind === "bestTimeCountry") {
+    const analysis = analyseCountryClimate(x.country);
+    if (!analysis) return {};
+    const t = bestTimeCountryCopy(x.locale);
+    const k = countryName(x.country.slug, x.country.name, x.locale);
+    const best = joinList(x.locale, analysis.best.map((m) => monthInfo(x.locale).monthNames[m]!));
+    return localizedMetadata(
+      x.locale,
+      { kind: "bestTimeCountry", country: x.country.slug },
+      t.title(k),
+      t.desc(k, best, analysis.bestLo, analysis.bestHi),
+      { keywords: t.keywords(k) }
+    );
+  }
   return localizedMetadata(x.locale, { kind: "whereToGo", month: x.month }, copy.whereTitle(x.month), copy.whereDesc(x.month));
 }
 
@@ -64,6 +105,7 @@ export default async function SlugPage(props: PageProps) {
   const params = await props.params;
   const x = resolve(params);
   if (!x) notFound();
+  if (x.kind === "bestTimeCountry") return <BestTimeCountryView locale={x.locale} country={x.country} />;
   return x.kind === "country" ? <CountryView locale={x.locale} country={x.country} /> : <WhereToGoView locale={x.locale} month={x.month} />;
 }
 
