@@ -24,7 +24,7 @@ export function localizedMetadata(
   ref: PageRef,
   title: string,
   description: string,
-  opts: { keywords?: string[]; ogImage?: boolean } = {}
+  opts: { keywords?: string[]; ogImage?: boolean; noindex?: boolean } = {}
 ): Metadata {
   const url = `${siteConfig.url}${pathFor(locale, ref)}`;
   const images = opts.ogImage === false ? undefined : [defaultOgImage];
@@ -32,6 +32,7 @@ export function localizedMetadata(
     title: seoTitle(title),
     description: seoDescription(description),
     ...(opts.keywords ? { keywords: opts.keywords } : {}),
+    ...(opts.noindex ? { robots: { index: false, follow: true } } : {}),
     alternates: { canonical: url, languages: languageAlternates(siteConfig.url, ref) },
     openGraph: { type: "website", siteName: siteConfig.name, title, description, url, locale: OG_LOCALE[locale], ...(images ? { images } : {}) },
     twitter: { card: "summary_large_image", title, description, ...(images ? { images } : {}) },

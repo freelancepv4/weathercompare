@@ -146,7 +146,10 @@ export default async function LocalizedMonthPage(props: PageProps) {
       q: copy.faqWetQ(cn, i),
       a: [copy.faqWetA(cn, i, mm, copy.rainLabels[d.rain]!), rains.max === i ? copy.factWettest : rains.min === i ? copy.factDriest : ""].join(" ").trim(),
     },
-    { q: copy.faqBestQ(cn), a: copy.faqBestA(cn, bestText) },
+    // The generic "when is the best time to visit?" answer used to sit here on
+    // all 12 month pages of a city, word for word. It belongs to (and links to)
+    // the best-time page; repeating it 12 times only made siblings look alike
+    // and competed with that page for the query.
   ];
 
   const url = `${siteConfig.url}${paths.month(locale, country.slug, city.slug, i)}`;

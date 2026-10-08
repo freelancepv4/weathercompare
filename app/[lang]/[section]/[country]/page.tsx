@@ -17,6 +17,7 @@ import { cityName, countryName } from "@/lib/i18n/places";
 import { localizedMetadata } from "@/lib/i18n/pageMeta";
 import { BestTimeCountryView } from "@/components/BestTimeCountryView";
 import { analyseCountryClimate, countriesWithClimate } from "@/lib/content/countryClimate";
+import { CountryClimateSnapshot } from "@/components/CountryClimateSnapshot";
 import { bestTimeCountryCopy } from "@/lib/i18n/bestTimeCountry";
 
 export const dynamic = "force-static";
@@ -82,7 +83,12 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
   if (x.kind === "country") {
     const k = countryName(x.country.slug, x.country.name, x.locale);
     const cities = x.country.cities.slice(0, 5).map((c) => cityName(c.slug, c.name, x.locale));
-    return localizedMetadata(x.locale, { kind: "country", country: x.country.slug }, copy.countryTitle(k), copy.countryDesc(k, joinList(x.locale, cities)));
+    // A country with no climate records has nothing beyond a card grid —
+    // keep it out of the index (links still followed) rather than offer
+    // Google a thin page.
+    return localizedMetadata(x.locale, { kind: "country", country: x.country.slug }, copy.countryTitle(k), copy.countryDesc(k, joinList(x.locale, cities)), {
+      noindex: !analyseCountryClimate(x.country),
+    });
   }
   if (x.kind === "bestTimeCountry") {
     const analysis = analyseCountryClimate(x.country);
@@ -275,6 +281,8 @@ function CountryView({ locale, country }: { locale: ContentLocale; country: Coun
           </section>
         );
       })()}
+
+      <CountryClimateSnapshot locale={locale} country={country} name={k} />
 
       <div className="mt-10 flex flex-wrap gap-3">
         <Link href={paths.today(locale)} className="inline-flex items-center gap-2 rounded-full bg-brand-600 px-5 py-2.5 text-sm font-semibold text-white shadow-soft hover:bg-brand-700">

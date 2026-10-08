@@ -11,6 +11,8 @@ import { climateHighsFor, getCityClimate, MONTHS } from "@/lib/data/climate";
 import { seoTitle, seoDescription } from "@/lib/seo";
 import { Compass, CalendarDays, MapPin } from "lucide-react";
 import { hreflang } from "@/lib/i18n/pageMeta";
+import { CountryClimateSnapshot } from "@/components/CountryClimateSnapshot";
+import { analyseCountryClimate } from "@/lib/content/countryClimate";
 
 // Fixes a real broken link: the breadcrumb on every city page ("Home >
 // Italy > Rome") and the sitemap both point to /weather/{country}, but no
@@ -69,6 +71,7 @@ export async function generateMetadata(props: PageProps): Promise<Metadata> {
     title: seoTitle(title),
     description: seoDescription(description),
     keywords,
+    ...(analyseCountryClimate(country) ? {} : { robots: { index: false, follow: true } }),
     alternates: { canonical: url, ...hreflang({ kind: "country", country: country.slug }) },
     openGraph: { type: "website", siteName: siteConfig.name, title, description, url, images: [defaultOgImage] },
     twitter: { card: "summary_large_image", title, description, images: [defaultOgImage] },
@@ -231,6 +234,8 @@ export default async function CountryPage(props: PageProps) {
           </div>
         </section>
       )}
+
+      <CountryClimateSnapshot locale="en" country={country} name={country.name} />
     </div>
   );
 }
