@@ -23,6 +23,8 @@ import { analyseClimate, bestTimeFaq, bestTimeCopy } from "@/lib/i18n/bestTime";
 import { joinList } from "@/lib/i18n/copy";
 import { hreflang } from "@/lib/i18n/pageMeta";
 import { keywordsFor } from "@/lib/i18n/keywords";
+import { TripBookingWidget } from "@/components/TripBookingWidget";
+import { KLOOK_CITY_IDS } from "@/lib/data/klookCityIds";
 
 // Purely editorial — built from lib/data/cityGuides.ts, not live provider
 // data — so this stays fully static rather than ISR-revalidated like the
@@ -201,6 +203,12 @@ export default async function BestTimeToVisitCityPage(props: PageProps) {
           <CloudSun size={18} className="shrink-0 text-brand-500" aria-hidden="true" />
           Check {city.name}&apos;s live forecast before you book
         </Link>
+
+        {(() => {
+          const klookCityId = KLOOK_CITY_IDS[`${country.slug}/${city.slug}`];
+          if (!klookCityId) return null;
+          return <TripBookingWidget cityName={city.name} klookCityId={klookCityId} />;
+        })()}
 
         {(() => {
           const climate = getCityClimate(country.slug, city.slug);
