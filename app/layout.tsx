@@ -109,6 +109,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* Ahrefs Web Analytics: cookieless and privacy-friendly, so it
             needs no consent and loads for every visitor. */}
         <script src="https://analytics.ahrefs.com/analytics.js" data-key="YRwIBRFki76Qx0zAZpq+CQ" async />
+        {/* Travelpayouts Drive (affiliate link tracking for hotel/activity
+            bookings). Gated on advertising consent, same bucket as Google
+            Ads consent above — it sets tracking cookies, so it only loads
+            once the visitor has accepted advertising cookies, and re-checks
+            live via the same wc-consent-updated event CookieConsent fires. */}
+        <script
+          // eslint-disable-next-line react/no-danger
+          dangerouslySetInnerHTML={{
+            __html: `(function(){if(/^\\/embed/.test(location.pathname))return;var loaded=false;function loadDrive(){if(loaded)return;loaded=true;var s=document.createElement('script');s.async=true;s.setAttribute('data-cmp-ab','2');s.src='https://emrldtp.com/NTg0MDk4.js?t=584098';document.head.appendChild(s);}try{var c=JSON.parse(localStorage.getItem('wc_cookie_consent')||'null');if(c&&c.advertising)loadDrive();}catch(e){}window.addEventListener('wc-consent-updated',function(e){if(e.detail&&e.detail.advertising)loadDrive();});})();`,
+          }}
+        />
       </head>
       <body className="min-h-screen flex flex-col">
         <Providers locale={siteConfig.defaultLocale}>
