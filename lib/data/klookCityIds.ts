@@ -9,4 +9,6 @@
  */
 export const KLOOK_CITY_IDS: Record<string, number> = {
   "italy/rome": 92,
+  "italy/florence": 115,
+  "italy/naples": 126,
 };
